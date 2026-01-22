@@ -8,18 +8,30 @@
 
 
 import GradientDescent from "@/components/simulations/GradientDescent";
+import KernelTrickVisualizer from "@/components/simulations/KernelTrickVisualizer";
 import LeastSquares from "@/components/simulations/LeastSquares";
+import LinearRegressionInteractive from "@/components/simulations/LinearRegressionInteractive";
+import LogisticFunctionVisualizer from "@/components/simulations/LogisticFunctionVisualizer";
 import LogisticRegression from "@/components/simulations/LogisticRegression";
+import LogisticTrainingSim from "@/components/simulations/LogisticTrainingSim";
 import PolynomialRegression from "@/components/simulations/PolynomialRegression";
 import SupportVectorRegression from "@/components/simulations/SupportVectorRegression";
+import SVRVisualizer from "@/components/simulations/SVRVisualizer";
 
 export default function check() {
   return (
     <>
-      {/* <GradientDescent /> */}
-      {/* <LeastSquares /> */}
-      {/* <LogisticRegression /> */}
-      {/* <PolynomialRegression /> */}
+      <GradientDescent />
+      <LeastSquares />
+      <LogisticRegression />
+      <PolynomialRegression />
+
+      now new ones 
+      <KernelTrickVisualizer/>
+      <LinearRegressionInteractive/>
+      <LogisticFunctionVisualizer/>
+      <LogisticTrainingSim/>
+      <SVRVisualizer/>
       {/* <SupportVectorRegression /> */}
     </>
   );

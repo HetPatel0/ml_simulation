@@ -1,88 +1,115 @@
-import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
-import Logo from "./logo";
+import Logo from '@/components/common/logo'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import { HugeiconsIcon } from "@hugeicons/react";
-import { CopyrightIcon } from "@hugeicons/core-free-icons";
+const links = [
+    {
+        title: 'Open Source',
+        href: "https://github.com/HetPatel0/ml_simulation",
+        target: "_blank",
+        rel: "noopener noreferrer"
+    },
+    {
+        title: 'Solution',
+        href: '#',
+    },
+    {
+        title: 'Customers',
+        href: '#',
+    },
+    {
+        title: 'Pricing',
+        href: '#',
+    },
+    {
+        title: 'Help',
+        href: '#',
+    },
+    {
+        title: 'About',
+        href: '#',
+    },
+]
 
-function Footer() {
-  function getYearFromDate(input: Date | string): number | null {
-    try {
-      let date: Date;
+export default function FooterSection() {
+    return (
+        <footer className="py-10 md:py-32">
+            <div className="mx-auto max-w-5xl px-6">
+                <Link
+                    href="/"
+                    aria-label="go home"
+                    className="mx-auto block size-fit">
+                    <Logo />
+                </Link>
 
-      // If input is a string, try to parse it
-      if (typeof input === "string") {
-        date = new Date(input);
-      } else {
-        date = input;
-      }
+                <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
+                    {links.map((link, index) => (
+                        <Link
+                            key={index}
+                            href={link.href}
+                            target={link.target}
+                            className="text-muted-foreground hover:text-primary block duration-150">
+                            <span>{link.title}</span>
+                        </Link>
+                    ))}
+                </div>
+                <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
+                    <Link
+                        href=""
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="X/Twitter"
+                        className="text-muted-foreground hover:text-primary block">
+                        <svg
+                            className="size-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 24 24">
+                            <path
+                                fill="currentColor"
+                                d="M10.488 14.651L15.25 21h7l-7.858-10.478L20.93 3h-2.65l-5.117 5.886L8.75 3h-7l7.51 10.015L2.32 21h2.65zM16.25 19L5.75 5h2l10.5 14z"></path>
+                        </svg>
+                    </Link>
+                    <Link
+                        href="https://www.linkedin.com/in/het-bhuva-b1330b332/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="LinkedIn"
+                        className="text-muted-foreground hover:text-primary block">
+                        <svg
+                            className="size-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 24 24">
+                            <path
+                                fill="currentColor"
+                                d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37z"></path>
+                        </svg>
+                    </Link>
+                    <Link
+                        href="https://github.com/HetPatel0/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="GitHub"
+                        className="text-muted-foreground hover:text-primary block">
+                        <svg
+                            className="size-6"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1em"
+                            height="1em"
+                            viewBox="0 0 24 24">
+                            <path
+                                fill="currentColor"
+                                d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 2.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"></path>
+                        </svg>
+                    </Link>
 
-      // Validate if the date is valid
-      if (isNaN(date.getTime())) {
-        console.error("Invalid date provided.");
-        return null;
-      }
 
-      return date.getFullYear();
-    } catch (error) {
-      console.error("Error extracting year:", error);
-      return null;
-    }
-  }
-
-  return (
-    <footer className="relative mt-auto overflow-hidden">
-      <Separator />
-      {/* Content */}
-      <div className="relative mx-auto max-w-7xl px-6 py-16">
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
-          {/* Brand */}
-          <div className="flex flex-col ">
-            <div className="flex items-center scale-90 mr-200 ">
-              <Logo />
+                </div>
+                <span className="text-muted-foreground block text-center text-sm"> © {new Date().getFullYear()} ML simulation, All rights reserved</span>
             </div>
-
-            <p className="flex items-center gap-1 text-sm leading-relaxed">
-              <HugeiconsIcon icon={CopyrightIcon} className="h-3.5 w-3.5" />
-              <span>
-                {getYearFromDate(new Date())} ML
-                <span className="font-normal">Simulation</span>
-              </span>
-            </p>
-
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              All rights reserved <br />
-              Not Financial advice, use responsibly
-            </p>
-          </div>
-
-          {/* Links */}
-          <div className="grid grid-cols-2 gap-10 text-sm md:grid-cols-3">
-            {/* Column 1 */}
-            <div className="[&>a:hover]:text-primary flex flex-col items-start gap-2">
-              <Link href="/disclaimer">Disclaimer</Link>
-            </div>
-            {/* Column 2 */}
-            <div className="[&>a:hover]:text-primary flex flex-col gap-2">
-              <a href="https://github.com/HetPatel0/ml_simulation">
-                Open Source
-              </a>
-              <a href="mailto:23010101034@darshan.ac.in">Contact</a>
-            </div>
-
-            {/* Column 3 */}
-            <div className="[&>a:hover]:text-primary flex flex-col gap-2">
-              <a href="https://x.com/Het1501">Twitter</a>
-              <a href="https://www.linkedin.com/in/het-bhuva-b1330b332/">
-                LinkedIn
-              </a>
-              <a href="https://github.com/HetPatel0">GitHub</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
+        </footer>
+    )
 }
-
-export default Footer;

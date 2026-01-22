@@ -24,10 +24,10 @@ export default function Home() {
             to see these failures in action.
           </>
         }
-        image={{
-          src: "/images/gradient-descent-visual.png",
-          alt: "Gradient descent visualization",
-        }}
+        // image={{
+        //   src: "/images/gradient-descent-visual.png",
+        //   alt: "Gradient descent visualization",
+        // }}
       >
         <p>
           Gradient descent is often presented as a guaranteed path toward the

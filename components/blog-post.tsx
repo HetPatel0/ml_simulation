@@ -45,7 +45,7 @@ export function BlogPost({
       </header>
 
       {/* Optional Image */}
-      {image && (
+      {image ?(
         <figure className="my-10">
           <img
             src={image.src}
@@ -53,7 +53,7 @@ export function BlogPost({
             className="w-full rounded-xl"
           />
         </figure>
-      )}
+      ):(<div></div>)}
 
       {/* Content */}
       {children && (

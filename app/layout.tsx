@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/common/navbar";
 import Footer from "@/components/common/footer";
 import LenisProvider from "@/components/lenis-provider";
+import FooterSection from "@/components/common/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -41,7 +42,7 @@ export default function RootLayout({
           <LenisProvider>
             <Navbar />
             {children}
-            <Footer />
+            <FooterSection />
           </LenisProvider>
         </ThemeProvider>
       </body>
