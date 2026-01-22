@@ -1,340 +1,312 @@
-// "use client"
+"use client";
 
-// import { useEffect, useRef, useState, useCallback } from "react"
-// import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import SimHeader from "../common/sim-header";
 
-// interface Point {
-//     x: number
-//     y: number
-// }
+interface Point {
+  x: number;
+  y: number;
+}
 
-// export default function PolynomialRegression() {
-//     const canvasRef = useRef<HTMLCanvasElement>(null)
-//     const [points, setPoints] = useState<Point[]>([])
-//     const [degree, setDegree] = useState(3)
-//     const [coeffs, setCoeffs] = useState<number[]>([])
-//     const [dragIdx, setDragIdx] = useState(-1)
+export default function PolynomialRegression() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-//     // Constants
-//     const width = 800
-//     const height = 450
+  const [points, setPoints] = useState<Point[]>([]);
+  const [degree, setDegree] = useState(3);
+  const [coeffs, setCoeffs] = useState<number[]>([]);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
 
-//     // --- Math Logic (Gaussian Elimination) ---
-//     const solve = useCallback((currentPoints: Point[], currentDegree: number) => {
-//         if (currentPoints.length === 0) return []
+  const width = 800;
+  const height = 450;
+  const scale = 2.5;
 
-//         const N = currentPoints.length
-//         const M = currentDegree + 1
+  /* -------------------- Math -------------------- */
+  const solve = useCallback((pts: Point[], deg: number): number[] => {
+    if (pts.length === 0) return [];
 
-//         // Prepare Matrices
-//         let X: number[][] = []
-//         let Y: number[] = []
+    const M = deg + 1;
+    const X: number[][] = [];
+    const Y: number[] = [];
 
-//         for (let i = 0; i < N; i++) {
-//             let row: number[] = []
-//             for (let p = 0; p < M; p++) row.push(Math.pow(currentPoints[i].x, p))
-//             X.push(row)
-//             Y.push(currentPoints[i].y)
-//         }
+    pts.forEach((p) => {
+      X.push(Array.from({ length: M }, (_, i) => Math.pow(p.x, i)));
+      Y.push(p.y);
+    });
 
-//         // Normal Equation: (X^T * X) * coeffs = X^T * Y
-//         const transpose = (m: number[][]): number[][] => m[0].map((_, c) => m.map(r => r[c]))
-//         const mult = (m1: number[][], m2: number[][]): number[][] => {
-//             let r: number[][] = []
-//             for (let i = 0; i < m1.length; i++) {
-//                 r[i] = []
-//                 for (let j = 0; j < m2[0].length; j++) {
-//                     let sum = 0
-//                     for (let k = 0; k < m1[0].length; k++) sum += m1[i][k] * m2[k][j]
-//                     r[i][j] = sum
-//                 }
-//             }
-//             return r
-//         }
-//         const multVec = (m: number[][], v: number[]): number[] => {
-//             return m.map(row => row.reduce((a, b, i) => a + b * v[i], 0))
-//         }
+    const transpose = (m: number[][]) => m[0].map((_, i) => m.map((r) => r[i]));
+    const mult = (a: number[][], b: number[][]) =>
+      a.map((r) =>
+        b[0].map((_, j) => r.reduce((s, v, k) => s + v * b[k][j], 0)),
+      );
+    const multVec = (m: number[][], v: number[]) =>
+      m.map((r) => r.reduce((s, v2, i) => s + v2 * v[i], 0));
 
-//         let XT = transpose(X)
-//         let A = mult(XT, X)
-//         let B = multVec(XT, Y)
+    const XT = transpose(X);
+    const A = mult(XT, X);
+    const B = multVec(XT, Y);
 
-//         // Ridge Regression (Stability)
-//         for (let i = 0; i < M; i++) A[i][i] += 0.00001
+    // Ridge stabilization
+    for (let i = 0; i < M; i++) A[i][i] += 1e-5;
 
-//         // Gaussian Elimination
-//         const gaussian = (A: number[][], B: number[]) => {
-//             let n = A.length
-//             let M = A.map((r, i) => [...r, B[i]])
-//             for (let i = 0; i < n; i++) {
-//                 let max = i
-//                 for (let k = i + 1; k < n; k++) if (Math.abs(M[k][i]) > Math.abs(M[max][i])) max = k
-//                 [M[i], M[max]] = [M[max], M[i]]
-//                 for (let k = i + 1; k < n; k++) {
-//                     let f = -M[k][i] / M[i][i]
-//                     for (let j = i; j <= n; j++) M[k][j] += f * M[i][j]
-//                 }
-//             }
-//             let x = new Array(n).fill(0)
-//             for (let i = n - 1; i >= 0; i--) {
-//                 let s = 0
-//                 for (let j = i + 1; j < n; j++) s += M[i][j] * x[j]
-//                 x[i] = (M[i][n] - s) / M[i][i]
-//             }
-//             return x
-//         }
+    // Gaussian Elimination
+    const n = A.length;
+    const Mtx = A.map((r, i) => [...r, B[i]]);
 
-//         return gaussian(A, B)
-//     }, [])
+    for (let i = 0; i < n; i++) {
+      let max = i;
+      for (let k = i + 1; k < n; k++)
+        if (Math.abs(Mtx[k][i]) > Math.abs(Mtx[max][i])) max = k;
 
-//     const predict = (x: number, currentCoeffs: number[]) => {
-//         let y = 0
-//         for (let i = 0; i < currentCoeffs.length; i++) y += currentCoeffs[i] * Math.pow(x, i)
-//         return y
-//     }
+      if (Math.abs(Mtx[max][i]) < 1e-12) return [];
+      [Mtx[i], Mtx[max]] = [Mtx[max], Mtx[i]];
 
-//     // Effect: Solve when points/degree change
-//     useEffect(() => {
-//         const newCoeffs = solve(points, degree)
-//         setCoeffs(newCoeffs)
-//     }, [points, degree, solve])
+      for (let k = i + 1; k < n; k++) {
+        const f = Mtx[k][i] / Mtx[i][i];
+        for (let j = i; j <= n; j++) Mtx[k][j] -= f * Mtx[i][j];
+      }
+    }
 
-//     // --- Drawing ---
-//     const draw = useCallback(() => {
-//         const canvas = canvasRef.current
-//         if (!canvas) return
-//         const ctx = canvas.getContext("2d")
-//         if (!ctx) return
+    const res = new Array(n).fill(0);
+    for (let i = n - 1; i >= 0; i--) {
+      let sum = 0;
+      for (let j = i + 1; j < n; j++) sum += Mtx[i][j] * res[j];
+      res[i] = (Mtx[i][n] - sum) / Mtx[i][i];
+    }
 
-//         // Clear
-//         ctx.fillStyle = "#1e293b" // Dark bg
-//         ctx.fillRect(0, 0, width, height)
+    return res;
+  }, []);
 
-//         // Draw Grid
-//         ctx.strokeStyle = "#334155"
-//         ctx.lineWidth = 1
-//         ctx.beginPath()
-//         const cx = width / 2
-//         const cy = height / 2
-//         ctx.moveTo(cx, 0); ctx.lineTo(cx, height)
-//         ctx.moveTo(0, cy); ctx.lineTo(width, cy)
-//         ctx.stroke()
+  const predict = (x: number, c: number[]) =>
+    c.reduce((s, v, i) => s + v * Math.pow(x, i), 0);
 
-//         // Draw Curve
-//         if (coeffs.length > 0) {
-//             ctx.strokeStyle = "#38bdf8"
-//             ctx.lineWidth = 3
-//             ctx.beginPath()
-//             let start = false
-//             // Draw across entire width
-//             for (let px = 0; px <= width; px += 2) {
-//                 // Pixel -> Math
-//                 let mx = (px - cx) / (width / 2.5)
-//                 let my = predict(mx, coeffs)
+  /* -------------------- Effects -------------------- */
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDegree((d) => Math.min(d, Math.max(1, points.length - 1)));
+    setCoeffs(solve(points, degree));
+  }, [points, degree, solve]);
 
-//                 // Math -> Pixel
-//                 let py = (-my * (height / 2.5)) + cy
+  /* -------------------- Drawing -------------------- */
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-//                 // Clip
-//                 if (my > 5 || my < -5) { start = false; continue }
+    /* ---------- Background ---------- */
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
 
-//                 if (!start) { ctx.moveTo(px, py); start = true }
-//                 else ctx.lineTo(px, py)
-//             }
-//             ctx.stroke()
-//         }
+    const cx = width / 2;
+    const cy = height / 2;
 
-//         // Draw Points
-//         points.forEach((p, i) => {
-//             // Math -> Pixel
-//             let px = (p.x * (width / 2.5)) + cx
-//             let py = (-p.y * (height / 2.5)) + cy
+    /* ---------- Axes ---------- */
+    ctx.strokeStyle = "#94a3b8"; // slate-400
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx, 0);
+    ctx.lineTo(cx, height);
+    ctx.moveTo(0, cy);
+    ctx.lineTo(width, cy);
+    ctx.stroke();
 
-//             // Residual line
-//             let predY = predict(p.x, coeffs)
-//             let predPy = (-predY * (height / 2.5)) + cy
+    /* ---------- Polynomial Curve ---------- */
+    if (coeffs.length) {
+      ctx.strokeStyle = "#2563eb"; // blue-600
+      ctx.lineWidth = 3;
+      ctx.beginPath();
 
-//             ctx.strokeStyle = "rgba(255,255,255,0.2)"
-//             ctx.lineWidth = 1
-//             ctx.beginPath()
-//             ctx.moveTo(px, py)
-//             ctx.lineTo(px, predPy)
-//             ctx.stroke()
+      let started = false;
+      for (let px = 0; px <= width; px += 2) {
+        const mx = (px - cx) / (width / scale);
+        const my = predict(mx, coeffs);
 
-//             // Dot
-//             ctx.fillStyle = (i === dragIdx) ? "#ffffff" : "#ef4444"
-//             ctx.beginPath()
-//             ctx.arc(px, py, 6, 0, Math.PI * 2)
-//             ctx.fill()
-//         })
+        if (!isFinite(my) || Math.abs(my) > 5) {
+          started = false;
+          continue;
+        }
 
-//     }, [points, coeffs, dragIdx])
+        const py = cy - my * (height / scale);
+        if (!started) {
+          ctx.moveTo(px, py);
+          started = true;
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.stroke();
+    }
 
-//     useEffect(() => {
-//         draw()
-//     }, [draw])
+    /* ---------- Points + Residuals ---------- */
+    points.forEach((p, i) => {
+      const px = cx + p.x * (width / scale);
+      const py = cy - p.y * (height / scale);
 
-//     // --- Interaction ---
-//     const getCoords = (e: React.MouseEvent | React.TouchEvent) => {
-//         const canvas = canvasRef.current
-//         if (!canvas) return { x: 0, y: 0 }
-//         const rect = canvas.getBoundingClientRect()
+      const pred = predict(p.x, coeffs);
+      const predPy = cy - pred * (height / scale);
 
-//         // @ts-expect-error - touch event handling
-//         const clientX = e.touches ? e.touches[0].clientX : e.clientX
-//         // @ts-expect-error - touch event handling
-//         const clientY = e.touches ? e.touches[0].clientY : e.clientY
+      /* Residual line */
+      ctx.strokeStyle = "rgba(0,0,0,0.15)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(px, predPy);
+      ctx.stroke();
 
-//         const scaleX = canvas.width / rect.width
-//         const scaleY = canvas.height / rect.height
+      /* Point */
+      ctx.fillStyle = dragIdx === i ? "#1e293b" : "#dc2626"; // slate-800 / red-600
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
 
-//         const x = (clientX - rect.left) * scaleX
-//         const y = (clientY - rect.top) * scaleY
+      /* Outline for contrast */
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+  }, [points, coeffs, dragIdx]);
 
-//         // Map to Math (-1 to 1 approx)
-//         let mx = (x - width / 2) / (width / 2.5)
-//         let my = -(y - height / 2) / (height / 2.5)
-//         return { x: mx, y: my }
-//     }
+  useEffect(draw, [draw]);
 
-//     const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
-//         // @ts-expect-error - type check
-//         if (e.button === 2) return // Ignore right click start here, handled in contextmenu if needed
+  /* -------------------- Interaction -------------------- */
+  const getCoords = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
 
-//         const m = getCoords(e)
-//         let closest = -1
-//         let minD = 0.1
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
 
-//         points.forEach((p, i) => {
-//             let d = Math.hypot(p.x - m.x, p.y - m.y)
-//             if (d < minD) { minD = d; closest = i }
-//         })
+    const x = (clientX - rect.left) * (canvas.width / rect.width);
+    const y = (clientY - rect.top) * (canvas.height / rect.height);
 
-//         if (closest !== -1) {
-//             setDragIdx(closest)
-//         } else {
-//             setPoints(prev => [...prev, { x: m.x, y: m.y }])
-//             setDragIdx(points.length) // It will be the new last one
-//         }
-//     }
+    return {
+      x: (x - width / 2) / (width / scale),
+      y: -(y - height / 2) / (height / scale),
+    };
+  };
 
-//     const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
-//         if (dragIdx === -1) return
-//         const m = getCoords(e)
-//         setPoints(prev => {
-//             const next = [...prev]
-//             if (next[dragIdx]) {
-//                 next[dragIdx] = {
-//                     x: Math.max(-1.5, Math.min(1.5, m.x)),
-//                     y: Math.max(-1.5, Math.min(1.5, m.y))
-//                 }
-//             }
-//             return next
-//         })
-//     }
+  const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
+    if ("button" in e && e.button === 2) return;
 
-//     const handleEnd = () => setDragIdx(-1)
+    const m = getCoords(e);
+    let idx: number | null = null;
+    let min = 0.1;
 
-//     const handleDelete = (e: React.MouseEvent) => {
-//         e.preventDefault()
-//         const m = getCoords(e)
-//         let closest = -1
-//         let minD = 0.1
-//         points.forEach((p, i) => {
-//             let d = Math.hypot(p.x - m.x, p.y - m.y)
-//             if (d < minD) { minD = d; closest = i }
-//         })
-//         if (closest !== -1) {
-//             setPoints(prev => prev.filter((_, i) => i !== closest))
-//         }
-//     }
+    points.forEach((p, i) => {
+      const d = Math.hypot(p.x - m.x, p.y - m.y);
+      if (d < min) {
+        min = d;
+        idx = i;
+      }
+    });
 
-//     // Pre-sets
-//     const handleReset = () => {
-//         const newPoints = []
-//         for (let x = -0.8; x <= 0.8; x += 0.2) {
-//             newPoints.push({ x, y: Math.sin(x * 3) * 0.5 })
-//         }
-//         setPoints(newPoints)
-//         setDegree(3)
-//     }
+    if (idx !== null) setDragIdx(idx);
+    else
+      setPoints((p) => {
+        setDragIdx(p.length);
+        return [...p, m];
+      });
+  };
 
-//     useEffect(() => {
-//         // Init with some data
-//         if (points.length === 0) handleReset()
-//         // eslint-disable-next-line react-hooks/exhaustive-deps
-//     }, [])
+  const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (dragIdx === null) return;
+    const m = getCoords(e);
 
-//     return (
-//         <div className="flex flex-col gap-6 p-6 items-center w-full max-w-5xl mx-auto" onMouseUp={handleEnd} onTouchEnd={handleEnd}>
-//             <Card className="w-full">
-//                 <CardHeader className="text-center">
-//                     <CardTitle>Polynomial Curve Fitting</CardTitle>
-//                     <CardDescription>Drag points to shape the curve. Right-click to delete.</CardDescription>
-//                 </CardHeader>
-//                 <CardContent className="space-y-6">
+    setPoints((p) => {
+      const next = [...p];
+      next[dragIdx] = {
+        x: Math.max(-1.5, Math.min(1.5, m.x)),
+        y: Math.max(-1.5, Math.min(1.5, m.y)),
+      };
+      return next;
+    });
+  };
 
-//                     <div className="flex justify-center border rounded-lg overflow-hidden bg-slate-900">
-//                         <canvas
-//                             ref={canvasRef}
-//                             width={width}
-//                             height={height}
-//                             className="w-full max-w-[800px] cursor-crosshair touch-none"
-//                             onMouseDown={handleStart}
-//                             onMouseMove={handleMove}
-//                             onTouchStart={handleStart}
-//                             onTouchMove={handleMove}
-//                             onContextMenu={handleDelete}
-//                         />
-//                     </div>
+  const handleDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const m = getCoords(e);
+    setPoints((p) =>
+      p.filter((pt) => Math.hypot(pt.x - m.x, pt.y - m.y) > 0.1),
+    );
+  };
 
-//                     <div className="grid md:grid-cols-2 gap-8 items-center">
-//                         <div className="space-y-4">
-//                             <div className="flex justify-between">
-//                                 <label className="text-sm font-medium">Polynomial Degree: {degree}</label>
-//                                 <span className="text-xs text-muted-foreground">(Max: {Math.max(1, points.length - 1)})</span>
-//                             </div>
-//                             <input
-//                                 type="range"
-//                                 min="1"
-//                                 max={Math.max(1, Math.min(20, points.length - 1))}
-//                                 step="1"
-//                                 value={degree}
-//                                 onChange={(e) => setDegree(parseInt(e.target.value))}
-//                                 className="w-full cursor-pointer accent-blue-500"
-//                             />
+  const reset = () => {
+    setPoints(
+      Array.from({ length: 9 }, (_, i) => {
+        const x = -0.8 + i * 0.2;
+        return { x, y: Math.sin(x * 3) * 0.5 };
+      }),
+    );
+    setDegree(3);
+  };
 
-//                             <div className="flex gap-2">
-//                                 <Button variant="outline" onClick={() => setDegree(Math.min(20, Math.max(1, points.length - 1)))}>
-//                                     Auto Fit
-//                                 </Button>
-//                                 <Button variant="secondary" onClick={handleReset}>
-//                                     Reset Data
-//                                 </Button>
-//                                 <Button variant="destructive" onClick={() => setPoints([])}>
-//                                     Clear All
-//                                 </Button>
-//                             </div>
-//                         </div>
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (!points.length) reset();
+  }, [points.length]);
 
-//                         <div className="bg-muted p-4 rounded-lg font-mono text-xs md:text-sm break-all">
-//                             {coeffs.length === 0 ? "Add points..." : "y = "}
-//                             {coeffs.map((c, i) => {
-//                                 const idx = coeffs.length - 1 - i
-//                                 const val = coeffs[idx]
-//                                 if (!val) return null
-//                                 const sign = val >= 0 ? " + " : " - "
-//                                 const num = Math.abs(val).toFixed(2)
-//                                 if (idx === 0) return <span key={idx}>{sign}{num}</span>
-//                                 if (idx === 1) return <span key={idx}>{sign}{num}x</span>
-//                                 return <span key={idx}>{sign}{num}x^{idx}</span>
-//                             })}
-//                         </div>
-//                     </div>
+  /* -------------------- UI -------------------- */
+  return (
+    <div
+      className="gap-6 max-w-5xl mx-auto "
+      onMouseUp={() => setDragIdx(null)}
+      onTouchEnd={() => setDragIdx(null)}
+    >
+      <SimHeader
+        title={"Polynomial Curve Fitting"}
+        subtitle={
+          "How Polynomial Degrees Work and how it find perfect curve to fit accordingly "
+        }
+      />
+      <Card className="my-10">
+        <CardHeader className="text-center ">
+          <CardTitle>Polynomial Curve Fitting</CardTitle>
+          <CardDescription>Drag points · Right-click to delete</CardDescription>
+        </CardHeader>
 
-//                 </CardContent>
-//             </Card>
-//         </div>
-//     )
-// }
+        <CardContent className="space-y-6">
+          <canvas
+            ref={canvasRef}
+            width={width}
+            height={height}
+            className="w-full bg-white rounded-lg cursor-crosshair touch-none"
+            onMouseDown={handleStart}
+            onMouseMove={handleMove}
+            onTouchStart={handleStart}
+            onTouchMove={handleMove}
+            onContextMenu={handleDelete}
+          />
+
+          <input
+            type="range"
+            min={1}
+            max={Math.max(1, points.length - 1)}
+            value={degree}
+            onChange={(e) => setDegree(+e.target.value)}
+            className="w-full"
+          />
+
+          <div className="flex gap-2">
+            <Button onClick={() => setDegree(Math.max(1, points.length - 1))}>
+              Auto Fit
+            </Button>
+            <Button variant="secondary" onClick={reset}>
+              Reset
+            </Button>
+            <Button variant="destructive" onClick={() => setPoints([])}>
+              Clear
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
