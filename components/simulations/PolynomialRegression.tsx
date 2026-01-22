@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "../common/sim-header";
 
 interface Point {
   x: number;
@@ -262,7 +262,7 @@ export default function PolynomialRegression() {
     >
       <SimHeader
         title={"Polynomial Curve Fitting"}
-        subtitle={
+        description={
           "How Polynomial Degrees Work and how it find perfect curve to fit accordingly "
         }
       />

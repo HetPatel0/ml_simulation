@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "@/components/common/sim-header";
 
 export default function GradientDescent() {
   const [currentX, setCurrentX] = useState(-4);
@@ -141,14 +141,10 @@ export default function GradientDescent() {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 mb-10">
-      <SimHeader
-        title="Gradient Descent Simulator"
-        subtitle={
-          <>
-            Explore optimization on <span className="font-mono">y = x²</span>
-          </>
-        }
-      />
+      <SimHeader 
+  title="Gradient Descent"
+  description="Visualize how gradient descent optimization finds the minimum"
+/>
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <Card className="flex flex-1 items-center justify-center p-4">

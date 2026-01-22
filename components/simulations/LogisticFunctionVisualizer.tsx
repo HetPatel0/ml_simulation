@@ -8,7 +8,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "../common/sim-header";
 
 export default function LogisticFunctionVisualizer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -125,7 +125,7 @@ export default function LogisticFunctionVisualizer() {
     <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-4xl mx-auto">
       <SimHeader
         title="Logistic Function Visualizer"
-        subtitle="Understand how Weight (w) and Bias (b) shape the S-curve."
+        description="Understand how Weight (w) and Bias (b) shape the S-curve."
       />
 
       <Card className="w-full">

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "../common/sim-header";
 import Script from "next/script";
 
 declare global {
@@ -172,7 +172,7 @@ export default function KernelTrickVisualizer() {
       />
       <SimHeader
         title="Visualizing the Kernel Trick"
-        subtitle="Watch how inseparable 2D data becomes separable in high dimensions."
+        description="Watch how inseparable 2D data becomes separable in high dimensions."
       />
 
       <Card>

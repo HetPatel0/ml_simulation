@@ -5,7 +5,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "../common/sim-header";
 
 type Point = { x: number; y: number };
 
@@ -130,7 +130,7 @@ export default function LinearRegressionInteractive() {
     <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-4xl mx-auto">
       <SimHeader
         title="Linear Regression Interactive"
-        subtitle="Ordinary Least Squares (OLS) visualization."
+        description="Ordinary Least Squares (OLS) visualization."
       />
 
       <Card className="w-full">

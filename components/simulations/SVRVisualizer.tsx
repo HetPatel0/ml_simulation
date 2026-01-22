@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "../common/sim-header";
 import Script from "next/script";
 
 declare global {
@@ -132,7 +132,7 @@ export default function SVRVisualizer() {
       <Script src="https://cdn.plot.ly/plotly-2.27.0.min.js" onLoad={initPlot} />
       <SimHeader
         title="SVR: Visualizing the Regression Kernel"
-        subtitle="Unrolling curved data in 3D to fit a flat SVR plane."
+        description="Unrolling curved data in 3D to fit a flat SVR plane."
       />
 
       <Card>

@@ -8,7 +8,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "../common/sim-header";
 
 export default function LogisticRegression() {
   const [hours, setHours] = useState(5.0);
@@ -78,7 +78,7 @@ export default function LogisticRegression() {
     <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-6xl mx-auto">
       <SimHeader
         title="Logistic Regression"
-        subtitle="An interactive visualization of binary classification and decision boundaries"
+        description="An interactive visualization of binary classification and decision boundaries"
       />
 
       <Card className="max-w-5xl">

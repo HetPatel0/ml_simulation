@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import {SimHeader} from "../common/sim-header";
 
 type DataPoint = { x: number; y: number };
 type LogEntry = {
@@ -198,7 +198,7 @@ export default function LogisticTrainingSim() {
     <div className="flex flex-col gap-6 mb-8 w-full max-w-5xl mx-auto">
       <SimHeader
         title="Logistic Regression Internals"
-        subtitle="MLE & Gradient Descent Visualizer"
+        description="MLE & Gradient Descent Visualizer"
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
