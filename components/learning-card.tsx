@@ -37,7 +37,7 @@ export function LearningCard({
     <Card
       className="
         overflow-hidden rounded-2xl
-        border border-border/60
+        border-2 border-border/60
         bg-background
         transition-all duration-300 ease-out
         hover:-translate-y-1
