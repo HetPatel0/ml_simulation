@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ModeToogle } from "@/components/mode-toogle";
 import Logo from "./logo";
+import { usePathname } from "next/navigation";
 
 type MenuItem = {
   label: string;
@@ -22,6 +23,10 @@ const MENU_ITEMS: MenuItem[] = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const pathname = usePathname();
+
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
@@ -34,7 +39,12 @@ export function Navbar() {
             <li key={item.label}>
               <Link
                 href={item.href}
-                className="transition-colors hover:text-primary"
+                className={cn(
+                  "relative transition-colors hover:text-primary",
+                  isActive(item.href)
+                    ? "text-primary after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:bg-primary"
+                    : "text-muted-foreground",
+                )}
                 scroll={true}
               >
                 {item.label}
