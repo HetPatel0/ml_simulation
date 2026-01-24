@@ -38,7 +38,7 @@ const articals: Artical[] = [
     title: "Gradient Descent",
     description:
       "Visualize how gradient descent optimizes models by minimizing a loss function",
-    image: "/images/gradient-descent.jpg",
+    image: "/images/regression/gradient-descent.png",
     badge: "Regression",
     category: "regression",
   },
@@ -47,7 +47,7 @@ const articals: Artical[] = [
     title: "Linear Regression",
     description:
       "Interactive exploration of linear regression, least squares fitting, and model behavior",
-    image: "/images/linear-regression.jpg",
+    image: "/images/regression/linear-regression.png",
     badge: "Regression",
     category: "regression",
   },
@@ -56,7 +56,7 @@ const articals: Artical[] = [
     title: "Polynomial Regression",
     description:
       "Understand how polynomial features allow regression models to fit non-linear patterns",
-    image: "/images/polynomial-regression.jpg",
+    image: "/images/regression/polynomial-regression.png",
     badge: "Regression",
     category: "regression",
   },
@@ -65,7 +65,7 @@ const articals: Artical[] = [
     title: "Support Vector Regression",
     description:
       "Explore SVR concepts including epsilon tubes, margins, and support vectors",
-    image: "/images/svr.jpg",
+    image: "/images/regression/svr.png",
     badge: "Regression",
     category: "regression",
   },
@@ -74,7 +74,7 @@ const articals: Artical[] = [
     title: "Logistic Regression",
     description:
       "Visual and interactive guide to binary classification, sigmoid functions, and decision boundaries",
-    image: "/images/logistic-regression.jpg",
+    image: "/images/classification/logistic-regression.png",
     badge: "Classification",
     category: "classification",
   },
@@ -83,7 +83,7 @@ const articals: Artical[] = [
     title: "Kernel Methods",
     description:
       "Visualize how kernel tricks transform data into higher-dimensional spaces",
-    image: "/images/kernel-trick.jpg",
+    image: "/images/other/kernel-trick.png",
     badge: "Advanced",
     category: "other",
   },
