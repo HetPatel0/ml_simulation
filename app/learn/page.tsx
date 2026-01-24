@@ -1,51 +1,207 @@
-//TODO: Implement learn page Here it will be Blogs page With Diffreanciation between Regression and Classification
-//TODO: Add Search Functionality to search for blogs
-//TODO: Use Learning Cards with Proper Photos and Descriptions
-//TODO: Use Blog Card that i made in components/BlogCard.tsx it will look like articles page like medium or times of india
-//TODO: Here it will have sub routes like learn/[] for specific blog pages
-//Example How to use BlogPost component from components/blog-card.tsx
+"use client";
 
-import { BlogPost } from "@/components/blog-post";
+import { useState, useEffect, useRef } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search, X } from "lucide-react";
+import { LearningCard } from "@/components/learning-card";
 
-export default function Home() {
+interface Artical {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  badge: string;
+  category:
+    | "regression"
+    | "classification"
+    | "clustering"
+    | "testing"
+    | "other";
+}
+
+const CATEGORY_TITLES: Record<Artical["category"], string> = {
+  regression: "Regression",
+  classification: "Classification",
+  clustering: "Clustering",
+  testing: "Testing",
+  other: "Advanced & Experimental",
+};
+
+const articals: Artical[] = [
+  {
+    id: "gradient-descent",
+    title: "Gradient Descent",
+    description:
+      "Visualize how gradient descent optimizes models by minimizing a loss function",
+    image: "/images/gradient-descent.jpg",
+    badge: "Regression",
+    category: "regression",
+  },
+  {
+    id: "linear-regression",
+    title: "Linear Regression",
+    description:
+      "Interactive exploration of linear regression, least squares fitting, and model behavior",
+    image: "/images/linear-regression.jpg",
+    badge: "Regression",
+    category: "regression",
+  },
+  {
+    id: "polynomial-regression",
+    title: "Polynomial Regression",
+    description:
+      "Understand how polynomial features allow regression models to fit non-linear patterns",
+    image: "/images/polynomial-regression.jpg",
+    badge: "Regression",
+    category: "regression",
+  },
+  {
+    id: "support-vector-regression",
+    title: "Support Vector Regression",
+    description:
+      "Explore SVR concepts including epsilon tubes, margins, and support vectors",
+    image: "/images/svr.jpg",
+    badge: "Regression",
+    category: "regression",
+  },
+  {
+    id: "logistic-regression",
+    title: "Logistic Regression",
+    description:
+      "Visual and interactive guide to binary classification, sigmoid functions, and decision boundaries",
+    image: "/images/logistic-regression.jpg",
+    badge: "Classification",
+    category: "classification",
+  },
+  {
+    id: "kernel-methods",
+    title: "Kernel Methods",
+    description:
+      "Visualize how kernel tricks transform data into higher-dimensional spaces",
+    image: "/images/kernel-trick.jpg",
+    badge: "Advanced",
+    category: "other",
+  },
+];
+
+export default function SimulationsPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  /* ⌘K / CtrlK focus + Esc clear */
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+
+      if (e.key === "Escape") {
+        setSearchQuery("");
+        searchInputRef.current?.blur();
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  const query = searchQuery.trim().toLowerCase();
+
+  const filteredArticals = articals.filter(
+    (artical) =>
+      artical.title.toLowerCase().includes(query) ||
+      artical.description.toLowerCase().includes(query) ||
+      artical.category.toLowerCase().includes(query),
+  );
+
+  const groupedArticals = filteredArticals.reduce<
+    Record<Artical["category"], Artical[]>
+  >(
+    (acc, artical) => {
+      acc[artical.category].push(artical);
+      return acc;
+    },
+    {
+      regression: [],
+      classification: [],
+      clustering: [],
+      testing: [],
+      other: [],
+    },
+  );
+
   return (
-    <>
-      <BlogPost
-        title="Why Gradient Descent Fails More Often Than You Think"
-        author="Keval"
-        date="January 2026"
-        description={
-          <>
-            This article focuses on intuition rather than equations. You can
-            also{" "}
-            <a href="/simulations/gradient-descent">
-              interact with the Gradient Descent simulation
-            </a>{" "}
-            to see these failures in action.
-          </>
-        }
-        // image={{
-        //   src: "/images/gradient-descent-visual.png",
-        //   alt: "Gradient descent visualization",
-        // }}
-      >
-        <p>
-          Gradient descent is often presented as a guaranteed path toward the
-          minimum, but in practice, optimization is fragile.
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-2">ML Articles</h1>
+        <p className="text-muted-foreground text-lg">
+          Articles & visual explanations to understand machine learning concepts
         </p>
+      </div>
 
-        <h2>Learning Rate Instability</h2>
-        <p>
-          A slightly higher learning rate can cause divergence, while a lower
-          one makes training unusably slow.
-        </p>
+      {/* Search */}
+      <div className="relative mb-10">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 
-        <h3>Why This Matters</h3>
-        <p>
-          Understanding failure modes builds stronger mental models than
-          memorizing update rules.
-        </p>
-      </BlogPost>
-    </>
+        <Input
+          ref={searchInputRef}
+          type="text"
+          placeholder="Search articles… (⌘+K)"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 pr-10 border-2"
+        />
+
+        {searchQuery && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSearchQuery("")}
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {/* Sections */}
+      <div className="space-y-16">
+        {(Object.keys(CATEGORY_TITLES) as Artical["category"][]).map(
+          (category) => {
+            const items = groupedArticals[category];
+            if (items.length === 0) return null;
+
+            return (
+              <section key={category} className="space-y-6">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {CATEGORY_TITLES[category]}
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {items.map((artical) => (
+                    <LearningCard
+                      key={artical.id}
+                      title={artical.title}
+                      description={artical.description}
+                      href={`/learn/${artical.id}`}
+                      image={artical.image}
+                      badge={artical.badge}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          },
+        )}
+      </div>
+
+      {filteredArticals.length === 0 && (
+        <div className="text-center py-12 text-muted-foreground">
+          No articles found matching &quot;{searchQuery}&quot;
+        </div>
+      )}
+    </div>
   );
 }

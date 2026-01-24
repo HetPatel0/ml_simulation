@@ -42,26 +42,3 @@ export default function SimulationPage({
     </div>
   );
 }
-
-// components/simulations/SimHeader.tsx
-interface SimHeaderProps {
-  title: string;
-  description?: string;
-  children?: React.ReactNode;
-}
-
-export function SimHeader({ title, description, children }: SimHeaderProps) {
-  return (
-    <div className="px-4 py-6 md:px-6 md:py-8 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container mx-auto max-w-7xl">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">{title}</h1>
-        {description && (
-          <p className="text-muted-foreground text-base md:text-lg mb-4">
-            {description}
-          </p>
-        )}
-        {children}
-      </div>
-    </div>
-  );
-}

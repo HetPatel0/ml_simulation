@@ -1,7 +1,7 @@
 // app/simulations/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
@@ -109,12 +109,33 @@ const simulations: Simulation[] = [
 
 export default function SimulationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  /* ⌘K / CtrlK focus + Esc clear */
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+
+      if (e.key === "Escape") {
+        setSearchQuery("");
+        searchInputRef.current?.blur();
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  const query = searchQuery.trim().toLowerCase();
 
   const filteredSimulations = simulations.filter(
     (sim) =>
-      sim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sim.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sim.category.toLowerCase().includes(searchQuery.toLowerCase()),
+      sim.title.toLowerCase().includes(query) ||
+      sim.description.toLowerCase().includes(query) ||
+      sim.category.toLowerCase().includes(query),
   );
 
   const groupedSimulations = filteredSimulations.reduce<
@@ -142,15 +163,17 @@ export default function SimulationsPage() {
         </p>
       </div>
 
+      {/* Search */}
       <div className="relative mb-10">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 
         <Input
+          ref={searchInputRef}
           type="text"
-          placeholder="Search simulations..."
+          placeholder="Search simulations… (⌘+K)"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 pr-10"
+          className="pl-10 pr-10 border-2"
         />
 
         {searchQuery && (
@@ -165,6 +188,7 @@ export default function SimulationsPage() {
         )}
       </div>
 
+      {/* Sections */}
       <div className="space-y-16">
         {(Object.keys(CATEGORY_TITLES) as Simulation["category"][]).map(
           (category) => {

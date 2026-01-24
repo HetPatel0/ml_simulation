@@ -1,7 +1,8 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
-type BlogPostProps = {
+type ArticlePostProps = {
   title: string;
   author: string;
   date?: string;
@@ -14,7 +15,7 @@ type BlogPostProps = {
   className?: string;
 };
 
-export function BlogPost({
+export function ArticlePost({
   title,
   author,
   date,
@@ -22,7 +23,7 @@ export function BlogPost({
   image,
   children,
   className,
-}: BlogPostProps) {
+}: ArticlePostProps) {
   return (
     <article className={cn("mx-auto max-w-[90ch] px-6 py-16", className)}>
       {/* Header */}
@@ -45,15 +46,19 @@ export function BlogPost({
       </header>
 
       {/* Optional Image */}
-      {image ?(
+      {image ? (
         <figure className="my-10">
-          <img
+          <Image
             src={image.src}
             alt={image.alt ?? title}
             className="w-full rounded-xl"
+            height={100}
+            width={100}
           />
         </figure>
-      ):(<div></div>)}
+      ) : (
+        <div></div>
+      )}
 
       {/* Content */}
       {children && (
