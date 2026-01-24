@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import {SimHeader} from "../common/sim-header";
+import SimHeader from "../common/sim-header";
 
 interface Point {
   x: number;
@@ -254,7 +254,7 @@ export default function SupportVectorRegression() {
       {/* Header (FULL WIDTH) */}
       <SimHeader
         title="Support Vector Regression (SVR)"
-        description="Understanding ε-insensitive loss, kernels, and support vectors through visualization"
+        subtitle="Understanding ε-insensitive loss, kernels, and support vectors through visualization"
       />
 
       {/* Main Content */}

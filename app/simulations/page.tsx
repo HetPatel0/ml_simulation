@@ -3,8 +3,10 @@
 
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
-import {LearningCard }from "@/components/learning-card";
+import { Button } from "@/components/ui/button";
+
+import { Search, X } from "lucide-react";
+import { LearningCard } from "@/components/learning-card";
 
 interface Simulation {
   id: string;
@@ -19,26 +21,29 @@ const simulations: Simulation[] = [
   {
     id: "gradient-descent",
     title: "Gradient Descent",
-    description: "Visualize how gradient descent optimization algorithm finds the minimum of a function",
+    description:
+      "Visualize how gradient descent optimization algorithm finds the minimum of a function",
     image: "/images/gradient-descent.jpg", // Add your images
     badge: "Regression",
-    category: "regression"
+    category: "regression",
   },
   {
     id: "least-squares",
     title: "Least Squares",
-    description: "Interactive demonstration of the least squares method for linear regression",
+    description:
+      "Interactive demonstration of the least squares method for linear regression",
     image: "/images/least-squares.jpg",
     badge: "Regression",
-    category: "regression"
+    category: "regression",
   },
   {
     id: "linear-regression",
     title: "Linear Regression Interactive",
-    description: "Build intuition for linear regression with interactive data points",
+    description:
+      "Build intuition for linear regression with interactive data points",
     image: "/images/linear-regression.jpg",
     badge: "Regression",
-    category: "regression"
+    category: "regression",
   },
   {
     id: "polynomial-regression",
@@ -46,7 +51,7 @@ const simulations: Simulation[] = [
     description: "Explore how polynomial features can fit non-linear patterns",
     image: "/images/polynomial-regression.jpg",
     badge: "Regression",
-    category: "regression"
+    category: "regression",
   },
   {
     id: "logistic-regression",
@@ -54,7 +59,7 @@ const simulations: Simulation[] = [
     description: "Understanding binary classification with logistic regression",
     image: "/images/logistic-regression.jpg",
     badge: "Classification",
-    category: "classification"
+    category: "classification",
   },
   {
     id: "logistic-function",
@@ -62,7 +67,7 @@ const simulations: Simulation[] = [
     description: "Visualize the sigmoid function and decision boundaries",
     image: "/images/logistic-function.jpg",
     badge: "Classification",
-    category: "classification"
+    category: "classification",
   },
   {
     id: "logistic-training",
@@ -70,7 +75,7 @@ const simulations: Simulation[] = [
     description: "Step-by-step training process of logistic regression",
     image: "/images/logistic-training.jpg",
     badge: "Classification",
-    category: "classification"
+    category: "classification",
   },
   {
     id: "kernel-trick",
@@ -78,7 +83,7 @@ const simulations: Simulation[] = [
     description: "See how kernel methods transform data into higher dimensions",
     image: "/images/kernel-trick.jpg",
     badge: "Advanced",
-    category: "other"
+    category: "other",
   },
   {
     id: "svr-visualizer",
@@ -86,21 +91,22 @@ const simulations: Simulation[] = [
     description: "Understand SVR with epsilon tubes and support vectors",
     image: "/images/svr.jpg",
     badge: "Regression",
-    category: "regression"
-  }
+    category: "regression",
+  },
 ];
 
 export default function SimulationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredSimulations = simulations.filter(sim =>
-    sim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    sim.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    sim.category.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredSimulations = simulations.filter(
+    (sim) =>
+      sim.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sim.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sim.category.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="mb-8">
         <h1 className="text-4xl font-bold mb-2">ML Simulations</h1>
         <p className="text-muted-foreground text-lg">
@@ -109,14 +115,26 @@ export default function SimulationsPage() {
       </div>
 
       <div className="relative mb-8">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+
         <Input
           type="text"
           placeholder="Search simulations..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
+          className="pl-10 pr-10"
         />
+
+        {searchQuery && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSearchQuery("")}
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -134,54 +152,9 @@ export default function SimulationsPage() {
 
       {filteredSimulations.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          No simulations found matching "{searchQuery}"
+          No simulations found matching &quot;{searchQuery}&quot;
         </div>
       )}
     </div>
   );
 }
-
-// app/simulations/[slug]/page.tsx
-
-
-
-// components/simulations/SimHeader.tsx
-interface SimHeaderProps {
-  title: string;
-  description?: string;
-  children?: React.ReactNode;
-}
-
-export function SimHeader({ title, description, children }: SimHeaderProps) {
-  return (
-    <div className="px-4 py-6 md:px-6 md:py-8 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="container mx-auto max-w-7xl">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">{title}</h1>
-        {description && (
-          <p className="text-muted-foreground text-base md:text-lg mb-4">
-            {description}
-          </p>
-        )}
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// Example: Update your GradientDescent component to use SimHeader
-// components/simulations/GradientDescent.tsx
-// import { SimHeader } from "./SimHeader";
-//
-// export default function GradientDescent() {
-//   return (
-//     <>
-//       <SimHeader 
-//         title="Gradient Descent"
-//         description="Visualize how gradient descent finds the minimum"
-//       />
-//       <div className="container mx-auto max-w-7xl px-4 py-6">
-//         {/* Your existing simulation content */}
-//       </div>
-//     </>
-//   );
-// }

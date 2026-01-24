@@ -1,18 +1,13 @@
+/* eslint-disable prefer-const */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import {SimHeader} from "../common/sim-header";
+import { Card, CardContent } from "@/components/ui/card";
+import SimHeader from "../common/sim-header";
 
 export default function LogisticFunctionVisualizer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   // State for Weight (slope) and Bias (shift)
   const [w, setW] = useState(1.0);
   const [b, setB] = useState(0.0);
@@ -43,7 +38,7 @@ export default function LogisticFunctionVisualizer() {
 
     const toPixelY = (logicalY: number) => {
       const plotHeight = height - 2 * padding;
-      return (height - padding) - (logicalY * plotHeight);
+      return height - padding - logicalY * plotHeight;
     };
 
     ctx.clearRect(0, 0, width, height);
@@ -118,19 +113,17 @@ export default function LogisticFunctionVisualizer() {
       }
     }
     ctx.stroke();
-
   }, [w, b]);
 
   return (
-    <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-4xl mx-auto">
+    <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-5xl mx-auto">
       <SimHeader
         title="Logistic Function Visualizer"
-        description="Understand how Weight (w) and Bias (b) shape the S-curve."
+        subtitle="Understand how Weight (w) and Bias (b) shape the S-curve."
       />
 
       <Card className="w-full">
         <CardContent className="space-y-6 pt-6">
-          
           {/* Controls */}
           <div className="bg-slate-50 p-6 rounded-xl border space-y-6">
             <div className="space-y-2">
@@ -147,7 +140,9 @@ export default function LogisticFunctionVisualizer() {
                 onChange={(e) => setW(parseFloat(e.target.value))}
                 className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
-              <p className="text-xs text-muted-foreground">Controls how fast the probability changes.</p>
+              <p className="text-xs text-muted-foreground">
+                Controls how fast the probability changes.
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -164,13 +159,22 @@ export default function LogisticFunctionVisualizer() {
                 onChange={(e) => setB(parseFloat(e.target.value))}
                 className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
-              <p className="text-xs text-muted-foreground">Moves the center point left or right.</p>
+              <p className="text-xs text-muted-foreground">
+                Moves the center point left or right.
+              </p>
             </div>
           </div>
 
           {/* Formula Display */}
           <div className="font-mono bg-slate-100 p-4 rounded border-l-4 border-blue-500 text-center text-sm md:text-base">
-            Probability = 1 / (1 + e<sup>-({w < 0 ? "(" : ""}{w.toFixed(1)}{w < 0 ? ")" : ""}x {b < 0 ? "- " + Math.abs(b).toFixed(1) : "+ " + b.toFixed(1)})</sup>)
+            Probability = 1 / (1 + e
+            <sup>
+              -({w < 0 ? "(" : ""}
+              {w.toFixed(1)}
+              {w < 0 ? ")" : ""}x{" "}
+              {b < 0 ? "- " + Math.abs(b).toFixed(1) : "+ " + b.toFixed(1)})
+            </sup>
+            )
           </div>
 
           {/* Canvas */}
@@ -182,7 +186,6 @@ export default function LogisticFunctionVisualizer() {
               className="w-full max-w-150"
             />
           </div>
-
         </CardContent>
       </Card>
     </div>
