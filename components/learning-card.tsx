@@ -18,7 +18,7 @@ interface LearningCardProps {
   description: string;
   href: string;
   image: string;
-  badge: string;
+  badge?: string;
   variant?: "read" | "simulation";
 }
 

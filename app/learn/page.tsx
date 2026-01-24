@@ -17,6 +17,8 @@ interface Artical {
     | "classification"
     | "clustering"
     | "testing"
+    | "tuning"
+    | "cleaning"
     | "other";
 }
 
@@ -25,6 +27,8 @@ const CATEGORY_TITLES: Record<Artical["category"], string> = {
   classification: "Classification",
   clustering: "Clustering",
   testing: "Testing",
+  tuning: "Fine Tuning HyperParameters",
+  cleaning: "Cleaning Datas",
   other: "Advanced & Experimental",
 };
 
@@ -128,6 +132,8 @@ export default function SimulationsPage() {
       classification: [],
       clustering: [],
       testing: [],
+      tuning: [],
+      cleaning: [],
       other: [],
     },
   );

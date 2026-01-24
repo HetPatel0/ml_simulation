@@ -81,22 +81,27 @@ export function Navbar() {
         )}
       >
         <div className="mx-auto max-w-5xl px-4 py-4 space-y-4">
-          <ul className="space-y-3 text-sm">
+          <ul className="space-y-3 text-sm ml-6">
             {MENU_ITEMS.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="block text-muted-foreground transition-colors hover:text-primary"
+                  className={cn(
+                    "block transition-colors ",
+                    isActive(item.href)
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground hover:text-primary",
+                  )}
                   scroll={true}
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
+            <li></li>
           </ul>
-
-          <ModeToogle variant="link" className="pr-3 m" />
+          <ModeToogle variant="link" className="ml-3" />
         </div>
       </div>
     </header>
