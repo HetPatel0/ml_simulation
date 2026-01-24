@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {SimHeader} from "../common/sim-header";
+import SimHeader from "../common/sim-header";
 
 interface Point {
   x: number;
@@ -163,7 +163,7 @@ export default function LeastSquares() {
     <div className="flex flex-col gap-8 mb-10 items-center w-full max-w-5xl mx-auto">
       <SimHeader
         title={" Ordinary Least Squares"}
-        description={" Interactive Linear Regression Demo"}
+        subtitle={" Interactive Linear Regression Demo"}
       />
       {/* Stats Panel */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
