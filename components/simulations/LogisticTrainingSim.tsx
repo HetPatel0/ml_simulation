@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
+import { Button } from "@/components/ui/button";
 
 type DataPoint = { x: number; y: number };
 type LogEntry = {
@@ -58,7 +59,8 @@ export default function LogisticTrainingSim() {
     const mapX = (x: number) => PADDING + (x / 12) * (width - 2 * PADDING);
     const mapY = (y: number) => height - PADDING - y * (height - 2 * PADDING);
 
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
 
     // Axes
     ctx.strokeStyle = "#ddd";
@@ -199,6 +201,14 @@ export default function LogisticTrainingSim() {
     }
   };
 
+  useEffect(() => {
+    generateData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    draw();
+  }, []);
 
   return (
     <div className="flex flex-col gap-6 mb-8 w-full max-w-5xl mx-auto">
@@ -211,18 +221,16 @@ export default function LogisticTrainingSim() {
         {/* Left Column: Controls & Canvas */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex gap-4">
-            <button
-              onClick={generateData}
-              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition"
-            >
+            <Button onClick={generateData} className="flex-1">
               1. Generate Data
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={isTraining ? stopTraining : startTraining}
-              className={`flex-1 font-bold py-2 px-4 rounded transition text-white ${isTraining ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"}`}
+              variant={isTraining ? "destructive" : "default"}
+              className="flex-1"
             >
               {isTraining ? "Stop Training" : "2. Start Training"}
-            </button>
+            </Button>
           </div>
 
           <Card>
@@ -239,9 +247,9 @@ export default function LogisticTrainingSim() {
 
         {/* Right Column: Stats */}
         <div className="space-y-4">
-          <Card className="bg-slate-50">
+          <Card className="bg-muted/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm uppercase text-slate-500">
+              <CardTitle className="text-sm uppercase text-muted-foreground">
                 Objective Functions
               </CardTitle>
             </CardHeader>
@@ -258,20 +266,20 @@ export default function LogisticTrainingSim() {
                   {stats.mle}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 *Likelihood is P(Data|Model).
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-slate-50">
+          <Card className="bg-muted/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm uppercase text-slate-500">
+              <CardTitle className="text-sm uppercase text-muted-foreground">
                 Gradient Descent
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
-              <div className="font-mono bg-slate-900 text-yellow-400 p-2 rounded text-xs mb-2">
+              <div className="font-mono bg-background text-foreground p-2 rounded text-xs mb-2">
                 dw = Σ(pred-y)*x
                 <br />
                 db = Σ(pred-y)
@@ -306,7 +314,7 @@ export default function LogisticTrainingSim() {
         </CardHeader>
         <CardContent className="p-0 max-h-48 overflow-y-auto">
           <table className="w-full text-sm text-right border-collapse">
-            <thead className="bg-slate-100 text-slate-500 sticky top-0">
+            <thead className="bg-muted/50 text-muted-foreground sticky top-0">
               <tr>
                 <th className="p-2 text-left">Epoch</th>
                 <th className="p-2">Loss</th>
@@ -319,13 +327,15 @@ export default function LogisticTrainingSim() {
               {logs.map((log, i) => (
                 <tr
                   key={i}
-                  className="border-b even:bg-slate-50 hover:bg-slate-100"
+                  className="border-b border-muted/50 even:bg-muted/20 hover:bg-muted/50"
                 >
                   <td className="p-2 text-left">{log.epoch}</td>
                   <td className="p-2 text-red-600">{log.loss.toFixed(4)}</td>
                   <td className="p-2 text-green-600">{log.mle}</td>
                   <td className="p-2">{log.w.toFixed(3)}</td>
-                  <td className="p-2 text-slate-500">{log.dw.toFixed(4)}</td>
+                  <td className="p-2 text-muted-foreground">
+                    {log.dw.toFixed(4)}
+                  </td>
                 </tr>
               ))}
             </tbody>

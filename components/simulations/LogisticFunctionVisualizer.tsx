@@ -3,7 +3,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import SimHeader from "../common/sim-header"; 
+import { Slider } from "@/components/ui/slider";
 
 export default function LogisticFunctionVisualizer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -11,6 +12,13 @@ export default function LogisticFunctionVisualizer() {
   // State for Weight (slope) and Bias (shift)
   const [w, setW] = useState(1.0);
   const [b, setB] = useState(0.0);
+  const colors = {
+    background: '#ffffff',
+    gridLine: "#e0e0e0", // Light gray
+    gridText: "#666",    // Dark gray
+    axisLine: "#aaa",    // Medium gray
+    primaryCurve: "#3498db", // Blue
+  };
 
   const sigmoid = (x: number, weight: number, bias: number) => {
     const z = weight * x + bias;
@@ -41,13 +49,14 @@ export default function LogisticFunctionVisualizer() {
       return height - padding - logicalY * plotHeight;
     };
 
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = colors.background;
+    ctx.fillRect(0, 0, width, height);
 
     // --- Draw Grid & Axes ---
-    ctx.strokeStyle = "#e0e0e0";
+    ctx.strokeStyle = colors.gridLine;
     ctx.lineWidth = 1;
     ctx.font = "12px Arial";
-    ctx.fillStyle = "#666";
+    ctx.fillStyle = colors.gridText;
     ctx.textAlign = "center";
 
     // Y-axis lines
@@ -58,10 +67,10 @@ export default function LogisticFunctionVisualizer() {
       ctx.lineTo(width - padding, yPix);
       if (yLog === 0.5) {
         ctx.setLineDash([5, 5]);
-        ctx.strokeStyle = "#bbb";
+        ctx.strokeStyle = colors.gridLine;
       } else {
         ctx.setLineDash([]);
-        ctx.strokeStyle = "#e0e0e0";
+        ctx.strokeStyle = colors.gridLine;
       }
       ctx.stroke();
       ctx.fillText(yLog.toFixed(1), padding - 15, yPix + 4);
@@ -71,7 +80,7 @@ export default function LogisticFunctionVisualizer() {
     ctx.beginPath();
     ctx.moveTo(padding, toPixelY(0));
     ctx.lineTo(width - padding, toPixelY(0));
-    ctx.strokeStyle = "#aaa";
+    ctx.strokeStyle = colors.axisLine;
     ctx.setLineDash([]);
     ctx.stroke();
 
@@ -95,8 +104,8 @@ export default function LogisticFunctionVisualizer() {
 
     // --- Draw Curve ---
     ctx.beginPath();
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = "#3498db";
+    ctx.lineWidth = 4; 
+    ctx.strokeStyle = colors.primaryCurve;
     ctx.lineCap = "round";
 
     let firstPoint = true;
@@ -112,7 +121,7 @@ export default function LogisticFunctionVisualizer() {
         ctx.lineTo(px, py);
       }
     }
-    ctx.stroke();
+    ctx.stroke(); 
   }, [w, b]);
 
   return (
@@ -125,20 +134,18 @@ export default function LogisticFunctionVisualizer() {
       <Card className="w-full">
         <CardContent className="space-y-6 pt-6">
           {/* Controls */}
-          <div className="bg-slate-50 p-6 rounded-xl border space-y-6">
+          <div className="bg-muted/50 p-6 rounded-xl border space-y-6">
             <div className="space-y-2">
               <div className="flex justify-between font-semibold">
                 <label>Weight / Steepness (w)</label>
-                <span className="text-blue-600 font-mono">{w.toFixed(1)}</span>
+                <span className="text-primary font-mono">{w.toFixed(1)}</span>
               </div>
-              <input
-                type="range"
-                min="-5"
-                max="5"
-                step="0.1"
-                value={w}
-                onChange={(e) => setW(parseFloat(e.target.value))}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              <Slider
+                min={-5}
+                max={5}
+                step={0.1}
+                value={[w]}
+                onValueChange={([val]) => setW(val)}
               />
               <p className="text-xs text-muted-foreground">
                 Controls how fast the probability changes.
@@ -148,16 +155,14 @@ export default function LogisticFunctionVisualizer() {
             <div className="space-y-2">
               <div className="flex justify-between font-semibold">
                 <label>Bias / Horizontal Shift (b)</label>
-                <span className="text-blue-600 font-mono">{b.toFixed(1)}</span>
+                <span className="text-primary font-mono">{b.toFixed(1)}</span>
               </div>
-              <input
-                type="range"
-                min="-10"
-                max="10"
-                step="0.1"
-                value={b}
-                onChange={(e) => setB(parseFloat(e.target.value))}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              <Slider
+                min={-10}
+                max={10}
+                step={0.1}
+                value={[b]}
+                onValueChange={([val]) => setB(val)}
               />
               <p className="text-xs text-muted-foreground">
                 Moves the center point left or right.
@@ -166,7 +171,7 @@ export default function LogisticFunctionVisualizer() {
           </div>
 
           {/* Formula Display */}
-          <div className="font-mono bg-slate-100 p-4 rounded border-l-4 border-blue-500 text-center text-sm md:text-base">
+          <div className="font-mono bg-muted/50 p-4 rounded border-l-4 border-primary text-center text-sm md:text-base">
             Probability = 1 / (1 + e
             <sup>
               -({w < 0 ? "(" : ""}

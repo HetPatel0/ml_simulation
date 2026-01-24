@@ -2,8 +2,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 type Point = { x: number; y: number };
 
@@ -15,6 +16,12 @@ export default function LinearRegressionInteractive() {
   // Constants
   const width = 700;
   const height = 400;
+  const colors = {
+    background: '#ffffff',
+    grid: "#f1f5f9", // Tailwind slate-100
+    destructive: "#ef4444", // Tailwind red-500
+    primary: "#2563eb", // Tailwind blue-600
+  };
 
   // --- Math ---
   const calculateRegression = (pts: Point[]) => {
@@ -83,10 +90,11 @@ export default function LinearRegressionInteractive() {
     if (!ctx) return;
 
     // Clear and Draw Grid
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = colors.background; // Always white background
+    ctx.fillRect(0, 0, width, height);
 
     // Draw Grid Pattern (manually or via css, here we do canvas)
-    ctx.strokeStyle = "#f1f5f9";
+    ctx.strokeStyle = colors.grid; // Fixed grid color
     ctx.lineWidth = 1;
     for (let i = 0; i < width; i += 20) {
       ctx.beginPath();
@@ -105,8 +113,8 @@ export default function LinearRegressionInteractive() {
     setStats({ m, b, r });
 
     if (points.length >= 2) {
-      // Draw Residuals
-      ctx.strokeStyle = "#ef4444";
+      // Draw Residuals (fixed destructive color)
+      ctx.strokeStyle = colors.destructive; 
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 5]);
       for (const p of points) {
@@ -119,8 +127,8 @@ export default function LinearRegressionInteractive() {
       }
       ctx.setLineDash([]);
 
-      // Draw Regression Line
-      ctx.strokeStyle = "#2563eb";
+      // Draw Regression Line (fixed primary color)
+      ctx.strokeStyle = colors.primary; 
       ctx.lineWidth = 3;
       const y1 = m * 0 + b;
       const y2 = m * width + b;
@@ -130,8 +138,8 @@ export default function LinearRegressionInteractive() {
       ctx.stroke();
     }
 
-    // Draw Points
-    ctx.fillStyle = "#2563eb";
+    // Draw Points (fixed primary color)
+    ctx.fillStyle = colors.primary; 
     for (const p of points) {
       ctx.beginPath();
       ctx.arc(p.x, height - p.y, 6, 0, Math.PI * 2);
@@ -149,40 +157,44 @@ export default function LinearRegressionInteractive() {
       <Card className="w-full">
         <CardContent className="p-6">
           {/* Stats Panel */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 bg-slate-50 p-4 rounded-lg">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 bg-muted/50 p-4 rounded-lg">
             <div className="text-center">
-              <div className="text-xl font-bold font-mono text-slate-800">
+              <div className="text-xl font-bold font-mono text-foreground">
                 {stats.m.toFixed(3)}
               </div>
-              <div className="text-xs text-slate-500 uppercase">Slope (m)</div>
+              <div className="text-xs text-muted-foreground uppercase">
+                Slope (m)
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold font-mono text-slate-800">
+              <div className="text-xl font-bold font-mono text-foreground">
                 {stats.b.toFixed(2)}
               </div>
-              <div className="text-xs text-slate-500 uppercase">
+              <div className="text-xs text-muted-foreground uppercase">
                 Y-Intercept (b)
               </div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold font-mono text-slate-800">
+              <div className="text-xl font-bold font-mono text-foreground">
                 {stats.r.toFixed(3)}
               </div>
-              <div className="text-xs text-slate-500 uppercase">
+              <div className="text-xs text-muted-foreground uppercase">
                 Correlation (r)
               </div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold font-mono text-blue-600 truncate">
+              <div className="text-lg font-bold font-mono text-primary truncate">
                 y = {stats.m.toFixed(2)}x {stats.b >= 0 ? "+" : "-"}{" "}
                 {Math.abs(stats.b).toFixed(2)}
               </div>
-              <div className="text-xs text-slate-500 uppercase">Equation</div>
+              <div className="text-xs text-muted-foreground uppercase">
+                Equation
+              </div>
             </div>
           </div>
 
           {/* Canvas */}
-          <div className="relative border-2 border-slate-200 rounded-lg overflow-hidden bg-white cursor-crosshair mb-6 flex justify-center">
+          <div className="relative border-2 border-muted rounded-lg overflow-hidden bg-white cursor-crosshair mb-6 flex justify-center">
             <canvas
               ref={canvasRef}
               width={700}
@@ -194,20 +206,12 @@ export default function LinearRegressionInteractive() {
 
           {/* Controls */}
           <div className="flex justify-center gap-4">
-            <button
-              onClick={clearPoints}
-              className="px-4 py-2 border border-slate-300 rounded hover:bg-slate-50 transition font-medium text-slate-700"
-            >
+            <Button onClick={clearPoints} variant="secondary">
               Reset Canvas
-            </button>
-            <button
-              onClick={generateRandom}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-medium"
-            >
-              Add Random Data
-            </button>
+            </Button>
+            <Button onClick={generateRandom}>Add Random Data</Button>
           </div>
-          <p className="text-center text-xs text-slate-400 mt-4">
+          <p className="text-center text-xs text-muted-foreground mt-4">
             Click anywhere on the grid to add data points manually.
           </p>
         </CardContent>

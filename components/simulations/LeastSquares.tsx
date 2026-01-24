@@ -18,6 +18,13 @@ export default function LeastSquares() {
   const width = 700;
   const height = 400;
 
+  const colors = {
+    background: '#ffffff',
+    grid: "#e2e8f0", // Light gray
+    destructive: "#ef4444", // Red-500
+    primary: "#2563eb", // Blue-600
+  };
+
   // Regression Logic
   const calculateRegression = useCallback(() => {
     const n = points.length;
@@ -65,11 +72,28 @@ export default function LeastSquares() {
     const { m, b } = stats;
 
     // Clear
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = colors.background; // Always white
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw Grid
+    ctx.strokeStyle = colors.grid; // Fixed grid color
+    ctx.lineWidth = 1;
+    for (let i = 0; i < width; i += 20) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, height);
+      ctx.stroke();
+    }
+    for (let i = 0; i < height; i += 20) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(width, i);
+      ctx.stroke();
+    }
 
     // Draw Residuals (if enough data)
     if (points.length >= 2) {
-      ctx.strokeStyle = "#ef4444";
+      ctx.strokeStyle = colors.destructive; // Fixed destructive color
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 5]);
 
@@ -90,7 +114,7 @@ export default function LeastSquares() {
 
     // Draw Line of Best Fit
     if (points.length >= 2) {
-      ctx.strokeStyle = "#2563eb";
+      ctx.strokeStyle = colors.primary; // Fixed primary color
       ctx.lineWidth = 3;
       ctx.beginPath();
 
@@ -103,7 +127,7 @@ export default function LeastSquares() {
     }
 
     // Draw Points
-    ctx.fillStyle = "#2563eb";
+    ctx.fillStyle = colors.primary; // Fixed primary color
     points.forEach((p) => {
       ctx.beginPath();
       ctx.arc(p.x, height - p.y, 6, 0, Math.PI * 2);
@@ -201,29 +225,19 @@ export default function LeastSquares() {
           </CardContent>
         </Card>
       </div>
-
-      <Card className="w-full overflow-hidden bg-white dark:bg-neutral-900 border-2 border-dashed">
+      <Card className="w-full overflow-hidden border-2 border-dashed bg-white">
         <div className="relative w-full overflow-x-auto flex justify-center bg-[url('/grid-pattern.svg')]">
-          {/* Using a simple css grid background if svg missing, or just rely on canvas clearing white */}
           <canvas
             ref={canvasRef}
             width={width}
             height={height}
             onClick={handleCanvasClick}
-            className="cursor-crosshair bg-white max-w-full"
-            style={{
-              backgroundImage:
-                "linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px)",
-              backgroundSize: "20px 20px",
-            }}
-          />
+            className="cursor-crosshair max-w-full" />
         </div>
       </Card>
-
       <p className="text-sm text-muted-foreground">
         Click anywhere on the grid to add data points manually.
       </p>
-
       <div className="flex gap-4">
         <Button variant="secondary" onClick={handleReset}>
           Reset Canvas

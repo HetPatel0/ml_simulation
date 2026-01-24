@@ -2,10 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
 import Script from "next/script";
+import { Button } from "@/components/ui/button";
 
 declare global {
   interface Window {
@@ -22,6 +23,14 @@ export default function KernelTrickVisualizer() {
   const tracesRef = useRef<any>({});
   const layoutRef = useRef<any>({});
 
+  const colors = {
+    foreground: "#000000", // Black for text
+    blue: "#0ea5e9", // Tailwind blue-500
+    red: "#ef4444", // Tailwind red-500
+    plane: "#e5e7eb", // Tailwind gray-200
+    grid: "#ddd", // Light gray for grid lines
+  };
+
   const initPlot = () => {
     if (!window.Plotly || !plotDivRef.current) return;
 
@@ -32,7 +41,7 @@ export default function KernelTrickVisualizer() {
       y: number[] = [],
       z_flat: number[] = [],
       z_lifted: number[] = [],
-      colors: string[] = [];
+      pointColors: string[] = [];
 
     // Inner Circle
     for (let i = 0; i < N_inner; i++) {
@@ -44,7 +53,7 @@ export default function KernelTrickVisualizer() {
       y.push(yi);
       z_flat.push(0);
       z_lifted.push((xi * xi + yi * yi) * 0.8);
-      colors.push("#ff385f");
+      pointColors.push(colors.red); // Fixed red
     }
     // Outer Ring
     for (let i = 0; i < N_outer; i++) {
@@ -56,7 +65,7 @@ export default function KernelTrickVisualizer() {
       y.push(yi);
       z_flat.push(0);
       z_lifted.push((xi * xi + yi * yi) * 0.8);
-      colors.push("#00d2ff");
+      pointColors.push(colors.blue); // Fixed blue
     }
 
     // Plane Data
@@ -84,7 +93,7 @@ export default function KernelTrickVisualizer() {
       y,
       z_flat,
       z_lifted,
-      colors,
+      colors: pointColors,
       plane_x,
       plane_y,
       plane_z,
@@ -98,7 +107,7 @@ export default function KernelTrickVisualizer() {
       type: "scatter3d",
       marker: {
         size: 5,
-        color: colors,
+        color: pointColors, // Use fixed pointColors
         opacity: 0.8,
         line: { color: "white", width: 0.5 },
       },
@@ -113,14 +122,15 @@ export default function KernelTrickVisualizer() {
       showscale: false,
       opacity: 0,
       colorscale: [
-        [0, "#ffffff"],
-        [1, "#ffffff"],
+        [0, colors.plane],
+        [1, colors.plane],
       ],
       name: "Hyperplane",
     };
 
     layoutRef.current = {
-      paper_bgcolor: "#ffffff", // Changed to white as requested
+      paper_bgcolor: "#ffffff", // Always white background
+      plot_bgcolor: "transparent",
       margin: { l: 0, r: 0, t: 0, b: 0 },
       scene: {
         camera: { eye: { x: 0, y: 0, z: 2.5 }, up: { x: 0, y: 1, z: 0 } },
@@ -129,18 +139,21 @@ export default function KernelTrickVisualizer() {
           showgrid: true,
           zeroline: false,
           showticklabels: false,
+          gridcolor: colors.grid, // Fixed grid color
         },
         yaxis: {
           title: "",
           showgrid: true,
           zeroline: false,
           showticklabels: false,
+          gridcolor: colors.grid, // Fixed grid color
         },
         zaxis: {
-          title: "Kernel Dimension",
+          title: { text: "Kernel Dimension", font: { color: colors.foreground } }, // Fixed foreground for text
           range: [0, 35],
           showgrid: true,
           zeroline: false,
+          gridcolor: colors.grid, // Fixed grid color
         },
         aspectmode: "manual",
         aspectratio: { x: 1, y: 1, z: 0.7 },
@@ -156,6 +169,8 @@ export default function KernelTrickVisualizer() {
     );
     setIsLoaded(true);
   };
+  
+
 
   const updateView = (view: "2d" | "3d" | "plane") => {
     if (!isLoaded || !plotDivRef.current) return;
@@ -219,7 +234,7 @@ export default function KernelTrickVisualizer() {
       type: "scatter3d",
       marker: {
         size: 6,
-        color: t.colors,
+        color: t.colors, // Use fixed colors
         opacity: view === "plane" ? 0.3 : 0.8,
         line: { color: "white", width: 0.5 },
       },
@@ -233,8 +248,8 @@ export default function KernelTrickVisualizer() {
       showscale: false,
       opacity: view === "plane" ? 0.8 : 0,
       colorscale: [
-        [0, "#eeeeee"],
-        [1, "#eeeeee"],
+        [0, colors.plane],
+        [1, colors.plane],
       ],
     };
 
@@ -267,29 +282,29 @@ export default function KernelTrickVisualizer() {
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-center gap-4 mb-6">
-            <button
+            <Button
               onClick={() => updateView("2d")}
-              className={`px-4 py-2 rounded transition font-bold ${activeView === "2d" ? "bg-blue-600 text-white" : "bg-slate-100 hover:bg-slate-200"}`}
+              variant={activeView === "2d" ? "default" : "secondary"}
             >
               1. Normal 2D View
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => updateView("3d")}
-              className={`px-4 py-2 rounded transition font-bold ${activeView === "3d" ? "bg-blue-600 text-white" : "bg-slate-100 hover:bg-slate-200"}`}
+              variant={activeView === "3d" ? "default" : "secondary"}
             >
               2. Apply Kernel Lift
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => updateView("plane")}
-              className={`px-4 py-2 rounded transition font-bold ${activeView === "plane" ? "bg-blue-600 text-white" : "bg-slate-100 hover:bg-slate-200"}`}
+              variant={activeView === "plane" ? "default" : "secondary"}
             >
               3. Find Linear Plane
-            </button>
+            </Button>
           </div>
 
           <div
             ref={plotDivRef}
-            className="w-full h-125 border rounded bg-white"
+            className="w-full h-[500px] border rounded bg-white"
           />
         </CardContent>
       </Card>

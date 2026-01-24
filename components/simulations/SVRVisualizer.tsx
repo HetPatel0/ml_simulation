@@ -3,9 +3,10 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
 import Script from "next/script";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 declare global {
   interface Window {
@@ -20,6 +21,11 @@ export default function SVRVisualizer() {
 
   const tracesRef = useRef<any>({});
   const layoutRef = useRef<any>({});
+  const colors = {
+    foreground: "#000000", // Black for text
+    destructive: "#ff385f", // Red from original, good contrast
+    grid: "#ddd", // Light gray for grid lines
+  };
 
   const initPlot = () => {
     if (!window.Plotly || !plotDivRef.current) return;
@@ -82,7 +88,7 @@ export default function SVRVisualizer() {
       type: "scatter3d",
       marker: {
         size: 5,
-        color: "#ff385f",
+        color: colors.destructive, // Fixed color
         opacity: 0.9,
         line: { color: "white", width: 0.5 },
       },
@@ -99,19 +105,19 @@ export default function SVRVisualizer() {
     };
 
     layoutRef.current = {
-      paper_bgcolor: "#ffffff",
+      paper_bgcolor: "#ffffff", // Always white background
+      plot_bgcolor: "transparent",
       margin: { l: 0, r: 0, t: 0, b: 0 },
       scene: {
         camera: { eye: { x: 0, y: 0, z: 2.0 }, up: { x: 0, y: 1, z: 0 } },
-        xaxis: { title: "Input (X)" },
-        yaxis: { title: "Target (Y)" },
-        zaxis: { title: "", range: [-5, 30], showticklabels: false },
+        xaxis: { title: { text: "Input (X)", font: { color: colors.foreground } }, tickfont: { color: colors.foreground }, gridcolor: colors.grid },
+        yaxis: { title: { text: "Target (Y)", font: { color: colors.foreground } }, tickfont: { color: colors.foreground }, gridcolor: colors.grid },
+        zaxis: { title: { text: "", font: { color: colors.foreground } }, range: [-5, 30], showticklabels: false, gridcolor: colors.grid },
         aspectmode: "manual",
         aspectratio: { x: 1, y: 1, z: 0.5 },
       },
       showlegend: false,
     };
-
     window.Plotly.newPlot(
       plotDivRef.current,
       [scatterTrace, planeTrace],
@@ -137,7 +143,7 @@ export default function SVRVisualizer() {
       type: "scatter3d",
       marker: {
         size: 5,
-        color: "#ff385f",
+        color: colors.destructive, // Fixed color
         opacity: view === "plane" ? 0.5 : 0.9,
         line: { color: "white", width: 0.5 },
       },
@@ -156,10 +162,10 @@ export default function SVRVisualizer() {
     // Camera & Labels
     if (view === "2d") {
       layoutUpdate["scene.camera.eye"] = { x: 0, y: 0, z: 2.0 };
-      layoutUpdate["scene.zaxis.title"] = "";
+      layoutUpdate["scene.zaxis.title"] = { text: "", font: { color: colors.foreground } };
     } else if (view === "3d") {
       layoutUpdate["scene.camera.eye"] = { x: 1.8, y: 0.5, z: 0.8 };
-      layoutUpdate["scene.zaxis.title"] = "Kernel Feature (X²)";
+      layoutUpdate["scene.zaxis.title"] = { text: "Kernel Feature (X²)", font: { color: colors.foreground } };
     } else {
       layoutUpdate["scene.camera.eye"] = { x: 2.0, y: 0.2, z: 0.5 };
     }
@@ -168,11 +174,6 @@ export default function SVRVisualizer() {
       plotDivRef.current,
       [scatter, plane],
       layoutRef.current,
-    );
-    window.Plotly.animate(
-      plotDivRef.current,
-      { layout: layoutUpdate },
-      { transition: { duration: 1000 }, frame: { duration: 1000 } },
     );
   };
 
@@ -190,24 +191,24 @@ export default function SVRVisualizer() {
       <Card>
         <CardContent className="p-6">
           <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <button
+            <Button
               onClick={() => updateView("2d")}
-              className={`px-4 py-2 rounded transition font-bold ${activeView === "2d" ? "bg-cyan-500 text-white" : "bg-slate-100 hover:bg-slate-200"}`}
+              variant={activeView === "2d" ? "default" : "secondary"}
             >
               1. The Problem (2D Curve)
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => updateView("3d")}
-              className={`px-4 py-2 rounded transition font-bold ${activeView === "3d" ? "bg-cyan-500 text-white" : "bg-slate-100 hover:bg-slate-200"}`}
+              variant={activeView === "3d" ? "default" : "secondary"}
             >
               2. Kernel Transform (Add Z)
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => updateView("plane")}
-              className={`px-4 py-2 rounded transition font-bold ${activeView === "plane" ? "bg-cyan-500 text-white" : "bg-slate-100 hover:bg-slate-200"}`}
+              variant={activeView === "plane" ? "default" : "secondary"}
             >
               3. Fit Linear SVR Plane
-            </button>
+            </Button>
           </div>
 
           <div

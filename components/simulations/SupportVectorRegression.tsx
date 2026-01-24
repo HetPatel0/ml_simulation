@@ -35,6 +35,15 @@ interface SVRParams {
   lr: number;
 }
 
+const colors = {
+  background: '#ffffff',
+  primary: '#2563eb', // blue-600
+  destructive: '#dc2626', // red-600
+  muted: 'rgba(37, 99, 235, 0.12)', // light blue for tube
+  mutedForeground: '#64748b', // slate-500
+  svOutline: 'rgba(220,38,38,0.35)', // red-600 with opacity
+};
+
 export default function SupportVectorRegression() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [points, setPoints] = useState<Point[]>([]);
@@ -132,12 +141,12 @@ export default function SupportVectorRegression() {
     const scale = width / 2.5;
 
     /* ---------- Clear (WHITE CANVAS) ---------- */
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colors.background;
     ctx.fillRect(0, 0, width, height);
 
     /* ---------- Prediction Tube ---------- */
-    ctx.beginPath();
-    ctx.fillStyle = "rgba(37, 99, 235, 0.12)"; // blue-600 (light)
+    ctx.beginPath(); 
+    ctx.fillStyle = colors.muted; 
 
     for (let i = 0; i <= width; i += 4) {
       const x = (i - cx) / scale;
@@ -156,7 +165,7 @@ export default function SupportVectorRegression() {
     ctx.fill();
 
     /* ---------- Center Line ---------- */
-    ctx.strokeStyle = "#2563eb"; // blue-600
+    ctx.strokeStyle = colors.primary;
     ctx.lineWidth = 2;
     ctx.beginPath();
     for (let i = 0; i <= width; i += 4) {
@@ -180,11 +189,11 @@ export default function SupportVectorRegression() {
       ctx.beginPath();
       ctx.arc(px, py, isSV ? 6 : 4, 0, Math.PI * 2);
 
-      ctx.fillStyle = isSV ? "#dc2626" : "#64748b"; // red-600 / slate-500
+      ctx.fillStyle = isSV ? colors.destructive : colors.mutedForeground; // red-600 / slate-500
       ctx.fill();
 
       if (isSV) {
-        ctx.strokeStyle = "rgba(220,38,38,0.35)";
+        ctx.strokeStyle = colors.svOutline;
         ctx.beginPath();
         ctx.moveTo(px, py);
         const tubeY =
@@ -197,6 +206,12 @@ export default function SupportVectorRegression() {
 
   // Loop
   useEffect(() => {
+    if (points.length === 0) {
+      if (animFrame.current) {
+        cancelAnimationFrame(animFrame.current);
+      }
+      return;
+    }
     const loop = () => {
       trainStep();
       draw();
@@ -204,7 +219,7 @@ export default function SupportVectorRegression() {
     };
     loop();
     return () => cancelAnimationFrame(animFrame.current);
-  }, [trainStep, draw]);
+  }, [trainStep, draw, points.length]);
 
   // Handlers
   const handleAddPoint = (e: React.MouseEvent) => {
@@ -261,8 +276,8 @@ export default function SupportVectorRegression() {
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Canvas Section */}
         <div className="flex-1 min-w-0">
-          <Card className="border-slate-800">
-            <div className="flex justify-center overflow-hidden rounded-lg">
+          <Card>
+            <div className="flex justify-center overflow-hidden rounded-lg border">
               <canvas
                 ref={canvasRef}
                 width={800}
@@ -274,17 +289,17 @@ export default function SupportVectorRegression() {
             </div>
 
             {/* Legend */}
-            <div className="flex justify-center gap-6 p-2 text-xs font-mono text-slate-500">
+            <div className="flex justify-center gap-6 p-2 text-xs font-mono text-muted-foreground">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-red-500" />
+                <span className="w-2 h-2 rounded-full bg-destructive" />
                 Support Vector
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-slate-500" />
+                <span className="w-2 h-2 rounded-full bg-muted-foreground" />
                 Ignored Point
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                <span className="w-2 h-2 rounded-full bg-primary" />
                 Prediction
               </div>
             </div>

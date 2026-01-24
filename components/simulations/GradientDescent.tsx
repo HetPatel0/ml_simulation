@@ -21,6 +21,15 @@ export default function GradientDescent() {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  const colors = {
+    background: '#ffffff',
+    foreground: '#000000',
+    primary: '#2563eb', // blue-600
+    accent: '#7c3aed', // violet-600
+    destructive: '#dc2626', // red-600
+    success: '#16a34a', // green-600
+  };
+
   const f = (x: number) => x * x;
   const df = (x: number) => 2 * x;
 
@@ -40,10 +49,10 @@ export default function GradientDescent() {
     const toX = (x: number) => centerX + x * scaleX;
     const toY = (y: number) => centerY - y * scaleY;
 
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colors.background;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.strokeStyle = "#000000";
+    ctx.strokeStyle = colors.foreground;
     ctx.lineWidth = 1;
 
     ctx.beginPath();
@@ -57,7 +66,7 @@ export default function GradientDescent() {
     ctx.stroke();
 
     ctx.beginPath();
-    ctx.strokeStyle = "#2563eb";
+    ctx.strokeStyle = colors.primary;
     ctx.lineWidth = 2;
 
     const start = -centerX / scaleX;
@@ -71,7 +80,7 @@ export default function GradientDescent() {
     }
     ctx.stroke();
 
-    ctx.fillStyle = "#2563eb";
+    ctx.fillStyle = colors.primary;
     ctx.globalAlpha = 0.25;
 
     history.forEach((x) => {
@@ -84,7 +93,7 @@ export default function GradientDescent() {
 
     const slope = df(currentX);
     ctx.setLineDash([6, 6]);
-    ctx.strokeStyle = "#7c3aed";
+    ctx.strokeStyle = colors.accent;
     ctx.lineWidth = 2;
 
     ctx.beginPath();
@@ -95,16 +104,16 @@ export default function GradientDescent() {
 
     ctx.beginPath();
     ctx.arc(toX(currentX), toY(f(currentX)), 8, 0, Math.PI * 2);
-    ctx.fillStyle = "#dc2626";
+    ctx.fillStyle = colors.destructive;
     ctx.fill();
 
-    ctx.strokeStyle = "#ffffff";
+    ctx.strokeStyle = colors.background;
     ctx.lineWidth = 2;
     ctx.stroke();
 
     ctx.beginPath();
     ctx.arc(toX(0), toY(0), 5, 0, Math.PI * 2);
-    ctx.fillStyle = "#16a34a";
+    ctx.fillStyle = colors.success;
     ctx.fill();
   }, [currentX, history]);
 

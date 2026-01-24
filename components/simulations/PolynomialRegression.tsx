@@ -10,6 +10,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
+import { Slider } from "@/components/ui/slider";
 
 interface Point {
   x: number;
@@ -23,6 +24,15 @@ export default function PolynomialRegression() {
   const [degree, setDegree] = useState(3);
   const [coeffs, setCoeffs] = useState<number[]>([]);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+
+  const colors = {
+    background: '#ffffff',
+    foreground: '#1e293b', // slate-800
+    primary: '#2563eb', // blue-600
+    destructive: '#dc2626', // red-600
+    muted: '#94a3b8', // slate-400
+    residual: 'rgba(0,0,0,0.15)', // Light gray for residuals
+  };
 
   const width = 800;
   const height = 450;
@@ -102,14 +112,14 @@ export default function PolynomialRegression() {
     if (!ctx) return;
 
     /* ---------- Background ---------- */
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = colors.background;
     ctx.fillRect(0, 0, width, height);
 
     const cx = width / 2;
     const cy = height / 2;
 
     /* ---------- Axes ---------- */
-    ctx.strokeStyle = "#94a3b8"; // slate-400
+    ctx.strokeStyle = colors.muted; // slate-400
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(cx, 0);
@@ -120,7 +130,7 @@ export default function PolynomialRegression() {
 
     /* ---------- Polynomial Curve ---------- */
     if (coeffs.length) {
-      ctx.strokeStyle = "#2563eb"; // blue-600
+      ctx.strokeStyle = colors.primary; // blue-600
       ctx.lineWidth = 3;
       ctx.beginPath();
 
@@ -154,7 +164,7 @@ export default function PolynomialRegression() {
       const predPy = cy - pred * (height / scale);
 
       /* Residual line */
-      ctx.strokeStyle = "rgba(0,0,0,0.15)";
+      ctx.strokeStyle = colors.residual;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(px, py);
@@ -162,13 +172,13 @@ export default function PolynomialRegression() {
       ctx.stroke();
 
       /* Point */
-      ctx.fillStyle = dragIdx === i ? "#1e293b" : "#dc2626"; // slate-800 / red-600
+      ctx.fillStyle = dragIdx === i ? colors.foreground : colors.destructive; // slate-800 / red-600
       ctx.beginPath();
       ctx.arc(px, py, 6, 0, Math.PI * 2);
       ctx.fill();
 
       /* Outline for contrast */
-      ctx.strokeStyle = "#ffffff";
+      ctx.strokeStyle = colors.background; // white
       ctx.lineWidth = 2;
       ctx.stroke();
     });
@@ -277,7 +287,7 @@ export default function PolynomialRegression() {
             ref={canvasRef}
             width={width}
             height={height}
-            className="w-full bg-white rounded-lg cursor-crosshair touch-none"
+            className="w-full bg-white rounded-lg cursor-crosshair touch-none border"
             onMouseDown={handleStart}
             onMouseMove={handleMove}
             onTouchStart={handleStart}
@@ -285,13 +295,11 @@ export default function PolynomialRegression() {
             onContextMenu={handleDelete}
           />
 
-          <input
-            type="range"
+          <Slider
             min={1}
             max={Math.max(1, points.length - 1)}
-            value={degree}
-            onChange={(e) => setDegree(+e.target.value)}
-            className="w-full"
+            value={[degree]}
+            onValueChange={([val]) => setDegree(val)}
           />
 
           <div className="flex gap-2">
