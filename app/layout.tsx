@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/common/navbar";
-import Footer from "@/components/common/footer";
 import LenisProvider from "@/components/lenis-provider";
 import FooterSection from "@/components/common/footer";
 

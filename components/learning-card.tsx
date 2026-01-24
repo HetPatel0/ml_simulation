@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Plus } from "lucide-react";
+import { Plus, ArrowRight } from "lucide-react";
 
 import {
   Card,
@@ -19,8 +19,9 @@ interface LearningCardProps {
   href: string;
   image: string;
   badge: string;
-  variant?: string;
+  variant?: "read" | "simulation";
 }
+
 export function LearningCard({
   title,
   description,
@@ -29,7 +30,8 @@ export function LearningCard({
   badge,
   variant = "read",
 }: LearningCardProps) {
-  const ctaLabel = variant === "simulation" ? "Run simulation" : "Read more";
+  const isSimulation = variant === "simulation";
+  const ctaLabel = isSimulation ? "Run simulation" : "Read more";
 
   return (
     <Card
@@ -73,14 +75,25 @@ export function LearningCard({
             className="group inline-flex items-center gap-1 px-3 py-1.5"
           >
             {ctaLabel}
-            <Plus
-              size={14}
-              className="
-                transition-all duration-300
-                group-hover:rotate-90
-                group-hover:translate-x-0.5
-              "
-            />
+
+            {isSimulation ? (
+              <ArrowRight
+                size={14}
+                className="
+                  transition-transform duration-300
+                  group-hover:translate-x-1
+                "
+              />
+            ) : (
+              <Plus
+                size={14}
+                className="
+                  transition-all duration-300
+                  group-hover:rotate-90
+                  group-hover:translate-x-0.5
+                "
+              />
+            )}
           </Link>
         </Button>
       </CardHeader>
