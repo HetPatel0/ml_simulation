@@ -35,6 +35,7 @@ export function Navbar() {
               <Link
                 href={item.href}
                 className="transition-colors hover:text-primary"
+                scroll={true}
               >
                 {item.label}
               </Link>
@@ -77,6 +78,7 @@ export function Navbar() {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className="block text-muted-foreground transition-colors hover:text-primary"
+                  scroll={true}
                 >
                   {item.label}
                 </Link>
