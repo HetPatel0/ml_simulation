@@ -24,10 +24,10 @@ const simulationComponents: Record<string, React.ComponentType> = {
   "svr-visualizer": SVRVisualizer,
 };
 
-export default function SimulationPage({ 
-  params 
-}: { 
-  params: Promise<{ slug: string }> 
+export default function SimulationPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
   const SimulationComponent = simulationComponents[slug];
@@ -52,7 +52,7 @@ interface SimHeaderProps {
 
 export function SimHeader({ title, description, children }: SimHeaderProps) {
   return (
-    <div className="px-4 py-6 md:px-6 md:py-8 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="px-4 py-6 md:px-6 md:py-8 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto max-w-7xl">
         <h1 className="text-3xl md:text-4xl font-bold mb-2">{title}</h1>
         {description && (

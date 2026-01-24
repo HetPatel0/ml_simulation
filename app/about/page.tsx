@@ -8,7 +8,7 @@ import {
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-20 space-y-16">
+    <div className="mx-auto max-w-5xl px-4 py-20 space-y-16">
       {/* Header */}
       <header className="space-y-3">
         <h1 className="text-4xl font-semibold tracking-tight">

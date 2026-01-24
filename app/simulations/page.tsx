@@ -4,7 +4,6 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
 import { Search, X } from "lucide-react";
 import { LearningCard } from "@/components/learning-card";
 
@@ -14,8 +13,21 @@ interface Simulation {
   description: string;
   image: string;
   badge: string;
-  category: "regression" | "classification" | "clustering" | "other";
+  category:
+    | "regression"
+    | "classification"
+    | "clustering"
+    | "testing"
+    | "other";
 }
+
+const CATEGORY_TITLES: Record<Simulation["category"], string> = {
+  regression: "Regression",
+  classification: "Classification",
+  clustering: "Clustering",
+  testing: "Testing",
+  other: "Advanced & Experimental",
+};
 
 const simulations: Simulation[] = [
   {
@@ -23,7 +35,7 @@ const simulations: Simulation[] = [
     title: "Gradient Descent",
     description:
       "Visualize how gradient descent optimization algorithm finds the minimum of a function",
-    image: "/images/gradient-descent.jpg", // Add your images
+    image: "/images/gradient-descent.jpg",
     badge: "Regression",
     category: "regression",
   },
@@ -105,6 +117,22 @@ export default function SimulationsPage() {
       sim.category.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  const groupedSimulations = filteredSimulations.reduce<
+    Record<Simulation["category"], Simulation[]>
+  >(
+    (acc, sim) => {
+      acc[sim.category].push(sim);
+      return acc;
+    },
+    {
+      regression: [],
+      classification: [],
+      clustering: [],
+      testing: [],
+      other: [],
+    },
+  );
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="mb-8">
@@ -114,7 +142,7 @@ export default function SimulationsPage() {
         </p>
       </div>
 
-      <div className="relative mb-8">
+      <div className="relative mb-10">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 
         <Input
@@ -137,17 +165,35 @@ export default function SimulationsPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredSimulations.map((sim) => (
-          <LearningCard
-            key={sim.id}
-            title={sim.title}
-            description={sim.description}
-            href={`/simulations/${sim.id}`}
-            image={sim.image}
-            badge={sim.badge}
-          />
-        ))}
+      <div className="space-y-16">
+        {(Object.keys(CATEGORY_TITLES) as Simulation["category"][]).map(
+          (category) => {
+            const sims = groupedSimulations[category];
+            if (sims.length === 0) return null;
+
+            return (
+              <section key={category} className="space-y-6">
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {CATEGORY_TITLES[category]}
+                </h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {sims.map((sim) => (
+                    <LearningCard
+                      key={sim.id}
+                      title={sim.title}
+                      description={sim.description}
+                      href={`/simulations/${sim.id}`}
+                      image={sim.image}
+                      badge={sim.badge}
+                      variant="simulation"
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          },
+        )}
       </div>
 
       {filteredSimulations.length === 0 && (
