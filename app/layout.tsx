@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/common/navbar";
 import LenisProvider from "@/components/lenis-provider";
 import FooterSection from "@/components/common/footer";
+import { siteConfig } from "@/lib/metadata";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,9 +18,61 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ML Simulations",
-  description:
-    "Interactive machine learning simulations designed to help students understand concepts through hands-on experimentation.",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: "ML Simulations - Interactive Machine Learning Education",
+    template: "%s | ML Simulations",
+  },
+  description: siteConfig.description,
+  keywords: [
+    "machine learning",
+    "interactive simulations",
+    "gradient descent",
+    "linear regression",
+    "logistic regression",
+    "ML education",
+    "visual learning",
+    "data science",
+    "deep learning",
+    "neural networks",
+  ],
+  authors: [{ name: "Keval" }],
+  creator: "Keval",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: "ML Simulations - Interactive Machine Learning Education",
+    description:
+      "Watch machine learning algorithms come alive through interactive visualizations. Adjust parameters, see results instantly.",
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: "ML Simulations - Interactive Machine Learning Education",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ML Simulations - Interactive Machine Learning Education",
+    description:
+      "Watch machine learning algorithms come alive through interactive visualizations.",
+    images: [siteConfig.ogImage],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
