@@ -1,44 +1,64 @@
-"use client";
-
-import { use } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import GradientDescent from "@/components/simulations/GradientDescent";
-import KernelTrickVisualizer from "@/components/simulations/KernelTrickVisualizer";
-import LeastSquares from "@/components/simulations/LeastSquares";
-import LinearRegressionInteractive from "@/components/simulations/LinearRegressionInteractive";
-import LogisticFunctionVisualizer from "@/components/simulations/LogisticFunctionVisualizer";
-import LogisticRegression from "@/components/simulations/LogisticRegression";
-import LogisticTrainingSim from "@/components/simulations/LogisticTrainingSim";
-import PolynomialRegression from "@/components/simulations/PolynomialRegression";
-import SVRVisualizer from "@/components/simulations/SVRVisualizer";
+import { simulationMetadata, siteConfig } from "@/lib/metadata";
+import SimulationClient from "./simulation-client";
 
-const simulationComponents: Record<string, React.ComponentType> = {
-  "gradient-descent": GradientDescent,
-  "least-squares": LeastSquares,
-  "linear-regression": LinearRegressionInteractive,
-  "polynomial-regression": PolynomialRegression,
-  "logistic-regression": LogisticRegression,
-  "logistic-function": LogisticFunctionVisualizer,
-  "logistic-training": LogisticTrainingSim,
-  "kernel-trick": KernelTrickVisualizer,
-  "svr-visualizer": SVRVisualizer,
+const validSlugs = Object.keys(simulationMetadata);
+
+type Props = {
+  params: Promise<{ slug: string }>;
 };
 
-export default function SimulationPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = use(params);
-  const SimulationComponent = simulationComponents[slug];
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const meta = simulationMetadata[slug];
 
-  if (!SimulationComponent) {
+  if (!meta) {
+    return {
+      title: "Simulation Not Found",
+    };
+  }
+
+  return {
+    title: meta.title,
+    description: meta.description,
+    openGraph: {
+      title: `${meta.title} | ML Simulations`,
+      description: meta.description,
+      type: "website",
+      url: `${siteConfig.url}/simulations/${slug}`,
+      images: [
+        {
+          url: meta.image,
+          width: 1200,
+          height: 630,
+          alt: meta.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.description,
+      images: [meta.image],
+    },
+  };
+}
+
+export function generateStaticParams() {
+  return validSlugs.map((slug) => ({ slug }));
+}
+
+export default async function SimulationPage({ params }: Props) {
+  const { slug } = await params;
+
+  if (!validSlugs.includes(slug)) {
     notFound();
   }
 
   return (
     <div className="min-h-screen">
-      <SimulationComponent />
+      <SimulationClient slug={slug} />
     </div>
   );
 }

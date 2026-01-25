@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Search, X, BookOpen } from "lucide-react";
 import { LearningCard } from "@/components/learning-card";
 
-interface Artical {
+interface Article {
   id: string;
   title: string;
   description: string;
@@ -22,7 +22,7 @@ interface Artical {
     | "other";
 }
 
-const CATEGORY_TITLES: Record<Artical["category"], string> = {
+const CATEGORY_TITLES: Record<Article["category"], string> = {
   regression: "Regression",
   classification: "Classification",
   clustering: "Clustering",
@@ -32,7 +32,7 @@ const CATEGORY_TITLES: Record<Artical["category"], string> = {
   other: "Advanced & Experimental",
 };
 
-const articals: Artical[] = [
+const articles: Article[] = [
   {
     id: "gradient-descent",
     title: "Gradient Descent",
@@ -113,18 +113,18 @@ export default function SimulationsPage() {
 
   const query = searchQuery.trim().toLowerCase();
 
-  const filteredArticals = articals.filter(
-    (artical) =>
-      artical.title.toLowerCase().includes(query) ||
-      artical.description.toLowerCase().includes(query) ||
-      artical.category.toLowerCase().includes(query),
+  const filteredArticles = articles.filter(
+    (article) =>
+      article.title.toLowerCase().includes(query) ||
+      article.description.toLowerCase().includes(query) ||
+      article.category.toLowerCase().includes(query),
   );
 
-  const groupedArticals = filteredArticals.reduce<
-    Record<Artical["category"], Artical[]>
+  const groupedArticles = filteredArticles.reduce<
+    Record<Article["category"], Article[]>
   >(
-    (acc, artical) => {
-      acc[artical.category].push(artical);
+    (acc, article) => {
+      acc[article.category].push(article);
       return acc;
     },
     {
@@ -179,9 +179,9 @@ export default function SimulationsPage() {
 
       {/* Sections */}
       <div className="space-y-16">
-        {(Object.keys(CATEGORY_TITLES) as Artical["category"][]).map(
+        {(Object.keys(CATEGORY_TITLES) as Article["category"][]).map(
           (category) => {
-            const items = groupedArticals[category];
+            const items = groupedArticles[category];
             if (items.length === 0) return null;
 
             return (
@@ -191,14 +191,14 @@ export default function SimulationsPage() {
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {items.map((artical) => (
+                  {items.map((article) => (
                     <LearningCard
-                      key={artical.id}
-                      title={artical.title}
-                      description={artical.description}
-                      href={`/learn/${artical.id}`}
-                      image={artical.image}
-                      badge={artical.badge}
+                      key={article.id}
+                      title={article.title}
+                      description={article.description}
+                      href={`/learn/${article.id}`}
+                      image={article.image}
+                      badge={article.badge}
                     />
                   ))}
                 </div>
@@ -208,7 +208,7 @@ export default function SimulationsPage() {
         )}
       </div>
 
-      {filteredArticals.length === 0 && (
+      {filteredArticles.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           No articles found matching &quot;{searchQuery}&quot;
         </div>
