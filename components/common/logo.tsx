@@ -5,6 +5,7 @@ export default function Logo() {
   return (
     <Link
       href="/"
+      scroll={true}
       className="flex items-center  font-semibold tracking-tight select-none"
     >
       <Image

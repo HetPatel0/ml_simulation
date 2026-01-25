@@ -19,7 +19,7 @@ export default function FooterSection() {
   return (
     <footer className="py-7 md:py-15 border-t">
       <div className="mx-auto max-w-5xl px-6">
-        <Link href="/" aria-label="go home" className="mx-auto block size-fit">
+        <Link href="/" scroll={true} aria-label="go home" className="mx-auto block size-fit">
           <Logo />
         </Link>
 
@@ -28,6 +28,7 @@ export default function FooterSection() {
             <Link
               key={index}
               href={link.href}
+              scroll={true}
               target={link.target}
               className="text-muted-foreground hover:text-primary block duration-150"
             >
@@ -38,6 +39,7 @@ export default function FooterSection() {
         <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
           <Link
             href="x.com/hetp1501"
+            scroll={true}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="X/Twitter"
@@ -58,6 +60,7 @@ export default function FooterSection() {
           </Link>
           <Link
             href="https://www.linkedin.com/in/het-bhuva-b1330b332/"
+            scroll={true}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -78,6 +81,7 @@ export default function FooterSection() {
           </Link>
           <Link
             href="https://github.com/HetPatel0/"
+            scroll={true}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"

@@ -232,7 +232,7 @@ export default function Home() {
               asChild
               className="h-11 px-6 sm:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full group shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
             >
-              <Link href="/simulations">
+              <Link href="/simulations" scroll={true}>
                 <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:scale-110" />
                 Start Exploring
               </Link>
@@ -243,7 +243,7 @@ export default function Home() {
               asChild
               className="h-11 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full hover:bg-muted/50"
             >
-              <Link href="/learn">
+              <Link href="/learn" scroll={true}>
                 <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Read Articles
               </Link>
@@ -406,7 +406,7 @@ export default function Home() {
               asChild
               className="w-fit gap-2 group rounded-full"
             >
-              <Link href="/learn">
+              <Link href="/learn" scroll={true}>
                 View all articles
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
@@ -455,7 +455,7 @@ export default function Home() {
               asChild
               className="h-11 px-10 text-base gap-3 rounded-full group"
             >
-              <Link href="/simulations">
+              <Link href="/simulations" scroll={true}>
                 Start Learning
                 <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
               </Link>
