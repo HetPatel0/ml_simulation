@@ -230,7 +230,7 @@ export default function Home() {
             <Button
               size="lg"
               asChild
-              className="h-11 sm:h-12 lg:h-14 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full group"
+              className="h-11 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full group"
             >
               <Link href="/simulations">
                 <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:scale-110" />
@@ -241,7 +241,7 @@ export default function Home() {
               size="lg"
               variant="ghost"
               asChild
-              className="h-11 sm:h-12 lg:h-14 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full hover:bg-muted/50"
+              className="h-11  px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full hover:bg-muted/50"
             >
               <Link href="/learn">
                 <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -453,7 +453,7 @@ export default function Home() {
             <Button
               size="lg"
               asChild
-              className="h-14 px-10 text-base gap-3 rounded-full group"
+              className="h-11 px-10 text-base gap-3 rounded-full group"
             >
               <Link href="/simulations">
                 Start Learning
