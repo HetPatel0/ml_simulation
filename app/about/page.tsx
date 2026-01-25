@@ -40,7 +40,7 @@ export default function AboutPage() {
                 showing, not just telling
               </span>
               . Watch gradient descent converge, see decision boundaries form,
-              and observe how changing parameters affects results — all in
+              and observe how changing parameters affects results all in
               real-time.
             </p>
           </div>

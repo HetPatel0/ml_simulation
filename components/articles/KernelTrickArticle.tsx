@@ -11,7 +11,7 @@ export default function KernelTrickArticle() {
         alt: "Kernel Trick Visualization",
       }}
     >
-      <h2>Introduction</h2>
+      <h2 >Introduction</h2>
       <p>
         The kernel trick allows algorithms to learn non-linear patterns by implicitly
         mapping data to higher-dimensional spaces where linear separation is possible.
@@ -23,7 +23,7 @@ export default function KernelTrickArticle() {
         it to a higher dimension, we can find a linear boundary that separates classes.
       </p>
 
-      <h3>The Trick</h3>
+      <h2>The Trick</h2>
       <p>
         Instead of explicitly computing the transformation, kernels compute the dot
         product directly in the high-dimensional space, making it computationally efficient.

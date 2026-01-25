@@ -62,19 +62,40 @@ export function ArticlePost({
         <div></div>
       )}
 
-      {/* Content */}
       {children && (
         <div
           className={cn(
-            "prose prose-neutral max-w-none",
-            "prose-headings:font-semibold",
-            "prose-h2:mt-12",
-            "prose-h3:mt-8",
-            "prose-p:leading-relaxed",
-            "prose-li:leading-relaxed",
-            "prose-code:text-sm",
-            "prose-code:px-1 prose-code:py-0.5 prose-code:rounded",
-            "dark:prose-invert",
+            "max-w-none text-neutral-800 dark:text-neutral-200",
+
+            // --- PARAGRAPHS ---
+            "[&>p]:text-lg",
+            "[&>p]:leading-6",
+            "[&>p]:mb-4",
+            "[&>p]:font-normal",
+
+            // --- H2 (Styled as H1) ---
+            "[&>h2]:text-2xl",
+            "[&>h2]:font-semibold!", 
+            "[&>h2]:tracking-tighter",
+            "[&>h2]:leading-tight",
+            "[&>h2]:mb-2", 
+
+            // --- H3 ---
+            "[&>h3]:text-xl",
+            "[&>h3]:font-bold",
+            "[&>h3]:mt-12",
+            "[&>h3]:mb-4",
+
+            // --- DROP CAP ---
+            "[&>p:first-of-type]:first-letter:text-5xl",
+            "[&>p:first-of-type]:first-letter:font-semi-bold",
+            "[&>p:first-of-type]:first-letter:float-left",
+            "[&>p:first-of-type]:first-letter:mr-3",
+            "[&>p:first-of-type]:first-letter:leading-none",
+
+            "[&>ul]:list-disc [&>ul]:ml-6 [&>ul]:mb-8",
+            "[&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:mb-8",
+            "[&>li]:mb-2",
           )}
         >
           {children}
