@@ -64,6 +64,12 @@ export const simulationMetadata: Record<
       "Understand SVR with epsilon tubes and support vectors. Interactive visualization of margin and kernel effects.",
     image: "/images/regression/svr.png",
   },
+  "svr-kernel-lift": {
+    title: "SVR Kernel Lift",
+    description:
+      "An interactive visualization showing how Support Vector Regression lifts curved data into higher-dimensional space to enable linear regression.",
+    image: "/images/category/svr-kernel-lift.png",
+  },
 };
 
 export const articleMetadata: Record<
