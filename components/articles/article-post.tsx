@@ -47,14 +47,15 @@ export function ArticlePost({
 
       {/* Optional Image */}
       {image ? (
-        <figure className="my-10">
+        <figure className="relative my-10 aspect-video border-2 rounded-xl">
           <Image
             src={image.src}
             alt={image.alt ?? title}
-            className="w-full rounded-xl"
-            height={100}
-            width={100}
+            priority
+            fill
+            className="object-cover rounded-xl"
             quality={100}
+            sizes="(max-width: 768px) 100vw, 800px"
           />
         </figure>
       ) : (
