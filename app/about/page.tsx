@@ -119,13 +119,13 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button size="lg" asChild className="h-11 px-6 gap-2">
-              <Link href="/simulations">
+              <Link href="/simulations" scroll={true}>
                 Explore Simulations
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild className="h-11 px-6">
-              <Link href="/learn">Read Articles</Link>
+              <Link href="/learn" scroll={true}>Read Articles</Link>
             </Button>
           </div>
         </div>

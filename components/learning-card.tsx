@@ -72,6 +72,7 @@ export function LearningCard({
         <Button size="sm" className="w-fit self-start p-0" asChild>
           <Link
             href={href}
+            scroll={true}
             className="group inline-flex items-center gap-1 px-3 py-1.5"
           >
             {ctaLabel}
