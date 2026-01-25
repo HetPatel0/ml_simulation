@@ -130,8 +130,7 @@ ml_simulation/
 │
 ├── lib/
 │   ├── utils.ts                  # Utility functions (cn())
-│   ├── metadata.ts               # SEO metadata configuration
-│   └── use-responsive-canvas.ts  # Hook for responsive canvas sizing
+│   └── metadata.ts               # SEO metadata configuration
 │
 ├── public/
 │   ├── logo.png                  # Project logo

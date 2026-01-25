@@ -4,6 +4,7 @@ import { articleMetadata, siteConfig } from "@/lib/metadata";
 import ArticleClient from "./article-client";
 import { BackToTop } from "@/components/common/back-to-top";
 
+
 const validSlugs = Object.keys(articleMetadata);
 
 type Props = {
