@@ -1,46 +1,50 @@
 export const learningCards = [
   {
-    title: "Support Vector Regression",
-    description:
-      "Understand ε-insensitive loss, margins, kernels, and support vectors visually.",
-    href: "/simulations/svr",
-    image: "/images/regression/svr.png",
-    badge: "Simulation",
-  },
-  {
     title: "Gradient Descent",
     description:
-      "See how optimization works step-by-step on real loss surfaces.",
-    href: "/simulations/gradient-descent",
-    image: "/images/regression/gradient.png",
-    badge: "Simulation",
+      "Visualize how optimization works step-by-step on real loss surfaces.",
+    href: "/learn/gradient-descent",
+    image: "/images/regression/gradient-descent.png",
+    badge: "Optimization",
+  },
+  {
+    title: "Linear Regression",
+    description:
+      "Interactive exploration of linear regression and least squares fitting.",
+    href: "/learn/linear-regression",
+    image: "/images/regression/linear-regression.png",
+    badge: "Regression",
   },
   {
     title: "Polynomial Regression",
-    description: "Visualize overfitting, underfitting, and model complexity.",
-    href: "/simulations/polynomial-regression",
-    image: "/images/regression/polynomial.png",
-    badge: "Simulation",
+    description:
+      "Understand overfitting, underfitting, and model complexity visually.",
+    href: "/learn/polynomial-regression",
+    image: "/images/regression/polynomial-regression.png",
+    badge: "Regression",
   },
   {
-    title: "Bias vs Variance",
-    description: "Develop intuition about generalization and model trade-offs.",
-    href: "/blog/bias-variance",
-    image: "/images/bias-variance.png",
-    badge: "Concept",
+    title: "Support Vector Regression",
+    description:
+      "Explore epsilon tubes, margins, and support vectors interactively.",
+    href: "/learn/support-vector-regression",
+    image: "/images/regression/svr.png",
+    badge: "Advanced",
   },
   {
-    title: "Kernels Explained",
-    description: "Learn how kernels transform data into higher dimensions.",
-    href: "/blog/kernels",
-    image: "/images/other/kernel.png",
-    badge: "Concept",
+    title: "Logistic Regression",
+    description:
+      "Binary classification, sigmoid functions, and decision boundaries.",
+    href: "/learn/logistic-regression",
+    image: "/images/classification/logistic-regression.png",
+    badge: "Classification",
   },
   {
-    title: "Loss Functions",
-    description: "Why different models use different loss functions.",
-    href: "/blog/loss-functions",
-    image: "/images/other/loss.png",
-    badge: "Concept",
+    title: "Kernel Methods",
+    description:
+      "How kernel tricks transform data into higher-dimensional spaces.",
+    href: "/learn/kernel-methods",
+    image: "/images/other/kernel-trick.png",
+    badge: "Advanced",
   },
 ];

@@ -54,6 +54,7 @@ export function ArticlePost({
             className="w-full rounded-xl"
             height={100}
             width={100}
+            quality={100}
           />
         </figure>
       ) : (
