@@ -32,6 +32,7 @@ ML Simulations is an interactive educational platform designed to help users und
 - **Dark/Light Mode** — Comfortable viewing in any environment
 - **Responsive Design** — Works seamlessly on desktop and mobile
 - **100% Free & Open Source**
+- **SEO Optimized** — Dynamic metadata, Open Graph tags, sitemap, and more
 
 ## Available Content
 
@@ -67,18 +68,24 @@ ML Simulations is an interactive educational platform designed to help users und
 ml_simulation/
 ├── app/                          # Next.js App Router pages
 │   ├── page.tsx                  # Home page
-│   ├── layout.tsx                # Root layout
+│   ├── layout.tsx                # Root layout with SEO metadata
+│   ├── sitemap.ts                # Auto-generated sitemap
+│   ├── robots.ts                 # Search engine directives
 │   ├── cardData.ts               # Featured cards data
 │   ├── about/                    # About page
+│   │   └── layout.tsx            # About page metadata
 │   ├── learn/                    # Articles section
 │   │   ├── page.tsx              # Articles listing
+│   │   ├── layout.tsx            # Articles section metadata
 │   │   └── [slug]/               # Dynamic article pages
-│   │       ├── page.tsx
-│   │       └── layout.tsx
+│   │       ├── page.tsx          # Server component with generateMetadata
+│   │       └── article-client.tsx # Client component
 │   └── simulations/              # Simulations section
 │       ├── page.tsx              # Simulations listing
+│       ├── layout.tsx            # Simulations section metadata
 │       └── [slug]/               # Dynamic simulation pages
-│           └── page.tsx
+│           ├── page.tsx          # Server component with generateMetadata
+│           └── simulation-client.tsx # Client component
 │
 ├── components/
 │   ├── ui/                       # shadcn/ui components
@@ -122,7 +129,8 @@ ml_simulation/
 │   └── lenis-provider.tsx
 │
 ├── lib/
-│   └── utils.ts                  # Utility functions (cn())
+│   ├── utils.ts                  # Utility functions (cn())
+│   └── metadata.ts               # SEO metadata configuration
 │
 ├── public/
 │   ├── logo.png                  # Project logo
@@ -228,7 +236,7 @@ Contributions are welcome! Here's how you can help:
 
 3. **Register the simulation**
 
-   Add to `simulationComponents` in `app/simulations/[slug]/page.tsx`:
+   Add to `simulationComponents` in `app/simulations/[slug]/simulation-client.tsx`:
 
    ```tsx
    const simulationComponents: Record<string, React.ComponentType> = {
@@ -237,7 +245,19 @@ Contributions are welcome! Here's how you can help:
    };
    ```
 
-4. **Add to the simulations listing**
+4. **Add SEO metadata**
+
+   Add entry to `simulationMetadata` in `lib/metadata.ts`:
+
+   ```tsx
+   "your-simulation": {
+     title: "Your Simulation Title",
+     description: "SEO description for search engines",
+     image: "/images/category/your-simulation.png",
+   },
+   ```
+
+5. **Add to the simulations listing**
 
    Add entry to `simulations` array in `app/simulations/page.tsx`:
 
@@ -260,13 +280,33 @@ Contributions are welcome! Here's how you can help:
    touch components/articles/YourArticle.tsx
    ```
 
-2. **Add to the articles listing**
+2. **Register in the client component**
 
-   Add entry to `articals` array in `app/learn/page.tsx`
+   Add to `articleComponents` in `app/learn/[slug]/article-client.tsx`:
 
-3. **Register in the dynamic route**
+   ```tsx
+   const articleComponents: Record<string, React.ComponentType> = {
+     // ... existing articles
+     "your-article": YourArticle,
+   };
+   ```
 
-   Add to the component map in `app/learn/[slug]/page.tsx`
+3. **Add SEO metadata**
+
+   Add entry to `articleMetadata` in `lib/metadata.ts`:
+
+   ```tsx
+   "your-article": {
+     title: "Your Article Title",
+     description: "SEO description for search engines",
+     image: "/images/category/your-article.png",
+     author: "Your Name",
+   },
+   ```
+
+4. **Add to the articles listing**
+
+   Add entry to `articles` array in `app/learn/page.tsx`
 
 ### General Guidelines
 
