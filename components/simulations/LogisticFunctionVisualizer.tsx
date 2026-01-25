@@ -1,13 +1,17 @@
 /* eslint-disable prefer-const */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import SimHeader from "../common/sim-header"; 
+import SimHeader from "../common/sim-header";
 import { Slider } from "@/components/ui/slider";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 export default function LogisticFunctionVisualizer() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 600,
+    aspectRatio: 12 / 7,
+  });
 
   // State for Weight (slope) and Bias (shift)
   const [w, setW] = useState(1.0);
@@ -31,8 +35,8 @@ export default function LogisticFunctionVisualizer() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = size.width;
+    const height = size.height;
     const padding = 40;
     const minX = -10;
     const maxX = 10;
@@ -121,8 +125,8 @@ export default function LogisticFunctionVisualizer() {
         ctx.lineTo(px, py);
       }
     }
-    ctx.stroke(); 
-  }, [w, b]);
+    ctx.stroke();
+  }, [w, b, size]);
 
   return (
     <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-5xl mx-auto">
@@ -183,12 +187,12 @@ export default function LogisticFunctionVisualizer() {
           </div>
 
           {/* Canvas */}
-          <div className="flex justify-center border rounded-lg bg-white p-2 overflow-hidden">
+          <div ref={containerRef} className="border rounded-lg bg-white p-2 overflow-hidden">
             <canvas
               ref={canvasRef}
-              width={600}
-              height={350}
-              className="w-full max-w-150"
+              width={size.width}
+              height={size.height}
+              className="w-full"
             />
           </div>
         </CardContent>

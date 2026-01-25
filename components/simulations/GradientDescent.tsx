@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +10,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import SimHeader from "@/components/common/sim-header";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 export default function GradientDescent() {
   const [currentX, setCurrentX] = useState(-4);
@@ -19,7 +20,10 @@ export default function GradientDescent() {
   const [history, setHistory] = useState<number[]>([]);
   const [isRunning, setIsRunning] = useState(false);
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 700,
+    aspectRatio: 3 / 2,
+  });
 
   const colors = {
     background: '#ffffff',
@@ -115,7 +119,7 @@ export default function GradientDescent() {
     ctx.arc(toX(0), toY(0), 5, 0, Math.PI * 2);
     ctx.fillStyle = colors.success;
     ctx.fill();
-  }, [currentX, history]);
+  }, [currentX, history, size]);
 
   useEffect(() => {
     draw();
@@ -159,12 +163,14 @@ export default function GradientDescent() {
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <Card className="flex flex-1 items-center justify-center p-4">
-          <canvas
-            ref={canvasRef}
-            width={600}
-            height={400}
-            className="w-full max-w-2xl rounded-lg border"
-          />
+          <div ref={containerRef} className="w-full max-w-2xl">
+            <canvas
+              ref={canvasRef}
+              width={size.width}
+              height={size.height}
+              className="w-full rounded-lg border"
+            />
+          </div>
         </Card>
 
         <Card className="w-full lg:w-80">

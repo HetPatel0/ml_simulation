@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { articleMetadata, siteConfig } from "@/lib/metadata";
 import ArticleClient from "./article-client";
+import { BackToTop } from "@/components/common/back-to-top";
+
 
 const validSlugs = Object.keys(articleMetadata);
 
@@ -61,6 +63,7 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <article className="min-h-screen">
       <ArticleClient slug={slug} />
+      <BackToTop />
     </article>
   );
 }

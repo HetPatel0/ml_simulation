@@ -1,21 +1,25 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import SimHeader from "../common/sim-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 type Point = { x: number; y: number };
 
 export default function LinearRegressionInteractive() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 700,
+    aspectRatio: 7 / 4,
+  });
   const [points, setPoints] = useState<Point[]>([]);
   const [stats, setStats] = useState({ m: 0, b: 0, r: 0 });
 
   // Constants
-  const width = 700;
-  const height = 400;
+  const width = size.width;
+  const height = size.height;
   const colors = {
     background: '#ffffff',
     grid: "#f1f5f9", // Tailwind slate-100
@@ -145,7 +149,7 @@ export default function LinearRegressionInteractive() {
       ctx.arc(p.x, height - p.y, 6, 0, Math.PI * 2);
       ctx.fill();
     }
-  }, [points]);
+  }, [points, size, width, height]);
 
   return (
     <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-5xl mx-auto">
@@ -194,13 +198,13 @@ export default function LinearRegressionInteractive() {
           </div>
 
           {/* Canvas */}
-          <div className="relative border-2 border-muted rounded-lg overflow-hidden bg-white cursor-crosshair mb-6 flex justify-center">
+          <div ref={containerRef} className="relative border-2 border-muted rounded-lg overflow-hidden bg-white cursor-crosshair mb-6">
             <canvas
               ref={canvasRef}
-              width={700}
-              height={400}
+              width={size.width}
+              height={size.height}
               onMouseDown={handleCanvasClick}
-              className="w-full max-w-175"
+              className="w-full"
             />
           </div>
 
