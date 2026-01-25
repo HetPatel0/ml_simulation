@@ -4,7 +4,7 @@ export const learningCards = [
     description:
       "Understand ε-insensitive loss, margins, kernels, and support vectors visually.",
     href: "/simulations/svr",
-    image: "/images/svr.jpg",
+    image: "/images/regression/svr.png",
     badge: "Simulation",
   },
   {
@@ -12,35 +12,35 @@ export const learningCards = [
     description:
       "See how optimization works step-by-step on real loss surfaces.",
     href: "/simulations/gradient-descent",
-    image: "/images/gradient.jpg",
+    image: "/images/regression/gradient.png",
     badge: "Simulation",
   },
   {
     title: "Polynomial Regression",
     description: "Visualize overfitting, underfitting, and model complexity.",
     href: "/simulations/polynomial-regression",
-    image: "/images/polynomial.jpg",
+    image: "/images/regression/polynomial.png",
     badge: "Simulation",
   },
   {
     title: "Bias vs Variance",
     description: "Develop intuition about generalization and model trade-offs.",
     href: "/blog/bias-variance",
-    image: "/images/bias-variance.jpg",
+    image: "/images/bias-variance.png",
     badge: "Concept",
   },
   {
     title: "Kernels Explained",
     description: "Learn how kernels transform data into higher dimensions.",
     href: "/blog/kernels",
-    image: "/images/kernel.jpg",
+    image: "/images/other/kernel.png",
     badge: "Concept",
   },
   {
     title: "Loss Functions",
     description: "Why different models use different loss functions.",
     href: "/blog/loss-functions",
-    image: "/images/loss.jpg",
+    image: "/images/other/loss.png",
     badge: "Concept",
   },
 ];
