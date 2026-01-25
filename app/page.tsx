@@ -457,7 +457,7 @@ export default function Home() {
             >
               <Link href="/simulations">
                 Start Learning
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </motion.div>
