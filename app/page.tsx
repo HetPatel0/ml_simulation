@@ -14,7 +14,7 @@ function MLBackground() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <svg
-        className="absolute inset-0 w-full h-full opacity-[0.07]"
+        className="absolute inset-0 w-full h-full opacity-[0.07] drop-shadow-sm"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
       >
@@ -182,7 +182,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="mb-4 sm:mb-6"
           >
-            <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase text-primary border border-primary/20 rounded-full bg-primary/5">
+            <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase text-primary/90 border border-primary/20 rounded-full bg-primary/10 shadow-[0_0_15px_-3px_var(--primary)] shadow-primary/10 backdrop-blur-sm">
               Interactive ML Education
             </span>
           </motion.div>
@@ -192,7 +192,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tight leading-[1.1] sm:leading-[1.05]"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter leading-[1.1] sm:leading-[1.05] drop-shadow-sm"
           >
             Learn by{" "}
             <span className="relative inline-block">
@@ -214,7 +214,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light px-2"
+            className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed font-normal px-2"
           >
             Watch machine learning algorithms come alive through interactive
             visualizations. Adjust parameters, see results instantly.
@@ -230,7 +230,7 @@ export default function Home() {
             <Button
               size="lg"
               asChild
-              className="h-11 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full group"
+              className="h-11 px-6 sm:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full group shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
             >
               <Link href="/simulations">
                 <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:scale-110" />
@@ -241,7 +241,7 @@ export default function Home() {
               size="lg"
               variant="ghost"
               asChild
-              className="h-11  px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full hover:bg-muted/50"
+              className="h-11 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full hover:bg-muted/50"
             >
               <Link href="/learn">
                 <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -265,7 +265,7 @@ export default function Home() {
                 transition={{ duration: 0.4, delay: 0.8 + i * 0.1 }}
                 className="text-center"
               >
-                <div className="text-xs sm:text-sm font-medium text-foreground">
+                <div className="text-xs sm:text-sm font-semibold text-foreground tracking-tight">
                   {feature.label}
                 </div>
                 <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
@@ -285,10 +285,10 @@ export default function Home() {
         >
           <motion.div
             animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-5 h-8 sm:w-6 sm:h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-1.5 sm:p-2"
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="w-5 h-8 sm:w-6 sm:h-10 rounded-full border border-muted-foreground/30 flex items-start justify-center p-1.5 sm:p-2 shadow-sm"
           >
-            <motion.div className="w-0.5 sm:w-1 h-1.5 sm:h-2 rounded-full bg-muted-foreground/50" />
+            <motion.div className="w-0.5 sm:w-1 h-1.5 sm:h-2 rounded-full bg-primary/50" />
           </motion.div>
         </motion.div>
       </section>
@@ -298,7 +298,7 @@ export default function Home() {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="border-y border-border/40 bg-muted/20"
+        className="border-y border-border/60 bg-muted/30"
       >
         <div className="max-w-5xl mx-auto px-6 py-12 grid grid-cols-3 gap-8 text-center">
           {[
