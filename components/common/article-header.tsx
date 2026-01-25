@@ -23,7 +23,7 @@ export default function ArtHeader() {
             variant="ghost"
             size="sm"
             onClick={handleBack}
-            className="group absolute left-7 gap-2"
+            className="group absolute left-7 gap-2 cursor-pointer"
           >
             <ArrowLeft className="transition-transform group-hover:-translate-x-1" />
             Back
