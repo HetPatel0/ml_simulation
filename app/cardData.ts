@@ -27,7 +27,7 @@ export const learningCards = [
     title: "Support Vector Regression",
     description:
       "Explore epsilon tubes, margins, and support vectors interactively.",
-    href: "/learn/support-vector-regression",
+    href: "/learn/svr",
     image: "/images/regression/svr.png",
     badge: "Advanced",
   },
@@ -43,7 +43,7 @@ export const learningCards = [
     title: "Kernel Methods",
     description:
       "How kernel tricks transform data into higher-dimensional spaces.",
-    href: "/learn/kernel-methods",
+    href: "/learn/kernel-trick",
     image: "/images/other/kernel-trick.png",
     badge: "Advanced",
   },
