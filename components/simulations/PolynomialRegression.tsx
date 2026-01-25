@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
 import { Slider } from "@/components/ui/slider";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 interface Point {
   x: number;
@@ -18,7 +19,10 @@ interface Point {
 }
 
 export default function PolynomialRegression() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 800,
+    aspectRatio: 16 / 9,
+  });
 
   const [points, setPoints] = useState<Point[]>([]);
   const [degree, setDegree] = useState(3);
@@ -34,8 +38,8 @@ export default function PolynomialRegression() {
     residual: 'rgba(0,0,0,0.15)', // Light gray for residuals
   };
 
-  const width = 800;
-  const height = 450;
+  const width = size.width;
+  const height = size.height;
   const scale = 2.5;
 
   /* -------------------- Math -------------------- */
@@ -182,7 +186,7 @@ export default function PolynomialRegression() {
       ctx.lineWidth = 2;
       ctx.stroke();
     });
-  }, [points, coeffs, dragIdx]);
+  }, [points, coeffs, dragIdx, width, height, size]);
 
   useEffect(draw, [draw]);
 
@@ -283,17 +287,19 @@ export default function PolynomialRegression() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <canvas
-            ref={canvasRef}
-            width={width}
-            height={height}
-            className="w-full bg-white rounded-lg cursor-crosshair touch-none border"
-            onMouseDown={handleStart}
-            onMouseMove={handleMove}
-            onTouchStart={handleStart}
-            onTouchMove={handleMove}
-            onContextMenu={handleDelete}
-          />
+          <div ref={containerRef} className="w-full">
+            <canvas
+              ref={canvasRef}
+              width={size.width}
+              height={size.height}
+              className="w-full bg-white rounded-lg cursor-crosshair touch-none border"
+              onMouseDown={handleStart}
+              onMouseMove={handleMove}
+              onTouchStart={handleStart}
+              onTouchMove={handleMove}
+              onContextMenu={handleDelete}
+            />
+          </div>
 
           <Slider
             min={1}

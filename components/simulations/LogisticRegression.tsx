@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,12 +8,17 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header"; 
+import SimHeader from "../common/sim-header";
 import { Slider } from "@/components/ui/slider";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 export default function LogisticRegression() {
   const [hours, setHours] = useState(5.0);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 500,
+    aspectRatio: 10 / 3,
+    minHeight: 120,
+  });
 
   // Model Coefficients (trained)
   const b0 = -4;
@@ -43,8 +48,8 @@ export default function LogisticRegression() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = size.width;
+    const height = size.height;
 
     ctx.fillStyle = colors.background;
     ctx.fillRect(0, 0, width, height);
@@ -83,7 +88,7 @@ export default function LogisticRegression() {
     ctx.strokeStyle = colors.dotOutline;
     ctx.lineWidth = 2;
     ctx.stroke();
-  }, [hours, probability, isPass, b0]); // Dependencies: removed colors, as they are now static
+  }, [hours, probability, isPass, b0, size]);
 
   return (
     <div className="flex flex-col gap-6 mb-8 items-center w-full max-w-5xl mx-auto">
@@ -165,12 +170,12 @@ export default function LogisticRegression() {
           </div>
 
           {/* Canvas Graph */}
-          <div className="flex justify-center border rounded-lg p-4 bg-white">
+          <div ref={containerRef} className="border rounded-lg p-4 bg-white">
             <canvas
               ref={canvasRef}
-              width={500}
-              height={150}
-              className="w-full max-w-125"
+              width={size.width}
+              height={size.height}
+              className="w-full"
             />
           </div>
           <p className="text-xs text-center text-muted-foreground">

@@ -62,7 +62,10 @@ function MLBackground() {
 
         {/* Vertical accent lines */}
         <motion.line
-          x1="20" y1="0" x2="25" y2="100"
+          x1="20"
+          y1="0"
+          x2="25"
+          y2="100"
           stroke="currentColor"
           strokeWidth="0.08"
           className="text-primary"
@@ -71,7 +74,10 @@ function MLBackground() {
           transition={{ duration: 1.5, delay: 0.5 }}
         />
         <motion.line
-          x1="75" y1="0" x2="80" y2="100"
+          x1="75"
+          y1="0"
+          x2="80"
+          y2="100"
           stroke="currentColor"
           strokeWidth="0.08"
           className="text-primary"
@@ -82,7 +88,10 @@ function MLBackground() {
 
         {/* Diagonal lines */}
         <motion.line
-          x1="0" y1="0" x2="40" y2="50"
+          x1="0"
+          y1="0"
+          x2="40"
+          y2="50"
           stroke="currentColor"
           strokeWidth="0.06"
           className="text-primary"
@@ -91,7 +100,10 @@ function MLBackground() {
           transition={{ duration: 1.8, delay: 0.7 }}
         />
         <motion.line
-          x1="100" y1="100" x2="60" y2="50"
+          x1="100"
+          y1="100"
+          x2="60"
+          y2="50"
           stroke="currentColor"
           strokeWidth="0.06"
           className="text-primary"
@@ -102,7 +114,9 @@ function MLBackground() {
 
         {/* Circle accents */}
         <motion.circle
-          cx="20" cy="25" r="3"
+          cx="20"
+          cy="25"
+          r="3"
           fill="none"
           stroke="currentColor"
           strokeWidth="0.08"
@@ -112,7 +126,9 @@ function MLBackground() {
           transition={{ duration: 0.8, delay: 1 }}
         />
         <motion.circle
-          cx="80" cy="75" r="4"
+          cx="80"
+          cy="75"
+          r="4"
           fill="none"
           stroke="currentColor"
           strokeWidth="0.08"
@@ -122,7 +138,9 @@ function MLBackground() {
           transition={{ duration: 0.8, delay: 1.1 }}
         />
         <motion.circle
-          cx="50" cy="50" r="8"
+          cx="50"
+          cy="50"
+          r="8"
           fill="none"
           stroke="currentColor"
           strokeWidth="0.05"
@@ -140,7 +158,13 @@ function MLBackground() {
 }
 
 // Simple stat display (animation handled by parent motion.div)
-function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
+function AnimatedNumber({
+  value,
+  suffix = "",
+}: {
+  value: number;
+  suffix?: string;
+}) {
   return (
     <span>
       {value}
@@ -369,7 +393,7 @@ export default function Home() {
                 transition={{ delay: i * 0.15 }}
                 className="group"
               >
-                <span className="text-xs font-mono text-primary/60">
+                <span className="text-2xl h1 font-mono text-primary/60">
                   {item.num}
                 </span>
                 <h3 className="mt-3 text-xl font-medium tracking-tight group-hover:text-primary transition-colors">

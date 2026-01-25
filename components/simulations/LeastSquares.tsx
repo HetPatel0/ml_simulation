@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 interface Point {
   x: number;
@@ -11,12 +12,15 @@ interface Point {
 }
 
 export default function LeastSquares() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 700,
+    aspectRatio: 7 / 4,
+  });
   const [points, setPoints] = useState<Point[]>([]);
   const [stats, setStats] = useState({ m: 0, b: 0, r: 0 });
 
-  const width = 700;
-  const height = 400;
+  const width = size.width;
+  const height = size.height;
 
   const colors = {
     background: '#ffffff',
@@ -133,7 +137,7 @@ export default function LeastSquares() {
       ctx.arc(p.x, height - p.y, 6, 0, Math.PI * 2);
       ctx.fill();
     });
-  }, [points, stats, width, height]);
+  }, [points, stats, width, height, size]);
 
   useEffect(() => {
     setStats(calculateRegression());
@@ -226,13 +230,13 @@ export default function LeastSquares() {
         </Card>
       </div>
       <Card className="w-full overflow-hidden border-2 border-dashed bg-white">
-        <div className="relative w-full overflow-x-auto flex justify-center bg-[url('/grid-pattern.svg')]">
+        <div ref={containerRef} className="relative w-full flex justify-center bg-[url('/grid-pattern.svg')]">
           <canvas
             ref={canvasRef}
-            width={width}
-            height={height}
+            width={size.width}
+            height={size.height}
             onClick={handleCanvasClick}
-            className="cursor-crosshair max-w-full" />
+            className="cursor-crosshair w-full" />
         </div>
       </Card>
       <p className="text-sm text-muted-foreground">

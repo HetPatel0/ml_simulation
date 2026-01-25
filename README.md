@@ -130,7 +130,8 @@ ml_simulation/
 │
 ├── lib/
 │   ├── utils.ts                  # Utility functions (cn())
-│   └── metadata.ts               # SEO metadata configuration
+│   ├── metadata.ts               # SEO metadata configuration
+│   └── use-responsive-canvas.ts  # Hook for responsive canvas sizing
 │
 ├── public/
 │   ├── logo.png                  # Project logo
@@ -205,34 +206,67 @@ Contributions are welcome! Here's how you can help:
 
 2. **Build your visualization**
 
-   Follow this pattern for Canvas-based simulations:
+   Use the `useResponsiveCanvas` hook for mobile-friendly canvas simulations:
 
    ```tsx
    "use client";
 
-   import { useRef, useEffect, useState } from "react";
+   import { useEffect, useState, useCallback } from "react";
+   import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
    export default function YourSimulation() {
-     const canvasRef = useRef<HTMLCanvasElement>(null);
+     const { containerRef, canvasRef, size } = useResponsiveCanvas({
+       maxWidth: 700,      // Maximum canvas width in pixels
+       aspectRatio: 16/10, // Width divided by height
+       minHeight: 300,     // Minimum height in pixels
+     });
      const [parameter, setParameter] = useState(0.5);
 
-     useEffect(() => {
+     const draw = useCallback(() => {
        const canvas = canvasRef.current;
        if (!canvas) return;
        const ctx = canvas.getContext("2d");
        if (!ctx) return;
 
+       // Use size.width and size.height for calculations
+       ctx.fillStyle = "#ffffff";
+       ctx.fillRect(0, 0, size.width, size.height);
+
        // Your drawing logic here
-     }, [parameter]);
+     }, [parameter, size]);
+
+     useEffect(() => {
+       draw();
+     }, [draw]);
 
      return (
        <div>
-         <canvas ref={canvasRef} width={600} height={400} />
+         {/* Container div with ref for resize detection */}
+         <div ref={containerRef} className="w-full max-w-2xl">
+           <canvas
+             ref={canvasRef}
+             width={size.width}
+             height={size.height}
+             className="w-full rounded-lg border"
+           />
+         </div>
          {/* Add controls */}
        </div>
      );
    }
    ```
+
+   **Hook Options:**
+   | Option | Default | Description |
+   |--------|---------|-------------|
+   | `maxWidth` | 700 | Maximum canvas width in pixels |
+   | `aspectRatio` | 16/10 | Canvas aspect ratio (width/height) |
+   | `minHeight` | 300 | Minimum canvas height in pixels |
+
+   **Returns:**
+   - `containerRef` - Attach to wrapper div for resize detection
+   - `canvasRef` - Attach to canvas element
+   - `size` - Object with `width` and `height` values
 
 3. **Register the simulation**
 

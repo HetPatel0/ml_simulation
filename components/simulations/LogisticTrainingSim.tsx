@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SimHeader from "../common/sim-header";
 import { Button } from "@/components/ui/button";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 type DataPoint = { x: number; y: number };
 type LogEntry = {
@@ -17,7 +18,10 @@ type LogEntry = {
 };
 
 export default function LogisticTrainingSim() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 600,
+    aspectRatio: 12 / 7,
+  });
 
   // Simulation State Refs (Mutable for animation loop)
   const dataRef = useRef<DataPoint[]>([]);
@@ -208,7 +212,7 @@ export default function LogisticTrainingSim() {
 
   useEffect(() => {
     draw();
-  }, []);
+  }, [size]);
 
   return (
     <div className="flex flex-col gap-6 mb-8 w-full max-w-5xl mx-auto">
@@ -235,12 +239,14 @@ export default function LogisticTrainingSim() {
 
           <Card>
             <CardContent className="p-2">
-              <canvas
-                ref={canvasRef}
-                width={600}
-                height={350}
-                className="w-full bg-white rounded border"
-              />
+              <div ref={containerRef} className="w-full">
+                <canvas
+                  ref={canvasRef}
+                  width={size.width}
+                  height={size.height}
+                  className="w-full bg-white rounded border"
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
