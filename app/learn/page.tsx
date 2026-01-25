@@ -79,7 +79,7 @@ const articals: Artical[] = [
     category: "classification",
   },
   {
-    id: "kernel-methods",
+    id: "kernel-trick",
     title: "Kernel Methods",
     description:
       "Visualize how kernel tricks transform data into higher-dimensional spaces",
