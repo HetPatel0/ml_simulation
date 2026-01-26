@@ -110,7 +110,7 @@ const simulations: Simulation[] = [
     title: "SVR Kernel Lift",
     description:
       "See how SVR lifts non-linear regression data into a space where a flat plane can fit.",
-    image: "/images/category/svr-kernel-lift.png",
+    image: "/images/regression/svr-kernel-lift.png",
     badge: "Kernel Geometry",
     category: "regression",
   },
