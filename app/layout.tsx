@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     title: "ML Simulations - Interactive Machine Learning Education",
     description:
       "Watch machine learning algorithms come alive through interactive visualizations.",
-    images: [siteConfig.ogImage],
+    images: [`${siteConfig.url}${siteConfig.ogImage}`],
   },
   robots: {
     index: true,
