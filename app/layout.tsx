@@ -6,6 +6,7 @@ import { Navbar } from "@/components/common/navbar";
 import LenisProvider from "@/components/lenis-provider";
 import FooterSection from "@/components/common/footer";
 import { siteConfig } from "@/lib/metadata";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -93,7 +94,8 @@ export default function RootLayout({
         >
           <LenisProvider>
             <Navbar />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1">{children}<SpeedInsights /></main>
+             
             <FooterSection />
           </LenisProvider>
         </ThemeProvider>
