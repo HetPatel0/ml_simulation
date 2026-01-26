@@ -1,222 +1,325 @@
-/* eslint-disable prefer-const */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useRef, useState } from "react";
-import SimHeader from "../common/sim-header";
-import Script from "next/script";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import SimHeader from "../common/sim-header";
 
-declare global {
-  interface Window {
-    Plotly: any;
-  }
-}
+type KernelType = "rbf" | "poly" | "linear";
+
+type Point = {
+  x: number;
+  y: number;
+};
 
 export default function SVRVisualizer() {
-  const plotDivRef = useRef<HTMLDivElement>(null);
-  const [activeView, setActiveView] = useState<"2d" | "3d" | "plane">("2d");
-  const [isLoaded, setIsLoaded] = useState(false);
+  const { containerRef, canvasRef, size } = useResponsiveCanvas({
+    maxWidth: 700,
+    aspectRatio: 16 / 10,
+    minHeight: 320,
+  });
 
-  const tracesRef = useRef<any>({});
-  const layoutRef = useRef<any>({});
-  const colors = {
-    foreground: "#000000", // Black for text
-    destructive: "#ff385f", // Red from original, good contrast
-    grid: "#ddd", // Light gray for grid lines
-  };
+  /* ---------- Persistent model state ---------- */
+  const pointsRef = useRef<Point[]>([]);
+  const alphasRef = useRef<number[]>([]);
+  const biasRef = useRef(0);
 
-  const initPlot = () => {
-    if (!window.Plotly || !plotDivRef.current) return;
+  /* ---------- UI state ---------- */
+  const [kernel, setKernel] = useState<KernelType>("rbf");
+  const [gamma, setGamma] = useState(3);
+  const [degree, setDegree] = useState(2);
+  const [coeff, setCoeff] = useState(1);
+  const [epsilon, setEpsilon] = useState(0.1);
+  const [C, setC] = useState(10);
+  const [lr, setLr] = useState(0.01);
 
-    // 1. Data Generation
-    const N = 100;
-    let x_data = [],
-      y_data = [],
-      z_flat = [],
-      z_lifted = [];
+  /* ---------- Kernel ---------- */
+  const kernelFn = useCallback(
+    (x1: number, x2: number) => {
+      if (kernel === "linear") return x1 * x2;
+      if (kernel === "poly") return Math.pow(x1 * x2 + coeff, degree);
+      const d = x1 - x2;
+      return Math.exp(-gamma * d * d);
+    },
+    [kernel, gamma, degree, coeff],
+  );
 
-    for (let i = 0; i < N; i++) {
-      let x = Math.random() * 10 - 5;
-      let noise = (Math.random() - 0.5) * 4;
-      let y = x * x + noise;
+  const predict = useCallback(
+    (x: number) => {
+      let sum = biasRef.current;
+      pointsRef.current.forEach((p, i) => {
+        sum += alphasRef.current[i] * kernelFn(x, p.x);
+      });
+      return sum;
+    },
+    [kernelFn],
+  );
 
-      x_data.push(x);
-      y_data.push(y);
-      z_flat.push(-5);
-      z_lifted.push(x * x);
-    }
+  /* ---------- Training ---------- */
+  const trainStep = useCallback(() => {
+    const pts = pointsRef.current;
+    if (!pts.length) return;
 
-    // Plane Gen
-    let plane_x = [],
-      plane_y = [],
-      plane_z = [];
-    const gridSize = 10;
-    for (let i = 0; i <= gridSize; i++) {
-      let row_x = [],
-        row_y = [],
-        row_z = [];
-      let z_val = (i / gridSize) * 25;
-      for (let j = 0; j <= gridSize; j++) {
-        let x_val = (j / gridSize) * 10 - 5;
-        row_x.push(x_val);
-        row_z.push(z_val);
-        row_y.push(z_val);
+    for (let k = 0; k < 40; k++) {
+      const i = Math.floor(Math.random() * pts.length);
+      const p = pts[i];
+
+      const err = p.y - predict(p.x);
+      if (Math.abs(err) > epsilon) {
+        const sign = Math.sign(err);
+        let update = lr * C * sign;
+        update = Math.max(-0.5, Math.min(0.5, update));
+
+        alphasRef.current[i] += update;
+        biasRef.current += update * 0.5;
       }
-      plane_x.push(row_x);
-      plane_y.push(row_y);
-      plane_z.push(row_z);
+
+      alphasRef.current[i] *= 0.999;
     }
+  }, [predict, epsilon, C, lr]);
 
-    tracesRef.current = {
-      x_data,
-      y_data,
-      z_flat,
-      z_lifted,
-      plane_x,
-      plane_y,
-      plane_z,
+  /* ---------- Draw ---------- */
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const { width, height } = size;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+
+    const cx = width / 2;
+    const cy = height / 2;
+    const scale = width / 2.5;
+
+    // Epsilon tube
+    ctx.fillStyle = "rgba(37, 99, 235, 0.12)";
+    ctx.beginPath();
+    for (let i = 0; i <= width; i += 4) {
+      const x = (i - cx) / scale;
+      const y = predict(x) + epsilon;
+      ctx.lineTo(i, -y * scale + cy);
+    }
+    for (let i = width; i >= 0; i -= 4) {
+      const x = (i - cx) / scale;
+      const y = predict(x) - epsilon;
+      ctx.lineTo(i, -y * scale + cy);
+    }
+    ctx.closePath();
+    ctx.fill();
+
+    // Prediction curve
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= width; i += 4) {
+      const x = (i - cx) / scale;
+      const y = predict(x);
+      ctx.lineTo(i, -y * scale + cy);
+    }
+    ctx.stroke();
+
+    // Points
+    pointsRef.current.forEach((p) => {
+      const px = p.x * scale + cx;
+      const py = -p.y * scale + cy;
+      const err = Math.abs(p.y - predict(p.x));
+
+      ctx.beginPath();
+      ctx.arc(px, py, err > epsilon ? 6 : 4, 0, Math.PI * 2);
+      ctx.fillStyle = err > epsilon ? "#dc2626" : "#6b7280";
+      ctx.fill();
+    });
+
+    trainStep();
+  }, [size, predict, epsilon, trainStep]);
+
+  /* ---------- Init (ONCE) ---------- */
+  useEffect(() => {
+    pointsRef.current = [];
+    for (let x = -0.8; x <= 0.8; x += 0.15) {
+      pointsRef.current.push({ x, y: Math.sin(x * 3.5) * 0.6 });
+    }
+    alphasRef.current = new Array(pointsRef.current.length).fill(0);
+    biasRef.current = 0;
+  }, []);
+
+  /* ---------- Animation loop ---------- */
+  useEffect(() => {
+    let rafId: number;
+
+    const loop = () => {
+      draw();
+      rafId = requestAnimationFrame(loop);
     };
 
-    // Initial Trace
-    const scatterTrace = {
-      x: x_data,
-      y: y_data,
-      z: z_flat,
-      mode: "markers",
-      type: "scatter3d",
-      marker: {
-        size: 5,
-        color: colors.destructive, // Fixed color
-        opacity: 0.9,
-        line: { color: "white", width: 0.5 },
-      },
-    };
+    loop();
+    return () => cancelAnimationFrame(rafId);
+  }, [draw]);
 
-    const planeTrace = {
-      x: plane_x,
-      y: plane_y,
-      z: plane_z,
-      type: "surface",
-      showscale: false,
-      opacity: 0,
-      colorscale: "Viridis",
-    };
+  /* ---------- Interaction ---------- */
+  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left - size.width / 2) / (size.width / 2.5);
+    const y = -(e.clientY - rect.top - size.height / 2) / (size.width / 2.5);
 
-    layoutRef.current = {
-      paper_bgcolor: "#ffffff", // Always white background
-      plot_bgcolor: "transparent",
-      margin: { l: 0, r: 0, t: 0, b: 0 },
-      scene: {
-        camera: { eye: { x: 0, y: 0, z: 2.0 }, up: { x: 0, y: 1, z: 0 } },
-        xaxis: { title: { text: "Input (X)", font: { color: colors.foreground } }, tickfont: { color: colors.foreground }, gridcolor: colors.grid },
-        yaxis: { title: { text: "Target (Y)", font: { color: colors.foreground } }, tickfont: { color: colors.foreground }, gridcolor: colors.grid },
-        zaxis: { title: { text: "", font: { color: colors.foreground } }, range: [-5, 30], showticklabels: false, gridcolor: colors.grid },
-        aspectmode: "manual",
-        aspectratio: { x: 1, y: 1, z: 0.5 },
-      },
-      showlegend: false,
-    };
-    window.Plotly.newPlot(
-      plotDivRef.current,
-      [scatterTrace, planeTrace],
-      layoutRef.current,
-      { displayModeBar: false, responsive: true },
-    );
-    setIsLoaded(true);
+    pointsRef.current.push({ x, y });
+    alphasRef.current.push(0);
   };
 
-  const updateView = (view: "2d" | "3d" | "plane") => {
-    if (!isLoaded || !plotDivRef.current) return;
-    setActiveView(view);
-
-    const t = tracesRef.current;
-    let layoutUpdate: any = {};
-
-    // 2. Simplistic Redraw logic for reliability
-    const scatter = {
-      x: t.x_data,
-      y: t.y_data,
-      z: view === "2d" ? t.z_flat : t.z_lifted,
-      mode: "markers",
-      type: "scatter3d",
-      marker: {
-        size: 5,
-        color: colors.destructive, // Fixed color
-        opacity: view === "plane" ? 0.5 : 0.9,
-        line: { color: "white", width: 0.5 },
-      },
-    };
-
-    const plane = {
-      x: t.plane_x,
-      y: t.plane_y,
-      z: t.plane_z,
-      type: "surface",
-      showscale: false,
-      opacity: view === "plane" ? 0.7 : 0,
-      colorscale: "Viridis",
-    };
-
-    // Camera & Labels
-    if (view === "2d") {
-      layoutUpdate["scene.camera.eye"] = { x: 0, y: 0, z: 2.0 };
-      layoutUpdate["scene.zaxis.title"] = { text: "", font: { color: colors.foreground } };
-    } else if (view === "3d") {
-      layoutUpdate["scene.camera.eye"] = { x: 1.8, y: 0.5, z: 0.8 };
-      layoutUpdate["scene.zaxis.title"] = { text: "Kernel Feature (X²)", font: { color: colors.foreground } };
-    } else {
-      layoutUpdate["scene.camera.eye"] = { x: 2.0, y: 0.2, z: 0.5 };
-    }
-
-    window.Plotly.react(
-      plotDivRef.current,
-      [scatter, plane],
-      layoutRef.current,
-    );
-  };
-
+  /* ---------- UI ---------- */
   return (
     <div className="flex flex-col gap-6 mb-8 w-full max-w-5xl mx-auto">
-      <Script
-        src="https://cdn.plot.ly/plotly-2.27.0.min.js"
-        onLoad={initPlot}
-      />
       <SimHeader
         title="SVR: Visualizing the Regression Kernel"
-        subtitle="Unrolling curved data in 3D to fit a flat SVR plane."
+        subtitle="Understanding epsilon-insensitive regression with kernels."
       />
 
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <Button
-              onClick={() => updateView("2d")}
-              variant={activeView === "2d" ? "default" : "secondary"}
+      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        <div ref={containerRef}>
+          <canvas
+            ref={canvasRef}
+            width={size.width}
+            height={size.height}
+            onMouseDown={handleClick}
+            className="w-full rounded-xl border bg-white cursor-crosshair"
+          />
+        </div>
+
+        <Card className="p-4 space-y-5">
+          <div className="space-y-2">
+            <Label>Kernel</Label>
+            <Select
+              value={kernel}
+              onValueChange={(v) => setKernel(v as KernelType)}
             >
-              1. The Problem (2D Curve)
-            </Button>
-            <Button
-              onClick={() => updateView("3d")}
-              variant={activeView === "3d" ? "default" : "secondary"}
-            >
-              2. Kernel Transform (Add Z)
-            </Button>
-            <Button
-              onClick={() => updateView("plane")}
-              variant={activeView === "plane" ? "default" : "secondary"}
-            >
-              3. Fit Linear SVR Plane
-            </Button>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="rbf">RBF</SelectItem>
+                <SelectItem value="poly">Polynomial</SelectItem>
+                <SelectItem value="linear">Linear</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div
-            ref={plotDivRef}
-            className="w-full h-125 border rounded bg-white"
+          {kernel === "rbf" && (
+            <SliderBlock
+              label="Gamma"
+              value={gamma}
+              setValue={setGamma}
+              min={0.1}
+              max={10}
+              step={0.1}
+            />
+          )}
+
+          {kernel === "poly" && (
+            <>
+              <SliderBlock
+                label="Degree"
+                value={degree}
+                setValue={setDegree}
+                min={2}
+                max={5}
+                step={1}
+              />
+              <SliderBlock
+                label="Coeff"
+                value={coeff}
+                setValue={setCoeff}
+                min={0}
+                max={5}
+                step={0.5}
+              />
+            </>
+          )}
+
+          <SliderBlock
+            label="Epsilon"
+            value={epsilon}
+            setValue={setEpsilon}
+            min={0.01}
+            max={0.5}
+            step={0.01}
           />
-        </CardContent>
-      </Card>
+          <SliderBlock
+            label="C"
+            value={C}
+            setValue={setC}
+            min={1}
+            max={100}
+            step={1}
+          />
+          <SliderBlock
+            label="Learning Rate"
+            value={lr}
+            setValue={setLr}
+            min={0.001}
+            max={0.1}
+            step={0.001}
+          />
+
+          <Button
+            variant="destructive"
+            onClick={() => {
+              pointsRef.current = [];
+              alphasRef.current = [];
+              biasRef.current = 0;
+            }}
+            className="cursor-pointer"
+          >
+            Clear Points
+          </Button>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Slider helper ---------- */
+function SliderBlock({
+  label,
+  value,
+  setValue,
+  min,
+  max,
+  step,
+}: {
+  label: string;
+  value: number;
+  setValue: (v: number) => void;
+  min: number;
+  max: number;
+  step: number;
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex justify-between text-sm">
+        <Label>{label}</Label>
+        <span className="font-mono text-muted-foreground">{value}</span>
+      </div>
+      <Slider
+        value={[value]}
+        min={min}
+        max={max}
+        step={step}
+        onValueChange={(v) => setValue(v[0])}
+      />
     </div>
   );
 }
