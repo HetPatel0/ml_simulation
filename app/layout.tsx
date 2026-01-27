@@ -7,6 +7,7 @@ import LenisProvider from "@/components/lenis-provider";
 import FooterSection from "@/components/common/footer";
 import { siteConfig } from "@/lib/metadata";
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,7 +95,7 @@ export default function RootLayout({
         >
           <LenisProvider>
             <Navbar />
-            <main className="flex-1">{children}<SpeedInsights /></main>
+            <main className="flex-1">{children} <Analytics /><SpeedInsights /></main>
              
             <FooterSection />
           </LenisProvider>
