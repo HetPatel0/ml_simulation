@@ -61,7 +61,7 @@ const articles: Article[] = [
     category: "regression",
   },
   {
-    id: "support-vector-regression",
+    id: "svr",
     title: "Support Vector Regression",
     description:
       "Explore SVR concepts including epsilon tubes, margins, and support vectors",

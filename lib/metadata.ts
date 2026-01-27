@@ -81,48 +81,59 @@ export const articleMetadata: Record<
     description:
       "Learn how gradient descent optimizes models by minimizing loss functions. Visual explanations of learning rate, convergence, and local minima.",
     image: "/images/regression/gradient-descent.png",
-    author: "Keval",
+    author: "Keval Kansagra",
   },
   "least-squares": {
     title: "Least Squares Method Explained",
     description:
       "Understand the mathematical foundation of ordinary least squares regression and how it finds the best-fit line.",
     image: "/images/regression/least-squares.png",
-    author: "Keval",
+    author: "Het Bhuva",
   },
   "linear-regression": {
     title: "Linear Regression Explained",
     description:
       "A comprehensive guide to linear regression, the foundational statistical technique for predictive modeling.",
     image: "/images/regression/linear-regression.png",
-    author: "Keval",
+    author: "Keval Kansagra",
   },
   "polynomial-regression": {
     title: "Polynomial Regression Guide",
     description:
       "Learn how polynomial features allow regression models to fit non-linear patterns. Understand overfitting and model complexity.",
     image: "/images/regression/polynomial-regression.png",
-    author: "Keval",
+    author: "Keval Kansagra",
   },
   "logistic-regression": {
     title: "Logistic Regression Fundamentals",
     description:
       "Visual guide to binary classification with logistic regression. Understand sigmoid functions and decision boundaries.",
     image: "/images/classification/logistic-regression.png",
-    author: "Keval",
+    author: "Keval Kansagra",
   },
   "kernel-trick": {
     title: "Kernel Methods Explained",
     description:
       "Discover how kernel tricks transform data into higher-dimensional spaces. Learn about RBF, polynomial, and linear kernels.",
     image: "/images/other/kernel-trick.png",
-    author: "Keval",
+    author: "Het Bhuva",
   },
   svr: {
     title: "Support Vector Regression",
     description:
       "Comprehensive guide to SVR including epsilon tubes, margins, and support vectors. Learn kernel-based regression.",
     image: "/images/regression/svr.png",
-    author: "Keval",
+    author: "Het Bhuva",
   },
+};
+
+// Maps articles to their related simulations
+export const articleSimulationMap: Record<string, string[]> = {
+  "linear-regression": ["linear-regression", "least-squares"],
+  "gradient-descent": ["gradient-descent"],
+  "polynomial-regression": ["polynomial-regression"],
+  "logistic-regression": ["logistic-regression", "logistic-function", "logistic-training"],
+  svr: ["svr-visualizer", "svr-kernel-lift"],
+  "kernel-trick": ["kernel-trick"],
+  "least-squares": ["least-squares"],
 };
