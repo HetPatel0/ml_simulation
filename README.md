@@ -27,12 +27,16 @@ ML Simulations is an interactive educational platform designed to help users und
 ## Features
 
 - **Interactive Simulations** — Visualize ML algorithms working in real-time
-- **In-depth Articles** — Comprehensive explanations with embedded visualizations
-- **Parameter Controls** — Adjust learning rates, data points, and model parameters
+- **In-depth Articles** — Engaging explanations with code examples and math formulas
+- **Code Examples with Copy** — Python/sklearn code snippets with syntax highlighting and one-click copy
+- **Mathematical Formulas** — Beautiful LaTeX rendering with KaTeX
+- **Parameter Tables** — sklearn parameter explanations with practical impact descriptions
+- **Simulation Links** — Direct links from articles to related interactive simulations
+- **Callout Boxes** — Tips, warnings, notes, and examples to enhance learning
 - **Dark/Light Mode** — Comfortable viewing in any environment
 - **Responsive Design** — Works seamlessly on desktop and mobile
 - **100% Free & Open Source**
-- **SEO Optimized** — Dynamic metadata, Open Graph tags, sitemap, and more
+- **SEO Optimized** — Dynamic metadata, Open Graph tags, Twitter cards, sitemap, and more
 
 ## Available Content
 
@@ -40,17 +44,17 @@ ML Simulations is an interactive educational platform designed to help users und
 
 | Category | Simulations |
 |----------|-------------|
-| **Regression** | Gradient Descent, Least Squares, Linear Regression Interactive, Polynomial Regression, Support Vector Regression |
+| **Regression** | Gradient Descent, Least Squares, Linear Regression Interactive, Polynomial Regression, Support Vector Regression, SVR Kernel Lift |
 | **Classification** | Logistic Regression, Logistic Function Visualizer, Logistic Training Simulation |
 | **Advanced** | Kernel Trick Visualizer |
 
 ### Articles
 
-| Category | Articles |
-|----------|----------|
-| **Regression** | Gradient Descent, Linear Regression, Polynomial Regression, Support Vector Regression |
-| **Classification** | Logistic Regression |
-| **Advanced** | Kernel Methods |
+| Category | Articles | Author |
+|----------|----------|--------|
+| **Regression** | Gradient Descent, Linear Regression, Polynomial Regression, Least Squares | Keval Kansagra, Het Bhuva |
+| **Classification** | Logistic Regression | Keval Kansagra |
+| **Advanced** | Support Vector Regression, Kernel Methods | Het Bhuva |
 
 ## Tech Stack
 
@@ -61,6 +65,8 @@ ML Simulations is an interactive educational platform designed to help users und
 - **Animation**: [Framer Motion](https://www.framer.com/motion/)
 - **Smooth Scroll**: [Lenis](https://github.com/darkroomengineering/lenis)
 - **Icons**: [Lucide React](https://lucide.dev/), [Hugeicons](https://hugeicons.com/)
+- **Math Rendering**: [KaTeX](https://katex.org/)
+- **Syntax Highlighting**: [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
 
 ## Project Structure
 
@@ -115,7 +121,14 @@ ml_simulation/
 │   │   ├── SupportVectorRegression.tsx
 │   │   └── KernelTrickVisualizer.tsx
 │   ├── articles/                 # Article content components
-│   │   ├── article-post.tsx
+│   │   ├── article-post.tsx      # Base article wrapper
+│   │   ├── components/           # Reusable article components
+│   │   │   ├── index.ts          # Barrel export
+│   │   │   ├── CodeBlock.tsx     # Syntax highlighted code with copy
+│   │   │   ├── MathBlock.tsx     # KaTeX formula rendering
+│   │   │   ├── CalloutBox.tsx    # Tips, warnings, notes, examples
+│   │   │   ├── SimulationLink.tsx # Links to simulations
+│   │   │   └── ParameterTable.tsx # sklearn parameter tables
 │   │   ├── GradientDescentArticle.tsx
 │   │   ├── LinearRegressionArticle.tsx
 │   │   ├── PolynomialRegressionArticle.tsx
@@ -130,7 +143,7 @@ ml_simulation/
 │
 ├── lib/
 │   ├── utils.ts                  # Utility functions (cn())
-│   └── metadata.ts               # SEO metadata configuration
+│   └── metadata.ts               # SEO metadata & article-simulation mapping
 │
 ├── public/
 │   ├── logo.png                  # Project logo
@@ -313,7 +326,93 @@ Contributions are welcome! Here's how you can help:
    touch components/articles/YourArticle.tsx
    ```
 
-2. **Register in the client component**
+2. **Use the article components**
+
+   Import and use the reusable components for rich content:
+
+   ```tsx
+   "use client";
+
+   import { ArticlePost } from "./article-post";
+   import {
+     CodeBlock,
+     MathBlock,
+     CalloutBox,
+     AhaBox,
+     SimulationLink,
+     ParameterTable,
+   } from "./components";
+
+   const pythonCode = `import numpy as np
+   from sklearn.linear_model import LinearRegression
+
+   # Your example code here
+   model = LinearRegression()
+   model.fit(X, y)`;
+
+   const parameters = [
+     {
+       name: "fit_intercept",
+       type: "bool",
+       default: "True",
+       description: "Whether to calculate the intercept",
+       impact: "Set to False if your data is already centered",
+     },
+   ];
+
+   export default function YourArticle() {
+     return (
+       <ArticlePost
+         title="Your Article Title"
+         author="Your Name"
+         description="Brief description of the article"
+         image={{
+           src: "/article/category/your-article.png",
+           alt: "Description",
+         }}
+       >
+         <h2>Introduction</h2>
+         <p>Your engaging introduction here...</p>
+
+         <CalloutBox type="tip" title="Pro Tip">
+           <p>Share a helpful tip here!</p>
+         </CalloutBox>
+
+         <h2>The Mathematics</h2>
+         <MathBlock formula="y = mx + b" />
+
+         <AhaBox>
+           <p>Share that "aha moment" insight here!</p>
+         </AhaBox>
+
+         <h2>Code Example</h2>
+         <CodeBlock code={pythonCode} language="python" title="Linear Regression" />
+
+         <h2>Parameters</h2>
+         <ParameterTable parameters={parameters} />
+
+         <h2>Try It Yourself</h2>
+         <SimulationLink
+           simulationSlug="your-simulation"
+           description="Experiment with the parameters"
+         />
+       </ArticlePost>
+     );
+   }
+   ```
+
+3. **Available Article Components**
+
+   | Component | Purpose |
+   |-----------|---------|
+   | `CodeBlock` | Syntax-highlighted code with copy button |
+   | `MathBlock` | KaTeX-rendered LaTeX formulas |
+   | `CalloutBox` | Tips (`tip`), warnings (`warning`), notes (`note`), info (`info`), examples (`example`) |
+   | `AhaBox` | Highlight "aha moment" insights |
+   | `SimulationLink` | Button linking to related simulation |
+   | `ParameterTable` | sklearn parameter documentation table |
+
+4. **Register in the client component**
 
    Add to `articleComponents` in `app/learn/[slug]/article-client.tsx`:
 
@@ -324,7 +423,7 @@ Contributions are welcome! Here's how you can help:
    };
    ```
 
-3. **Add SEO metadata**
+5. **Add SEO metadata**
 
    Add entry to `articleMetadata` in `lib/metadata.ts`:
 
@@ -332,14 +431,25 @@ Contributions are welcome! Here's how you can help:
    "your-article": {
      title: "Your Article Title",
      description: "SEO description for search engines",
-     image: "/images/category/your-article.png",
+     image: "/article/category/your-article.png",
      author: "Your Name",
    },
    ```
 
-4. **Add to the articles listing**
+6. **Add article-simulation mapping** (if applicable)
 
-   Add entry to `articles` array in `app/learn/page.tsx`
+   Add entry to `articleSimulationMap` in `lib/metadata.ts`:
+
+   ```tsx
+   export const articleSimulationMap: Record<string, string[]> = {
+     // ... existing mappings
+     "your-article": ["your-simulation", "related-simulation"],
+   };
+   ```
+
+7. **Add to the articles listing**
+
+   Add entry to `articals` array in `app/learn/page.tsx`
 
 ### General Guidelines
 
@@ -348,6 +458,7 @@ Contributions are welcome! Here's how you can help:
 - **Styling**: Use Tailwind CSS with the `cn()` utility from `@/lib/utils`
 - **Images**: Use Next.js `Image` component
 - **Components**: Use `"use client"` directive for interactive components
+- **Article Tone**: Keep it conversational and engaging - explain concepts like you're talking to a friend!
 
 ### Pull Request Process
 
@@ -364,6 +475,11 @@ Contributions are welcome! Here's how you can help:
 5. **Commit with a descriptive message**
 6. **Push to your fork**
 7. **Open a Pull Request**
+
+## Authors
+
+- **Keval Kansagra** - Linear Regression, Gradient Descent, Polynomial Regression, Logistic Regression
+- **Het Bhuva** - SVR, Kernel Trick, Least Squares
 
 ## License
 

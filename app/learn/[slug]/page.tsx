@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `${siteConfig.url}/learn/${slug}`,
       images: [
         {
-          url: meta.image,
+          url: `${siteConfig.url}${meta.image}`,
           width: 1200,
           height: 630,
           alt: meta.title,
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title: meta.title,
       description: meta.description,
-      images: [meta.image],
+      images: [`${siteConfig.url}${meta.image}`],
     },
   };
 }

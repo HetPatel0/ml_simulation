@@ -49,7 +49,7 @@ export const metadata: Metadata = {
       "Watch machine learning algorithms come alive through interactive visualizations. Adjust parameters, see results instantly.",
     images: [
       {
-        url: siteConfig.ogImage,
+        url: `${siteConfig.url}${siteConfig.ogImage}`,
         width: 1200,
         height: 630,
         alt: "ML Simulations - Interactive Machine Learning Education",
