@@ -36,18 +36,16 @@ export function LearningCard({
   return (
     <Card
       className="
-        overflow-hidden rounded-2xl
-        border-2 border-border/60
-        bg-background
+        group/card overflow-hidden rounded-2xl
+        bg-transparent glass
         transition-all duration-300 ease-out
         hover:-translate-y-1
         hover:shadow-2xl
-        hover:border-border
-        hover:bg-muted/30
+        hover:border-primary/40
       "
     >
       {/* Image */}
-      <div className="relative aspect-video group">
+      <div className="relative aspect-video">
         <Image
           src={image}
           alt={title}
@@ -55,7 +53,7 @@ export function LearningCard({
           className="
             object-cover
             transition-transform duration-500 ease-out
-            group-hover:scale-[1.04]
+            group-hover/card:scale-[1.04]
           "
         />
         <Badge className="absolute top-3 left-3">{badge}</Badge>

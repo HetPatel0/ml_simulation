@@ -29,9 +29,15 @@ export function StatsSection() {
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
-      className="border-y border-border/60 bg-muted/30"
+      className="px-6 py-16 md:py-20"
     >
-      <div className="max-w-5xl mx-auto px-6 py-12 grid grid-cols-3 gap-8 text-center">
+      <div
+        className="relative max-w-5xl mx-auto glass rounded-3xl py-10 px-4 grid grid-cols-3 divide-x divide-border/30 text-center"
+        style={{
+          backgroundImage:
+            "radial-gradient(80% 140% at 15% 0%, oklch(0.6723 0.1606 245 / 0.08), transparent 60%), radial-gradient(70% 130% at 85% 100%, oklch(0.6907 0.1554 160.3454 / 0.07), transparent 55%)",
+        }}
+      >
         {stats.map((stat, i) => (
           <motion.div
             key={stat.label}
