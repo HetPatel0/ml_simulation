@@ -186,3 +186,90 @@ html {
     letter-spacing: var(--tracking-normal);
   }
 }
+
+/* ---------- Glassmorphism design system ---------- */
+:root {
+  --glass-bg: oklch(1 0 0 / 46%);
+  --glass-bg-strong: oklch(1 0 0 / 62%);
+  --glass-border: oklch(0.1884 0.0128 248.51 / 12%);
+  --glass-highlight: oklch(1 0 0 / 85%);
+  --glass-sheen: oklch(1 0 0 / 32%);
+  --glass-shadow: 0 8px 32px -8px oklch(0.1884 0.0128 248.51 / 14%);
+  --glass-blur: 18px;
+}
+
+.dark {
+  --glass-bg: oklch(0.26 0.02 250 / 36%);
+  --glass-bg-strong: oklch(0.22 0.02 250 / 56%);
+  --glass-border: oklch(1 0 0 / 10%);
+  --glass-highlight: oklch(1 0 0 / 12%);
+  --glass-sheen: oklch(1 0 0 / 7%);
+  --glass-shadow: 0 8px 32px -8px oklch(0 0 0 / 45%);
+}
+
+@layer components {
+  .glass {
+    background-color: var(--glass-bg);
+    /* Diagonal sheen gives panels a lit-glass reflection */
+    background-image: linear-gradient(
+      120deg,
+      var(--glass-sheen),
+      transparent 45%
+    );
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(190%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(190%);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-highlight),
+      var(--glass-shadow);
+  }
+
+  /* Heavier frost for chrome like the navbar */
+  .glass-strong {
+    --glass-blur: 28px;
+    background-color: var(--glass-bg-strong);
+    background-image: linear-gradient(
+      120deg,
+      var(--glass-sheen),
+      transparent 45%
+    );
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(200%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(200%);
+    border: 1px solid var(--glass-border);
+    box-shadow:
+      inset 0 1px 0 0 var(--glass-highlight),
+      var(--glass-shadow);
+  }
+
+  /* Readability fallback when backdrop-filter is unsupported */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass,
+    .glass-strong {
+      background-color: var(--background);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-drift {
+      animation: none;
+    }
+  }
+}
+
+/* Slow ambient drift for gradient orbs behind glass surfaces */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(30px, -22px, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-24px, 16px, 0) scale(0.94);
+  }
+}
+
+.animate-drift {
+  animation: drift 18s ease-in-out infinite;
+}
