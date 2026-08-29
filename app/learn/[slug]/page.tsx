@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { articleMetadata, siteConfig } from "@/lib/metadata";
 import ArticleClient from "./article-client";
-import { BackToTop } from "@/components/common/back-to-top";
+import { BackToTop } from "@/components/layout/back-to-top";
 
 
 const validSlugs = Object.keys(articleMetadata);

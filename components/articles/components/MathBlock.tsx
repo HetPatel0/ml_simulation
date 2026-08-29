@@ -48,7 +48,7 @@ export function MathBlock({
   return (
     <div
       className={cn(
-        "my-6 py-4 overflow-x-auto text-center",
+        "my-6 overflow-x-auto rounded-xl border border-border/60 bg-muted/30 py-5 text-center",
         className
       )}
     >

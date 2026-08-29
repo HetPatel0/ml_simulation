@@ -30,9 +30,10 @@ export function SimulationLink({
       <Link
         href={`/simulations/${simulationSlug}`}
         className={cn(
-          "inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
+          "group inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
           "bg-primary text-primary-foreground hover:bg-primary/90",
           "hover:gap-3",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           className
         )}
       >
@@ -44,14 +45,15 @@ export function SimulationLink({
   }
 
   return (
-    <Link
-      href={`/simulations/${simulationSlug}`}
-      className={cn(
-        "group block my-6 p-6 rounded-xl border-2 border-dashed transition-all",
-        "border-primary/30 hover:border-primary bg-primary/5 hover:bg-primary/10",
-        className
-      )}
-    >
+      <Link
+        href={`/simulations/${simulationSlug}`}
+        className={cn(
+          "group block my-6 p-6 rounded-xl border-2 border-dashed transition-all",
+          "border-primary/30 hover:border-primary bg-primary/5 hover:bg-primary/10",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          className
+        )}
+      >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/20 text-primary group-hover:scale-110 transition-transform">

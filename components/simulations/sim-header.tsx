@@ -28,7 +28,7 @@ export default function SimHeader({ title, subtitle }: SimHeaderProps) {
             variant="ghost"
             size="sm"
             onClick={handleBack}
-            className="group absolute left-7 gap-2 cursor-pointer"
+            className="group absolute left-7 gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ArrowLeft className="transition-transform group-hover:-translate-x-1" />
             Back
@@ -37,9 +37,9 @@ export default function SimHeader({ title, subtitle }: SimHeaderProps) {
           <div className="mx-auto h-6" />
         </div>
       </div>
-      <div className="mt-4 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-        <p className="mt-2 text-muted-foreground">{subtitle}</p>
+      <div className="mt-6 text-center">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>
+        <p className="mt-2 text-base text-muted-foreground sm:text-lg">{subtitle}</p>
       </div>
     </header>
   );

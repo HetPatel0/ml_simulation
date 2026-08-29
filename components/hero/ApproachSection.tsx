@@ -48,9 +48,9 @@ export function ApproachSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="group"
+              className="group transition-transform duration-200 hover:-translate-y-1"
             >
-              <span className="text-2xl h1 font-mono text-primary/60">
+              <span className="text-2xl font-mono font-semibold text-primary/60">
                 {item.num}
               </span>
               <h3 className="mt-3 text-xl font-medium tracking-tight group-hover:text-primary transition-colors">

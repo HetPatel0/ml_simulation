@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 
 type KernelType = "rbf" | "poly" | "linear";
 

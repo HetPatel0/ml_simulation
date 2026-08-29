@@ -1,6 +1,7 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { blurDataURL } from "@/lib/blur";
 
 type ArticlePostProps = {
   title: string;
@@ -46,26 +47,26 @@ export function ArticlePost({
       </header>
 
       {/* Optional Image */}
-      {image ? (
-        <figure className="relative my-10 aspect-video border-2 rounded-xl">
-          <Image
-            src={image.src}
-            alt={image.alt ?? title}
-            priority
-            fill
-            className="object-cover rounded-xl"
-            quality={100}
-            sizes="(max-width: 768px) 100vw, 800px"
-          />
-        </figure>
-      ) : (
-        <div></div>
-      )}
+        {image && (
+          <figure className="relative my-10 aspect-video border-2 rounded-xl">
+            <Image
+              src={image.src}
+              alt={image.alt ?? title}
+              fill
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL={blurDataURL}
+              sizes="(max-width: 768px) 100vw, 800px"
+              quality={85}
+              className="object-cover rounded-xl"
+            />
+          </figure>
+        )}
 
       {children && (
         <div
           className={cn(
-            "max-w-none text-neutral-800 dark:text-neutral-200",
+            "max-w-none text-foreground",
 
             // --- PARAGRAPHS ---
             "[&>p]:text-lg",

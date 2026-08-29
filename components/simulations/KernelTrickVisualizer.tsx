@@ -7,7 +7,7 @@
 import { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 import Script from "next/script";
 
 declare global {

@@ -94,7 +94,7 @@ ml_simulation/
 │           └── simulation-client.tsx # Client component
 │
 ├── components/
-│   ├── ui/                       # shadcn/ui components
+│   ├── ui/                       # shadcn/ui primitives
 │   │   ├── button.tsx
 │   │   ├── card.tsx
 │   │   ├── input.tsx
@@ -102,14 +102,29 @@ ml_simulation/
 │   │   ├── select.tsx
 │   │   ├── slider.tsx
 │   │   ├── badge.tsx
-│   │   └── separator.tsx
-│   ├── common/                   # Shared components
+│   │   ├── separator.tsx
+│   │   └── tooltip.tsx
+│   ├── layout/                   # Site chrome (header / footer)
 │   │   ├── navbar.tsx
 │   │   ├── footer.tsx
 │   │   ├── logo.tsx
-│   │   ├── sim-header.tsx
-│   │   └── article-header.tsx
+│   │   └── back-to-top.tsx
+│   ├── theme/                    # Theme switching
+│   │   ├── theme-provider.tsx
+│   │   ├── mode-toggle.tsx
+│   │   └── theme-shortcut.tsx
+│   ├── providers/                # Context providers
+│   │   └── lenis-provider.tsx
+│   ├── cards/                    # Reusable cards
+│   │   └── learning-card.tsx
+│   ├── hero/                     # Landing page sections
+│   │   ├── HeroSection.tsx
+│   │   ├── ApproachSection.tsx
+│   │   ├── StatsSection.tsx
+│   │   ├── CTASection.tsx
+│   │   └── FeaturedSection.tsx
 │   ├── simulations/              # ML visualization components
+│   │   ├── sim-header.tsx
 │   │   ├── GradientDescent.tsx
 │   │   ├── LeastSquares.tsx
 │   │   ├── LinearRegressionInteractive.tsx
@@ -119,31 +134,36 @@ ml_simulation/
 │   │   ├── PolynomialRegression.tsx
 │   │   ├── SVRVisualizer.tsx
 │   │   ├── SupportVectorRegression.tsx
+│   │   ├── SvrKernelLift.tsx
+│   │   ├── SVRKernelLiftSimulation.tsx
 │   │   └── KernelTrickVisualizer.tsx
-│   ├── articles/                 # Article content components
-│   │   ├── article-post.tsx      # Base article wrapper
-│   │   ├── components/           # Reusable article components
-│   │   │   ├── index.ts          # Barrel export
-│   │   │   ├── CodeBlock.tsx     # Syntax highlighted code with copy
-│   │   │   ├── MathBlock.tsx     # KaTeX formula rendering
-│   │   │   ├── CalloutBox.tsx    # Tips, warnings, notes, examples
-│   │   │   ├── SimulationLink.tsx # Links to simulations
-│   │   │   └── ParameterTable.tsx # sklearn parameter tables
-│   │   ├── GradientDescentArticle.tsx
-│   │   ├── LinearRegressionArticle.tsx
-│   │   ├── PolynomialRegressionArticle.tsx
-│   │   ├── LogisticRegressionArticle.tsx
-│   │   ├── SVRArticle.tsx
-│   │   ├── KernelTrickArticle.tsx
-│   │   └── LeastSquaresArticle.tsx
-│   ├── learning-card.tsx
-│   ├── theme-provider.tsx
-│   ├── mode-toogle.tsx
-│   └── lenis-provider.tsx
+│   └── articles/                 # Article content components
+│       ├── article-post.tsx      # Base article wrapper
+│       ├── article-header.tsx
+│       ├── components/           # Reusable article components
+│       │   ├── index.ts          # Barrel export
+│       │   ├── CodeBlock.tsx     # Syntax highlighted code with copy
+│       │   ├── MathBlock.tsx     # KaTeX formula rendering
+│       │   ├── CalloutBox.tsx    # Tips, warnings, notes, examples
+│       │   ├── SimulationLink.tsx # Links to simulations
+│       │   └── ParameterTable.tsx # sklearn parameter tables
+│       ├── DecisionTreeArticle.tsx
+│       ├── GradientDescentArticle.tsx
+│       ├── LinearRegressionArticle.tsx
+│       ├── PolynomialRegressionArticle.tsx
+│       ├── LogisticRegressionArticle.tsx
+│       ├── SVRArticle.tsx
+│       ├── KernelTrickArticle.tsx
+│       ├── KNearestNeighborsArticle.tsx
+│       ├── NaiveBayesArticle.tsx
+│       └── LeastSquaresArticle.tsx
 │
 ├── lib/
 │   ├── utils.ts                  # Utility functions (cn())
-│   └── metadata.ts               # SEO metadata & article-simulation mapping
+│   ├── metadata.ts               # SEO metadata & article-simulation mapping
+│   ├── use-responsive-canvas.ts  # Canvas sizing hook
+│   └── hooks/
+│       └── use-search-shortcut.ts # ⌘K / Esc search focus hook
 │
 ├── public/
 │   ├── logo.png                  # Project logo

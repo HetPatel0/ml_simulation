@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { blurDataURL } from "@/lib/blur";
 
 interface LearningCardProps {
   title: string;
@@ -36,14 +37,16 @@ export function LearningCard({
   return (
     <Card
       className="
-        overflow-hidden rounded-2xl
+        group/card overflow-hidden rounded-2xl
         border-2 border-border/60
         bg-background
-        transition-all duration-300 ease-out
-        hover:-translate-y-1
-        hover:shadow-2xl
+        transition-all duration-200 ease-out
+        hover:-translate-y-0.5
+        hover:shadow-xl
         hover:border-border
         hover:bg-muted/30
+        focus-visible:outline-none
+        focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background
       "
     >
       {/* Image */}
@@ -52,6 +55,11 @@ export function LearningCard({
           src={image}
           alt={title}
           fill
+          loading="lazy"
+          placeholder="blur"
+          blurDataURL={blurDataURL}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          quality={80}
           className="
             object-cover
             transition-transform duration-500 ease-out

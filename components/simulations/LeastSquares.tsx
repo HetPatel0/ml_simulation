@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 interface Point {

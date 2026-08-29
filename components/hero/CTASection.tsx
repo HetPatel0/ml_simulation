@@ -12,7 +12,7 @@ export function CTASection() {
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="max-w-2xl mx-auto text-center"
+        className="max-w-2xl mx-auto text-center rounded-2xl border border-border bg-card/50 py-12 px-6 sm:px-12"
       >
         <h2 className="text-3xl md:text-4xl font-light tracking-tight">
           Ready to <span className="font-medium text-primary">explore</span>?
@@ -30,7 +30,7 @@ export function CTASection() {
           <Button
             size="lg"
             asChild
-            className="h-11 px-10 text-base gap-3 rounded-full group"
+            className="h-11 px-10 text-base gap-3 rounded-full group shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary/40"
           >
             <Link href="/simulations" scroll={true}>
               Start Learning

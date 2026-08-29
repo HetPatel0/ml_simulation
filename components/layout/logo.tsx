@@ -6,7 +6,8 @@ export default function Logo() {
     <Link
       href="/"
       scroll={true}
-      className="flex items-center  font-semibold tracking-tight select-none"
+      aria-label="go home"
+      className="flex items-center  font-semibold tracking-tight select-none "
     >
       <Image
         src="/logo.png"

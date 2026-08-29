@@ -3,7 +3,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 import Script from "next/script";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

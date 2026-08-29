@@ -1,4 +1,4 @@
-import ArtHeader from "@/components/common/article-header";
+import ArtHeader from "@/components/articles/article-header";
 
 export default function ArticleLayout({
   children,

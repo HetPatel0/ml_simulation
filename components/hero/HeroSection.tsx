@@ -156,7 +156,7 @@ function HeroContent({
         transition={{ duration: 0.6 }}
         className="mb-4 sm:mb-6"
       >
-        <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase text-primary/90 border border-primary/20 rounded-full bg-primary/10 shadow-[0_0_15px_-3px_var(--primary)] shadow-primary/10 backdrop-blur-sm">
+        <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase text-primary border border-primary/20 rounded-full bg-primary/10 backdrop-blur-sm">
           Interactive ML Education
         </span>
       </motion.div>
@@ -186,7 +186,7 @@ function HeroContent({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.3 }}
-        className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-muted-foreground/80 sm:text-muted-foreground/90 max-w-2xl mx-auto leading-relaxed font-normal px-4 sm:px-2"
+        className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-normal px-4 sm:px-2"
       >
         Watch machine learning algorithms come alive through interactive
         visualizations. Adjust parameters, see results instantly.
@@ -202,18 +202,18 @@ function HeroContent({
         <Button
           size="lg"
           asChild
-          className="h-11 px-6 sm:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full group shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
+          className="h-11 px-6 sm:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full group shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary/40"
         >
           <Link href="/simulations" scroll={true}>
             <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 transition-transform group-hover:scale-110" />
-            Start Exploring
+            Explore Simulations
           </Link>
         </Button>
         <Button
           size="lg"
           variant="ghost"
           asChild
-          className="h-11 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full hover:bg-muted/50"
+          className="h-11 px-5 sm:px-6 lg:px-8 text-sm sm:text-base gap-2 sm:gap-3 rounded-full hover:bg-muted/60 transition-colors"
         >
           <Link href="/learn" scroll={true}>
             <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

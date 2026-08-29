@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import SimHeader from "@/components/common/sim-header";
+import SimHeader from "@/components/simulations/sim-header";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 
 export default function GradientDescent() {

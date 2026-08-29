@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Navbar } from "@/components/common/navbar";
-import LenisProvider from "@/components/lenis-provider";
-import FooterSection from "@/components/common/footer";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Navbar } from "@/components/layout/navbar";
+import { ThemeShortcut } from "@/components/theme/theme-shortcut";
+import { OfflineBanner } from "@/components/layout/offline-banner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import LenisProvider from "@/components/providers/lenis-provider";
+import FooterSection from "@/components/layout/footer";
 import { siteConfig } from "@/lib/metadata";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
@@ -94,10 +97,20 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <LenisProvider>
-            <Navbar />
-            <main className="flex-1">{children} <Analytics /><SpeedInsights /></main>
-             
+            <TooltipProvider>
+              <a
+                href="#main"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-md"
+              >
+                Skip to content
+              </a>
+              <ThemeShortcut />
+              <OfflineBanner />
+              <Navbar />
+            <main id="main" className="flex-1">{children} <Analytics /><SpeedInsights /></main>
+
             <FooterSection />
+            </TooltipProvider>
           </LenisProvider>
         </ThemeProvider>
       </body>

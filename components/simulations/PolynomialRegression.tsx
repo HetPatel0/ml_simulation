@@ -9,9 +9,20 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 import { Slider } from "@/components/ui/slider";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+
+const colors = {
+  background: "#ffffff",
+  foreground: "#1e293b", // slate-800
+  primary: "#2563eb", // blue-600
+  destructive: "#dc2626", // red-600
+  muted: "#94a3b8", // slate-400
+  residual: "rgba(0,0,0,0.15)", // Light gray for residuals
+};
+
+const scale = 2.5;
 
 interface Point {
   x: number;
@@ -29,18 +40,8 @@ export default function PolynomialRegression() {
   const [coeffs, setCoeffs] = useState<number[]>([]);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
 
-  const colors = {
-    background: '#ffffff',
-    foreground: '#1e293b', // slate-800
-    primary: '#2563eb', // blue-600
-    destructive: '#dc2626', // red-600
-    muted: '#94a3b8', // slate-400
-    residual: 'rgba(0,0,0,0.15)', // Light gray for residuals
-  };
-
   const width = size.width;
   const height = size.height;
-  const scale = 2.5;
 
   /* -------------------- Math -------------------- */
   const solve = useCallback((pts: Point[], deg: number): number[] => {
@@ -98,9 +99,6 @@ export default function PolynomialRegression() {
     return res;
   }, []);
 
-  const predict = (x: number, c: number[]) =>
-    c.reduce((s, v, i) => s + v * Math.pow(x, i), 0);
-
   /* -------------------- Effects -------------------- */
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -109,11 +107,14 @@ export default function PolynomialRegression() {
   }, [points, degree, solve]);
 
   /* -------------------- Drawing -------------------- */
-  const draw = useCallback(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    const predict = (x: number, c: number[]) =>
+      c.reduce((s, v, i) => s + v * Math.pow(x, i), 0);
 
     /* ---------- Background ---------- */
     ctx.fillStyle = colors.background;
@@ -186,9 +187,7 @@ export default function PolynomialRegression() {
       ctx.lineWidth = 2;
       ctx.stroke();
     });
-  }, [points, coeffs, dragIdx, width, height, size]);
-
-  useEffect(draw, [draw]);
+  }, [points, coeffs, dragIdx, width, height, size, canvasRef]);
 
   /* -------------------- Interaction -------------------- */
   const getCoords = (e: React.MouseEvent | React.TouchEvent) => {

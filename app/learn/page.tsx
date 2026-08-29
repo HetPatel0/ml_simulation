@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, X, BookOpen } from "lucide-react";
-import { LearningCard } from "@/components/learning-card";
+import { Search, X, BookOpen, SearchX } from "lucide-react";
+import { LearningCard } from "@/components/cards/learning-card";
+import { useSearchShortcut } from "@/lib/hooks/use-search-shortcut";
 
 interface Article {
   id: string;
@@ -118,25 +119,7 @@ const articles: Article[] = [
 
 export default function SimulationsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
-  /* ⌘K / CtrlK focus + Esc clear */
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-
-      if (e.key === "Escape") {
-        setSearchQuery("");
-        searchInputRef.current?.blur();
-      }
-    };
-
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, []);
+  const searchInputRef = useSearchShortcut(() => setSearchQuery(""));
 
   const query = searchQuery.trim().toLowerCase();
 
@@ -181,11 +164,15 @@ export default function SimulationsPage() {
 
       {/* Search */}
       <div className="relative mb-10">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search
+          aria-hidden
+          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+        />
 
         <Input
           ref={searchInputRef}
           type="text"
+          aria-label="Search articles"
           placeholder="Search articles… (⌘+K)"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -196,6 +183,7 @@ export default function SimulationsPage() {
           <Button
             variant="ghost"
             size="icon"
+            aria-label="Clear search"
             onClick={() => setSearchQuery("")}
             className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground hover:text-foreground"
           >
@@ -236,8 +224,21 @@ export default function SimulationsPage() {
       </div>
 
       {filteredArticles.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          No articles found matching &quot;{searchQuery}&quot;
+        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/60 py-20 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <SearchX className="h-6 w-6" aria-hidden />
+          </div>
+          <div className="space-y-1">
+            <p className="font-medium text-foreground">
+              No articles found
+            </p>
+            <p className="text-muted-foreground">
+              Nothing matches &quot;{searchQuery}&quot;
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => setSearchQuery("")}>
+            Clear search
+          </Button>
         </div>
       )}
     </div>

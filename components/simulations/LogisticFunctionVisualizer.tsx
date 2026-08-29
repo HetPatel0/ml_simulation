@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 import { Slider } from "@/components/ui/slider";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 

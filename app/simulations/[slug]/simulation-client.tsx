@@ -1,27 +1,53 @@
 "use client";
 
-import GradientDescent from "@/components/simulations/GradientDescent";
-import KernelTrickVisualizer from "@/components/simulations/KernelTrickVisualizer";
-import LeastSquares from "@/components/simulations/LeastSquares";
-import LinearRegressionInteractive from "@/components/simulations/LinearRegressionInteractive";
-import LogisticFunctionVisualizer from "@/components/simulations/LogisticFunctionVisualizer";
-import LogisticRegression from "@/components/simulations/LogisticRegression";
-import LogisticTrainingSim from "@/components/simulations/LogisticTrainingSim";
-import PolynomialRegression from "@/components/simulations/PolynomialRegression";
-import SVRKernelLiftSimulation from "@/components/simulations/SvrKernelLift";
-import SVRVisualizer from "@/components/simulations/SVRVisualizer";
+import dynamic from "next/dynamic";
+import { Loader2 } from "lucide-react";
+import { SimulationErrorBoundary } from "@/components/simulations/simulation-error-boundary";
+
+const SimulationLoader = () => (
+  <div
+    role="status"
+    aria-label="Loading simulation"
+    className="flex min-h-[420px] w-full items-center justify-center"
+  >
+    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  </div>
+);
+
+const dynamicSimulation = (importer: () => Promise<{ default: React.ComponentType }>) =>
+  dynamic(importer, { ssr: false, loading: SimulationLoader });
 
 const simulationComponents: Record<string, React.ComponentType> = {
-  "gradient-descent": GradientDescent,
-  "least-squares": LeastSquares,
-  "linear-regression": LinearRegressionInteractive,
-  "polynomial-regression": PolynomialRegression,
-  "logistic-regression": LogisticRegression,
-  "logistic-function": LogisticFunctionVisualizer,
-  "logistic-training": LogisticTrainingSim,
-  "kernel-trick": KernelTrickVisualizer,
-  "svr-visualizer": SVRVisualizer,
-  "svr-kernel-lift": SVRKernelLiftSimulation,
+  "gradient-descent": dynamicSimulation(
+    () => import("@/components/simulations/GradientDescent"),
+  ),
+  "least-squares": dynamicSimulation(
+    () => import("@/components/simulations/LeastSquares"),
+  ),
+  "linear-regression": dynamicSimulation(
+    () => import("@/components/simulations/LinearRegressionInteractive"),
+  ),
+  "polynomial-regression": dynamicSimulation(
+    () => import("@/components/simulations/PolynomialRegression"),
+  ),
+  "logistic-regression": dynamicSimulation(
+    () => import("@/components/simulations/LogisticRegression"),
+  ),
+  "logistic-function": dynamicSimulation(
+    () => import("@/components/simulations/LogisticFunctionVisualizer"),
+  ),
+  "logistic-training": dynamicSimulation(
+    () => import("@/components/simulations/LogisticTrainingSim"),
+  ),
+  "kernel-trick": dynamicSimulation(
+    () => import("@/components/simulations/KernelTrickVisualizer"),
+  ),
+  "svr-visualizer": dynamicSimulation(
+    () => import("@/components/simulations/SVRVisualizer"),
+  ),
+  "svr-kernel-lift": dynamicSimulation(
+    () => import("@/components/simulations/SvrKernelLift"),
+  ),
 };
 
 export default function SimulationClient({ slug }: { slug: string }) {
@@ -31,5 +57,9 @@ export default function SimulationClient({ slug }: { slug: string }) {
     return null;
   }
 
-  return <SimulationComponent />;
+  return (
+    <SimulationErrorBoundary>
+      <SimulationComponent />
+    </SimulationErrorBoundary>
+  );
 }

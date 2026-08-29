@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 import { Button } from "@/components/ui/button";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
 

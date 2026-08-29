@@ -72,10 +72,7 @@ export function CodeBlock({
         )}
       >
         <div className="flex items-center gap-3">
-          <Terminal className={cn(
-            "h-4 w-4",
-            isDark ? "text-muted-foreground" : "text-muted-foreground"
-          )} />
+          <Terminal className="h-4 w-4 text-muted-foreground" />
           {title && (
             <span className="text-sm font-medium text-foreground">
               {title}
@@ -96,6 +93,7 @@ export function CodeBlock({
           disabled={copied}
           className={cn(
             "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             copied
               ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 cursor-default"
               : "bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer"

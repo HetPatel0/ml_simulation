@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import SimHeader from "../common/sim-header";
+import SimHeader from "./sim-header";
 
 interface Point {
   x: number;
