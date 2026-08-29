@@ -5,7 +5,6 @@ import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
 import { RefObject } from "react";
 import { Play, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AmbientGlow } from "@/components/common/ambient-glow";
 
 const features = [
   { label: "Visual", desc: "See algorithms work" },
@@ -157,7 +156,7 @@ function HeroContent({
         transition={{ duration: 0.6 }}
         className="mb-4 sm:mb-6"
       >
-        <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase text-primary/90 rounded-full glass">
+        <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium tracking-[0.15em] sm:tracking-[0.2em] uppercase text-primary/90 border border-primary/20 rounded-full bg-primary/10 shadow-[0_0_15px_-3px_var(--primary)] shadow-primary/10 backdrop-blur-sm">
           Interactive ML Education
         </span>
       </motion.div>
@@ -236,7 +235,7 @@ function HeroContent({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.8 + i * 0.1 }}
-            className="glass rounded-2xl px-5 sm:px-7 py-3 sm:py-4 text-center transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+            className="text-center"
           >
             <div className="text-xs sm:text-sm font-semibold text-foreground tracking-tight">
               {feature.label}
@@ -267,7 +266,6 @@ export function HeroSection({ containerRef }: HeroSectionProps) {
   return (
     <section className="relative min-h-[min(90vh,800px)] h-[clamp(500px,80vh,900px)] flex items-center justify-center overflow-hidden">
       <MLBackground />
-      <AmbientGlow />
       <HeroContent heroOpacity={heroOpacity} heroY={heroY} />
       <ScrollIndicator />
     </section>

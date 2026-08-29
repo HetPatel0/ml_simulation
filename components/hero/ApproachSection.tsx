@@ -48,7 +48,7 @@ export function ApproachSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="group glass rounded-3xl p-6 md:p-7 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:border-primary/30"
+              className="group"
             >
               <span className="text-2xl h1 font-mono text-primary/60">
                 {item.num}

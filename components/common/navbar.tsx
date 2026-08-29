@@ -29,9 +29,8 @@ export function Navbar() {
     pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-50 w-full">
-      <div className="glass-strong border-x-0 border-t-0 rounded-none">
-        <nav className="mx-auto max-w-6xl flex h-14 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b bg-background">
+      <nav className="mx-auto max-w-6xl flex h-14 items-center justify-between px-4">
         <Logo />
 
         {/* Center: Desktop Nav */}
@@ -73,12 +72,11 @@ export function Navbar() {
           </Button>
         </div>
       </nav>
-      </div>
 
       {/* Mobile Menu */}
       <div
         className={cn(
-          "md:hidden glass rounded-none border-x-0",
+          "md:hidden border-t bg-background",
           isOpen ? "block" : "hidden",
         )}
       >
