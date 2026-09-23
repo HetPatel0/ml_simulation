@@ -1,13 +1,13 @@
 "use client";
 
-import { ArticlePost } from "./article-post";
+import { ArticlePost } from "../../layout/article-post";
 import {
   CodeBlock,
   MathBlock,
   CalloutBox,
   AhaBox,
   ParameterTable,
-} from "./components";
+} from "../../components";
 
 const naiveBayesParams = [
   {

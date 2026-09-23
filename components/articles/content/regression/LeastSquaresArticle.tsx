@@ -1,13 +1,13 @@
 "use client";
 
-import { ArticlePost } from "./article-post";
+import { ArticlePost } from "../../layout/article-post";
 import {
   CodeBlock,
   MathBlock,
   CalloutBox,
   AhaBox,
   SimulationLink,
-} from "./components";
+} from "../../components";
 
 const manualCalculation = `import numpy as np
 
@@ -145,7 +145,7 @@ export default function LeastSquaresArticle() {
       author="Het Bhuva"
       description="Every time you fit a line to data, this elegant 200-year-old formula is doing the heavy lifting behind the scenes."
       image={{
-        src: "/article/regression/least-squares.png",
+        src: "/images/regression/least-squares.png",
         alt: "Least Squares Visualization",
       }}
     >

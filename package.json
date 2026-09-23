@@ -1,12 +1,15 @@
 {
   "name": "ml_simul",
-  "version": "1.2.0",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "audio:list": "node scripts/generate-article-audio.mjs --list",
+    "audio:gen": "node scripts/generate-article-audio.mjs --slug",
+    "audio:all": "node scripts/generate-article-audio.mjs --all"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^3.1.1",
@@ -41,6 +44,7 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "eslint": "^9",
     "eslint-config-next": "16.1.4",
+    "kokoro-js": "^1.2.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

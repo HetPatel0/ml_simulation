@@ -19,6 +19,9 @@ export default function LenisProvider({
       smoothWheel: true,
     });
 
+    // Exposed for anchor navigation (e.g. article TOC scroll-spy links).
+    (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
+
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -27,6 +30,9 @@ export default function LenisProvider({
     requestAnimationFrame(raf);
 
     return () => {
+      if ((window as unknown as { __lenis?: Lenis }).__lenis === lenis) {
+        delete (window as unknown as { __lenis?: Lenis }).__lenis;
+      }
       lenis.destroy();
     };
   }, []);

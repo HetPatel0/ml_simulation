@@ -1,15 +1,15 @@
 "use client";
 
-import GradientDescentArticle from "@/components/articles/GradientDescentArticle";
-import KernelTrickArticle from "@/components/articles/KernelTrickArticle";
-import KNearestNeighborsArticle from "@/components/articles/KNearestNeighborsArticle";
-import LeastSquaresArticle from "@/components/articles/LeastSquaresArticle";
-import LinearRegressionArticle from "@/components/articles/LinearRegressionArticle";
-import LogisticRegressionArticle from "@/components/articles/LogisticRegressionArticle";
-import NaiveBayesArticle from "@/components/articles/NaiveBayesArticle";
-import PolynomialRegressionArticle from "@/components/articles/PolynomialRegressionArticle";
-import SVRArticle from "@/components/articles/SVRArticle";
-import DecisionTreeArticle from "@/components/articles/DecisionTreeArticle";
+import GradientDescentArticle from "@/components/articles/content/regression/GradientDescentArticle";
+import KernelTrickArticle from "@/components/articles/content/advanced/KernelTrickArticle";
+import KNearestNeighborsArticle from "@/components/articles/content/classification/KNearestNeighborsArticle";
+import LeastSquaresArticle from "@/components/articles/content/regression/LeastSquaresArticle";
+import LinearRegressionArticle from "@/components/articles/content/regression/LinearRegressionArticle";
+import LogisticRegressionArticle from "@/components/articles/content/classification/LogisticRegressionArticle";
+import NaiveBayesArticle from "@/components/articles/content/classification/NaiveBayesArticle";
+import PolynomialRegressionArticle from "@/components/articles/content/regression/PolynomialRegressionArticle";
+import SVRArticle from "@/components/articles/content/regression/SVRArticle";
+import DecisionTreeArticle from "@/components/articles/content/classification/DecisionTreeArticle";
 
 const articleComponents: Record<string, React.ComponentType> = {
   "gradient-descent": GradientDescentArticle,

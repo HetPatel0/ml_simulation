@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { articleMetadata, siteConfig } from "@/lib/metadata";
 import ArticleClient from "./article-client";
+import { ArticleShell } from "@/components/articles/layout/article-shell";
 import { BackToTop } from "@/components/layout/back-to-top";
 
 
@@ -62,7 +63,9 @@ export default async function ArticlePage({ params }: Props) {
 
   return (
     <article className="min-h-screen">
-      <ArticleClient slug={slug} />
+      <ArticleShell>
+        <ArticleClient slug={slug} />
+      </ArticleShell>
       <BackToTop />
     </article>
   );

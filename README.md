@@ -28,6 +28,9 @@ ML Simulations is an interactive educational platform designed to help users und
 
 - **Interactive Simulations** — Visualize ML algorithms working in real-time
 - **In-depth Articles** — Engaging explanations with code examples and math formulas
+- **Topic Quick Links** — Sticky "On this page" rail with main topics (auto-detected `h2` headings, scroll-spy highlight, collapsible on mobile)
+- **Article Audio (Listen)** — Pre-generated neural narration per article with play/pause and ±15s controls
+- **One-click Share** — Copy-link Share button under every article subtitle
 - **Code Examples with Copy** — Python/sklearn code snippets with syntax highlighting and one-click copy
 - **Mathematical Formulas** — Beautiful LaTeX rendering with KaTeX
 - **Parameter Tables** — sklearn parameter explanations with practical impact descriptions
@@ -67,6 +70,7 @@ ML Simulations is an interactive educational platform designed to help users und
 - **Icons**: [Lucide React](https://lucide.dev/), [Hugeicons](https://hugeicons.com/)
 - **Math Rendering**: [KaTeX](https://katex.org/)
 - **Syntax Highlighting**: [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
+- **Article Narration (opt-in, author machine only)**: [Kokoro](https://github.com/hexgrad/kokoro) neural TTS (`kokoro-js`, 82M params, Apache-2.0) — installed separately when generating `.mp3` files; never a project dependency, never shipped to visitors
 
 ## Project Structure
 
@@ -138,8 +142,29 @@ ml_simulation/
 │   │   ├── SVRKernelLiftSimulation.tsx
 │   │   └── KernelTrickVisualizer.tsx
 │   └── articles/                 # Article content components
-│       ├── article-post.tsx      # Base article wrapper
-│       ├── article-header.tsx
+│       ├── layout/               # Article chrome (wrapper, header, TOC, actions)
+│       │   ├── article-post.tsx      # Base article wrapper
+│       │   ├── article-header.tsx
+│       │   ├── article-shell.tsx     # Centered layout + sticky topic rail grid
+│       │   ├── article-toc.tsx       # Desktop sticky TOC + mobile accordion
+│       │   ├── article-actions.tsx   # Listen + Share row under subtitle
+│       │   ├── article-listen.tsx    # Static-audio player (play/pause, ±15s)
+│       │   ├── article-share.tsx     # Copy-link Share button
+│       │   └── use-active-section.ts # h2 scroll-spy hook + slug helpers
+│       ├── content/              # Article bodies, grouped by category
+│       │   ├── regression/
+│       │   │   ├── GradientDescentArticle.tsx
+│       │   │   ├── LeastSquaresArticle.tsx
+│       │   │   ├── LinearRegressionArticle.tsx
+│       │   │   ├── PolynomialRegressionArticle.tsx
+│       │   │   └── SVRArticle.tsx
+│       │   ├── classification/
+│       │   │   ├── LogisticRegressionArticle.tsx
+│       │   │   ├── DecisionTreeArticle.tsx
+│       │   │   ├── KNearestNeighborsArticle.tsx
+│       │   │   └── NaiveBayesArticle.tsx
+│       │   └── advanced/
+│       │       └── KernelTrickArticle.tsx
 │       ├── components/           # Reusable article components
 │       │   ├── index.ts          # Barrel export
 │       │   ├── CodeBlock.tsx     # Syntax highlighted code with copy
@@ -147,26 +172,21 @@ ml_simulation/
 │       │   ├── CalloutBox.tsx    # Tips, warnings, notes, examples
 │       │   ├── SimulationLink.tsx # Links to simulations
 │       │   └── ParameterTable.tsx # sklearn parameter tables
-│       ├── DecisionTreeArticle.tsx
-│       ├── GradientDescentArticle.tsx
-│       ├── LinearRegressionArticle.tsx
-│       ├── PolynomialRegressionArticle.tsx
-│       ├── LogisticRegressionArticle.tsx
-│       ├── SVRArticle.tsx
-│       ├── KernelTrickArticle.tsx
-│       ├── KNearestNeighborsArticle.tsx
-│       ├── NaiveBayesArticle.tsx
-│       └── LeastSquaresArticle.tsx
 │
 ├── lib/
 │   ├── utils.ts                  # Utility functions (cn())
 │   ├── metadata.ts               # SEO metadata & article-simulation mapping
+│   ├── article-audio.ts          # Manifest: slug → /audio/articles/<slug>.mp3 (or null)
 │   ├── use-responsive-canvas.ts  # Canvas sizing hook
 │   └── hooks/
 │       └── use-search-shortcut.ts # ⌘K / Esc search focus hook
 │
+├── scripts/
+│   └── generate-article-audio.mjs # Pre-generate article narration audio (Kokoro + ffmpeg)
+│
 ├── public/
 │   ├── logo.png                  # Project logo
+│   ├── audio/articles/           # Pre-generated article narrations (<slug>.mp3)
 │   ├── images/                   # Simulation thumbnails
 │   │   ├── regression/
 │   │   ├── classification/
@@ -222,6 +242,9 @@ ml_simulation/
 | `pnpm build` | Create production build |
 | `pnpm start` | Start production server |
 | `pnpm lint` | Run ESLint |
+| `pnpm audio:list` | Sorted article inventory (words, minutes, audio status) |
+| `pnpm audio:gen <slug>` | Generate narration audio for one article |
+| `pnpm audio:all` | Generate narration audio for all articles missing it |
 
 ## Contributing
 
@@ -340,10 +363,19 @@ Contributions are welcome! Here's how you can help:
 
 ### Adding a New Article
 
-1. **Create the article component**
+1. **Create the article component** in the matching category folder
+   (`content/regression/`, `content/classification/`, or `content/advanced/` —
+   create a new folder if a new category is needed):
 
    ```bash
-   touch components/articles/YourArticle.tsx
+   touch components/articles/content/regression/YourArticle.tsx
+   ```
+
+   Import the wrapper and primitives with (adjust `../..` depth if nested deeper):
+
+   ```tsx
+   import { ArticlePost } from "../../layout/article-post";
+   import { CodeBlock, /* ... */ } from "../../components";
    ```
 
 2. **Use the article components**
@@ -353,15 +385,15 @@ Contributions are welcome! Here's how you can help:
    ```tsx
    "use client";
 
-   import { ArticlePost } from "./article-post";
-   import {
-     CodeBlock,
-     MathBlock,
-     CalloutBox,
-     AhaBox,
-     SimulationLink,
-     ParameterTable,
-   } from "./components";
+    import { ArticlePost } from "../../layout/article-post";
+    import {
+      CodeBlock,
+      MathBlock,
+      CalloutBox,
+      AhaBox,
+      SimulationLink,
+      ParameterTable,
+    } from "../../components";
 
    const pythonCode = `import numpy as np
    from sklearn.linear_model import LinearRegression
@@ -470,6 +502,73 @@ Contributions are welcome! Here's how you can help:
 7. **Add to the articles listing**
 
    Add entry to `articals` array in `app/learn/page.tsx`
+
+### Article Audio (Listen Button)
+
+The Listen player is a plain `<audio>` tag — it plays a **pre-generated**
+`.mp3` stored beside the site's static files, so visitors spend zero compute
+(no model download, no in-browser inference). Audio is generated once on the
+author's machine with Kokoro neural TTS and committed to the repo.
+
+**How to put audio in an article:**
+
+1. **Prerequisites** — production build tooling plus `ffmpeg` on PATH
+   (for `.mp3` compression; without it a larger `.wav` is kept instead),
+   internet access (the Kokoro model, ~300MB, auto-downloads on first run),
+   and the TTS package installed **only on the generating machine**:
+
+   ```bash
+   pnpm add -D kokoro-js   # or: bun add --dev kokoro-js
+   ```
+
+   `kokoro-js` is intentionally *not* a project dependency: its
+   `onnxruntime-node` postinstall downloads large native binaries, which
+   would slow down (or break, when offline) every contributor's
+   `pnpm install`. Install it when you need audio, remove it after if you
+   want to keep installs lean — generated `.mp3` files keep working without it.
+
+2. **Build the site** (the script reads article text from rendered pages):
+
+   ```bash
+   pnpm build
+   ```
+
+3. **Check the sorted inventory** (shortest article first):
+
+   ```bash
+   pnpm audio:list
+   ```
+
+4. **Generate audio** — one article or everything missing it:
+
+   ```bash
+   pnpm audio:gen linear-regression
+   pnpm audio:all
+   ```
+
+   Options: `--voice <id>` (default `af_heart`; e.g. `am_adam`, `bf_emma`),
+   `--port <n>` (default `4173`), `--keep-wav`.
+
+5. **What the script does per article:**
+
+   - Fetches `/learn/<slug>` (starts `next start` itself if needed) and
+     extracts prose-only text: title + `h2`/`h3`/`p`/`li`. Code blocks, math
+     formulas, and tables are skipped so the narration stays listenable.
+   - Synthesizes speech with Kokoro (`kokoro-js`, installed separately per
+     step 1 — never a project dependency),
+     concatenates the chunks, and writes
+     `public/audio/articles/<slug>.mp3` (~0.5 MB per minute at 64kbps mono).
+   - Updates the manifest `lib/article-audio.ts`:
+     `"your-article": "/audio/articles/your-article.mp3"`.
+
+6. **Player picks it up automatically** — `ArticleListen` reads the manifest
+   via the route slug. A `null` entry hides the Listen button, so articles
+   without audio just show Share until you generate theirs.
+
+**Adding audio for a brand-new article:** create + register the article as
+usual (steps above), rebuild (`pnpm build`), then run
+`pnpm audio:gen your-article` and commit the new `.mp3` alongside the
+manifest change.
 
 ### General Guidelines
 

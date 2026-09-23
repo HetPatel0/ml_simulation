@@ -2,6 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { blurDataURL } from "@/lib/blur";
+import { ArticleActions } from "./article-actions";
 
 type ArticlePostProps = {
   title: string;
@@ -26,7 +27,7 @@ export function ArticlePost({
   className,
 }: ArticlePostProps) {
   return (
-    <article className={cn("mx-auto max-w-[90ch] px-6 py-16", className)}>
+    <article className={cn("mx-auto w-full max-w-none py-8 sm:py-12", className)}>
       {/* Header */}
       <header className="space-y-6">
         <h1 className="text-3xl font-semibold leading-tight tracking-tight">
@@ -44,6 +45,8 @@ export function ArticlePost({
             {description}
           </p>
         )}
+
+        <ArticleActions title={title} />
       </header>
 
       {/* Optional Image */}
@@ -64,6 +67,7 @@ export function ArticlePost({
         )}
 
       {children && (
+        <div data-article-body>
         <div
           className={cn(
             "max-w-none text-foreground",
@@ -100,6 +104,7 @@ export function ArticlePost({
           )}
         >
           {children}
+        </div>
         </div>
       )}
     </article>
