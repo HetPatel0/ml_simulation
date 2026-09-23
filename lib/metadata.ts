@@ -1,6 +1,12 @@
 export const siteConfig = {
   name: "ML Simulations",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://mlsimulations.com",
+  // No dashboard access needed: on Vercel, VERCEL_URL is auto-provided at
+  // build time (e.g. "mlsimulation.vercel.app"). Explicit env wins when set.
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "https://mlsimulation.vercel.app"),
   ogImage: "/og/home.jpg",
   description:
     "Interactive machine learning simulations designed to help students understand concepts through hands-on experimentation.",
