@@ -1,11 +1,13 @@
 export const siteConfig = {
   name: "ML Simulations",
-  // No dashboard access needed: on Vercel, VERCEL_URL is auto-provided at
-  // build time (e.g. "mlsimulation.vercel.app"). Explicit env wins when set.
+  // Canonical production URL. VERCEL_URL is a per-deployment hostname
+  // (often auth-protected), so it must never be used for OG URLs —
+  // scrapers fetch og:image out-of-band and get a login redirect instead
+  // of an image. Explicit env wins, then the project's production alias.
   url:
     process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : "https://mlsimulation.vercel.app"),
   description:
     "Interactive machine learning simulations designed to help students understand concepts through hands-on experimentation.",
