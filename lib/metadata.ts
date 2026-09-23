@@ -7,7 +7,6 @@ export const siteConfig = {
     (process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
       : "https://mlsimulation.vercel.app"),
-  ogImage: "/og/home.jpg",
   description:
     "Interactive machine learning simulations designed to help students understand concepts through hands-on experimentation.",
 };
