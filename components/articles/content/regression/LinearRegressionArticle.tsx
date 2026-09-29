@@ -119,7 +119,7 @@ export default function LinearRegressionArticle() {
       author="Keval Kansagra"
       description="What if I told you that with just one line, you can predict house prices, exam scores, or how many tacos you'll eat based on your hunger level?"
       image={{
-        src: "/article/regression/linear-regression.png",
+        src: "/article/regression/linear-regression.webp",
         alt: "Linear Regression Visualization",
       }}
     >

@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  MotionValue,
+} from "framer-motion";
 import { RefObject } from "react";
 import { Play, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,16 +20,22 @@ const features = [
 
 // Generate straight diagonal trails - like the reference image
 // All lines go from top-left to bottom-right at ~50 degree angle
+// 36 trails (9 cols x 4 rows) — same coverage as the old 60, ~40% fewer
+// infinite SVG animations competing with LCP on mobile GPUs.
+const TRAIL_COUNT = 36;
+const TRAIL_COLS = 9;
+
 function generateTrails() {
   const trails = [];
   const angle = 45; // degrees
   const angleRad = (angle * Math.PI) / 180;
 
-  // Create 60 trails spread across the canvas
-  for (let i = 0; i < 60; i++) {
+  // Create 36 trails spread across the canvas
+  for (let i = 0; i < TRAIL_COUNT; i++) {
     // Distribute starting points across the canvas
-    const startX = -20 + (i % 10) * 12 + ((i * 7) % 11) - 5;
-    const startY = -15 + Math.floor(i / 10) * 18 + ((i * 13) % 9) - 4;
+    const startX = -20 + (i % TRAIL_COLS) * 13.5 + ((i * 7) % 11) - 5;
+    const startY =
+      -15 + Math.floor(i / TRAIL_COLS) * 26 + ((i * 13) % 9) - 4;
 
     // Varying lengths
     const length = 15 + ((i * 17) % 25);
@@ -59,11 +71,29 @@ function StarTrail({
   index: number;
 }) {
   const { x1, y1, x2, y2, isAccent } = trail;
+  const reduceMotion = useReducedMotion();
 
   // Stagger animations
   const delay = (index * 0.08) % 2.5;
   const duration = 1.5 + (index % 6) * 0.2;
   const repeatDelay = 0.5 + (index % 5) * 0.4;
+
+  // Reduced-motion: render final state once, no infinite rAF loop.
+  if (reduceMotion) {
+    return (
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke={isAccent ? "oklch(0.75 0.12 220)" : "currentColor"}
+        strokeWidth={isAccent ? 0.12 : 0.06}
+        strokeLinecap="round"
+        opacity={isAccent ? 0.85 : 0.4}
+        className={isAccent ? "" : "text-muted-foreground"}
+      />
+    );
+  }
 
   return (
     <motion.line
@@ -119,15 +149,16 @@ function MLBackground() {
 }
 
 function ScrollIndicator() {
+  const reduceMotion = useReducedMotion();
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ delay: 1.5 }}
+      transition={reduceMotion ? { duration: 0 } : { delay: 1.5 }}
       className="absolute bottom-4 sm:bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 hidden sm:block"
     >
       <motion.div
-        animate={{ y: [0, 6, 0] }}
+        animate={reduceMotion ? undefined : { y: [0, 6, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         className="w-5 h-8 sm:w-6 sm:h-10 rounded-full border border-muted-foreground/30 flex items-start justify-center p-1.5 sm:p-2 shadow-sm"
       >

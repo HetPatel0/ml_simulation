@@ -1,8 +1,54 @@
 import * as React from "react";
+import { Children, cloneElement, isValidElement } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { blurDataURL } from "@/lib/blur";
 import { ArticleActions } from "./article-actions";
+import { slugify } from "./use-active-section";
+
+function extractText(node: React.ReactNode): string {
+  if (typeof node === "string" || typeof node === "number")
+    return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (isValidElement<{ children?: React.ReactNode }>(node))
+    return extractText(node.props.children);
+  return "";
+}
+
+/**
+ * Assigns stable ids to h2s at RENDER time (server + client identical).
+ * Previously ids were stamped by collectToc in an effect — the first client
+ * render then differed from SSR HTML (hydration mismatch), and TOC
+ * collection raced the dynamic article chunk. Headings nested inside custom
+ * components stay mutation-fallback via collectToc (no warning either way,
+ * since neither side renders an id for those).
+ */
+function assignHeadingIds(
+  node: React.ReactNode,
+  used: Set<string>,
+): React.ReactNode {
+  // Children.toArray re-keys runtime arrays (static JSX children lose
+  // their compile-time key exemption once remapped) — kills the
+  // "unique key prop" warnings without touching article sources.
+  if (Array.isArray(node))
+    return Children.toArray(node).map((c) => assignHeadingIds(c, used));
+  if (!isValidElement(node)) return node;
+  const props = node.props as { id?: string; children?: React.ReactNode };
+  if (typeof node.type === "string" && node.type === "h2" && !props.id) {
+    const base = slugify(extractText(props.children)) || "section";
+    let id = base;
+    let n = 2;
+    while (used.has(id)) id = `${base}-${n++}`;
+    used.add(id);
+    return cloneElement(node, { id } as Partial<unknown> as object);
+  }
+  if (props?.children) {
+    const kids = assignHeadingIds(props.children, used);
+    if (kids !== props.children)
+      return cloneElement(node, { children: kids } as Partial<unknown> as object);
+  }
+  return node;
+}
 
 type ArticlePostProps = {
   title: string;
@@ -12,6 +58,8 @@ type ArticlePostProps = {
   image?: {
     src: string;
     alt?: string;
+    /** Above-fold hero image — preloads instead of lazy-loading (LCP). */
+    priority?: boolean;
   };
   children?: React.ReactNode;
   className?: string;
@@ -26,6 +74,11 @@ export function ArticlePost({
   children,
   className,
 }: ArticlePostProps) {
+  // Deterministic across server/client (memo on stable children identity).
+  const body = React.useMemo(
+    () => assignHeadingIds(children, new Set<string>()),
+    [children],
+  );
   return (
     <article className={cn("mx-auto w-full max-w-none py-8 sm:py-12", className)}>
       {/* Header */}
@@ -56,17 +109,20 @@ export function ArticlePost({
               src={image.src}
               alt={image.alt ?? title}
               fill
-              loading="lazy"
+              // Article hero sits at top of the page — eager-load for LCP.
+              // Explicit `priority: false` opts back into lazy for edge cases.
+              priority={image.priority ?? true}
+              loading={image.priority === false ? "lazy" : undefined}
               placeholder="blur"
               blurDataURL={blurDataURL}
               sizes="(max-width: 768px) 100vw, 800px"
-              quality={85}
+              quality={image.src.endsWith(".svg") ? undefined : 85}
               className="object-cover rounded-xl"
             />
           </figure>
         )}
 
-      {children && (
+          {children && (
         <div data-article-body>
         <div
           className={cn(
@@ -103,7 +159,7 @@ export function ArticlePost({
             "[&>li]:mb-2",
           )}
         >
-          {children}
+          {body}
         </div>
         </div>
       )}

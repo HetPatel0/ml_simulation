@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:26.350
+K-Nearest Neighbors: Show Me Similar Examples What is K-Nearest Neighbors? K-nearest neighbors, or KNN, is one of the simplest classification methods in machine learning. To classify a new point, it looks at the k closest training examples and lets them vote. No fancy training loop. No gradient descent. No learned equation. Just: find nearby points, count their labels, and trust the neighborhood. What the Docs Emphasize The scikit-learn neighbors guide describes neighbors-based classification as a kind of instance-based learning. That is the key mental model:
+
+00:00:26.350 --> 00:00:52.950
+KNN leans on stored examples instead of learning a compact global formula. How Does It Actually Work? Step 1: Store the Training Data Training is mostly just remembering the dataset. That sounds almost too easy, but it is exactly why KNN is useful as a baseline. Step 2: Measure Distance to the New Point Usually we use Euclidean distance: Smaller distance means the points are more similar under the chosen metric. Manhattan distance works the same way but sums absolute differences instead of squaring — like walking city blocks instead of flying straight: Step 3: Pick the Closest k Neighbors
+
+00:00:52.950 --> 00:01:19.200
+If k = 3, the model grabs the 3 nearest examples. If k = 7, it grabs 7. Those neighbors become the local jury. Step 4: Vote The majority class wins. Some versions weight nearby neighbors more heavily, which helps when one point is extremely close and the rest are only loosely related. Aha! Here's the cool part... KNN does not build a boundary explicitly. The decision boundary emerges from the shape of the data itself. That is why KNN can model strange non-linear patterns without any special engineering. Worked Example with Distances Here is a toy fruit classifier.
+
+00:01:19.200 --> 00:01:45.650
+We describe each fruit using sweetness and crunchiness, then ask the three closest examples to vote: Picking k k = 1 makes the model extremely flexible but noisy. Larger k smooths the boundary. In practice, odd values like 3, 5, or 7 are common for binary classification because they reduce ties. The Knobs and Dials You Can Tweak Here are the main parameters in sklearn's KNeighborsClassifier : How many nearby examples get a vote. Small k = flexible but noisy. Large k = smoother but can blur class boundaries. Whether all neighbors vote equally or closer points count more.
+
+00:01:45.650 --> 00:02:12.150
+'distance' often helps when the nearest points are much more trustworthy. Distance function used to define what 'near' means. Your model quality depends heavily on whether distance matches the real geometry of the problem. Power parameter for the Minkowski metric. p=2 gives Euclidean distance. Changing p changes neighborhood shape, but scaling usually matters more. Backend used to search for neighbors. Mostly a speed choice. It rarely changes the predictions. Scale Your Features or KNN Lies to You Distance-based models are brutally sensitive to feature scales.
+
+00:02:12.150 --> 00:02:39.225
+If one feature ranges from 0 to 1 and another ranges from 0 to 100000, the second feature will dominate the geometry unless you standardize first. Where You'll Actually Use This Recommendation and retrieval: Find items similar to a query. Simple tabular baselines: A fast sanity check before deeper modeling. Pattern recognition: When similar-looking examples should share labels. Low-data problems: Especially when interpretability via nearest examples is useful. Let's Build Something This sklearn example adds feature scaling and then performs neighbor voting on the Iris dataset: Level Up:
+
+00:02:39.225 --> 00:03:04.825
+From Good to Great Use Validation to Choose k Do not guess the best k. Tune it on validation data. Too small and you chase noise. Too large and you wash away local structure. Know the Curse of Dimensionality In high dimensions, everything starts looking far away from everything else. When that happens, "nearest" stops meaning much, and KNN often degrades. Remember the Prediction Cost KNN is lazy during training and busy during inference. Large datasets can make neighbor searches expensive unless you use indexing structures or approximate methods. Good Baseline, Not Always Final Model
+
+00:03:04.825 --> 00:03:30.625
+KNN is excellent for feeling out a dataset. If it works surprisingly well, that is a clue your problem has useful local structure. If it fails badly, you may need better features or a different notion of similarity. Challenge Train KNN with k=1 , k=5 , and k=15 on the same dataset. Then watch how the decision boundary changes from jagged to smooth. Now Go Play With It! The best way to understand KNN is to feel it. Click anywhere, change k, and watch the neighborhood vote: Click to place a query point and watch the k closest neighbors vote

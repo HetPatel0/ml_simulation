@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { Plus, ArrowRight } from "lucide-react";
@@ -21,6 +19,8 @@ interface LearningCardProps {
   image: string;
   badge?: string;
   variant?: "read" | "simulation";
+  /** Set for the first above-fold card so it preloads (LCP). */
+  priority?: boolean;
 }
 
 export function LearningCard({
@@ -30,6 +30,7 @@ export function LearningCard({
   image,
   badge,
   variant = "read",
+  priority = false,
 }: LearningCardProps) {
   const isSimulation = variant === "simulation";
   const ctaLabel = isSimulation ? "Run simulation" : "Read more";
@@ -55,25 +56,32 @@ export function LearningCard({
           src={image}
           alt={title}
           fill
-          loading="lazy"
+          priority={priority}
+          loading={priority ? undefined : "lazy"}
           placeholder="blur"
           blurDataURL={blurDataURL}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          quality={80}
+          // Quality is meaningless for vectors and trips
+          // next-image-unconfigured-qualities — only set for raster.
+          quality={image.endsWith(".svg") ? undefined : 80}
           className="
             object-cover
             transition-transform duration-500 ease-out
             group-hover:scale-[1.04]
           "
         />
-        <Badge className="absolute top-3 left-3">{badge}</Badge>
       </div>
 
       {/* Content */}
       <CardHeader className="flex flex-col gap-4">
-        <div className="space-y-2">
-          <CardTitle className="text-lg">{title}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+        <div className="space-y-2.5">
+          {badge && (
+            <Badge className="w-fit border-primary/20 bg-primary/10 font-semibold text-primary">
+              {badge}
+            </Badge>
+          )}
+          <CardTitle className="text-xl tracking-tight">{title}</CardTitle>
+          <CardDescription className="text-sm leading-relaxed">{description}</CardDescription>
         </div>
 
         {/* CTA */}

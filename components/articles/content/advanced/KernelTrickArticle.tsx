@@ -150,7 +150,7 @@ export default function KernelTrickArticle() {
       author="Het Bhuva"
       description="What if you could solve impossible problems by pretending they exist in a different dimension? No, this isn't Inception - it's the kernel trick."
       image={{
-        src: "/article/other/kernel-trick.png",
+        src: "/article/other/kernel-trick.webp",
         alt: "Kernel Trick Visualization",
       }}
     >

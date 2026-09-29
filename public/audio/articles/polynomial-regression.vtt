@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:25.500
+Polynomial Regression: When Straight Lines Aren't Enough What is Polynomial Regression? Sometimes life isn't linear. The relationship between coffee consumed and productivity isn't a straight line - it's more like a curve that goes up, peaks, and then crashes down (we've all been there). Polynomial regression lets you fit curves instead of straight lines by adding powers of your features (x², x³, etc.) to the model. Aha! Here's the cool part... Here's the mind-bending secret: polynomial regression IS linear regression!
+
+00:00:25.500 --> 00:00:51.250
+We just transform our features first (add x², x³, etc.) and then apply regular old linear regression. The "polynomial" part is just feature engineering. How Does It Actually Work? Step 1: Transform Your Features Take your original feature X and create new features: X², X³, X⁴, etc. Step 2: Apply Linear Regression Now run linear regression on these transformed features. The result is a curve! Step 3: The Model Finds the Coefficients Linear regression finds the best values for β₀, β₁, β₂, etc. that minimize the squared errors - same as always! Pro Tip
+
+00:00:51.250 --> 00:01:18.400
+Use sklearn's Pipeline to chain PolynomialFeatures and LinearRegression together. It keeps everything clean and prevents data leakage during cross-validation. The Math (It's Simpler Than You Think) Compare the equations: Linear: Quadratic (degree 2): Cubic (degree 3): Each additional degree adds one more "bend" to the curve. Degree 1 = straight line. Degree 2 = one bend (parabola). Degree 3 = two bends (S-curve). And so on. The Overfitting Trap Here's where things get dangerous. Higher degree = more flexible curve. But too flexible and your model starts fitting the noise instead of the signal.
+
+00:01:18.400 --> 00:01:43.875
+The Classic Blunder Cranking up the degree is like turning up the autotune - a little helps, but too much and it sounds ridiculous. Degree 15 on 20 data points? You'll get a squiggly mess that memorizes every point but predicts terribly. The Goldilocks Problem Degree too low (underfitting): Model can't capture the curve. Both training AND test errors are high. Degree just right: Model captures the true pattern. Training and test errors are both low. Degree too high (overfitting): Model memorizes training data but fails on new data. Training error is tiny, test error is huge!
+
+00:01:43.875 --> 00:02:10.050
+The Knobs and Dials You Can Tweak The degree of polynomial features to generate Higher = more flexible curves, but watch out for overfitting! Include a bias column (all ones) Usually set False if LinearRegression handles the intercept Only produce interaction features (x₁*x₂) without powers Useful when you only care about how features interact Where You'll Actually Use This Growth curves: Population, bacteria, or revenue that follows exponential-ish patterns Physical phenomena: Projectile motion, temperature changes Seasonal trends: Sales data with periodic patterns Dose-response curves:
+
+00:02:10.050 --> 00:02:36.250
+Medical and biological applications Real Talk: COVID Modeling During the pandemic, epidemiologists used polynomial regression (among other techniques) to model case growth. Linear models couldn't capture the exponential rises and eventual plateaus. Let's Build Something Level Up: From Good to Great How to Choose the Right Degree Use cross-validation: Try degrees 1-10 and pick the one with the best validation score Plot learning curves: If training error keeps dropping but validation error rises, you're overfitting Apply regularization:
+
+00:02:36.250 --> 00:03:02.300
+Ridge regression (L2) can prevent polynomial coefficients from exploding Rule of Thumb Start with degree 2 or 3. Only go higher if you have a LOT of data and cross-validation actually shows improvement. Degree 10+ is almost never the right answer. Now Go Play With It! The best way to understand polynomial regression is to see the curve change as you adjust the degree. Drag points around and watch what happens! Adjust the degree and watch the curve go from underfitting to overfitting Challenge In the simulation, try setting degree = (number of points - 1). What happens?
+
+00:03:02.300 --> 00:03:06.800
+The curve will pass through EVERY point perfectly - but is that a good thing?

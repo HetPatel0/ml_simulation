@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -71,16 +71,49 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Structured data: Organization + WebSite for rich results / AI engines.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${siteConfig.url}/#organization`,
+        name: siteConfig.name,
+        url: siteConfig.url,
+        logo: `${siteConfig.url}/logo.png`,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteConfig.url}/#website`,
+        name: siteConfig.name,
+        url: siteConfig.url,
+        description: siteConfig.description,
+        publisher: { "@id": `${siteConfig.url}/#organization` },
+      },
+    ],
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -98,9 +131,11 @@ export default function RootLayout({
               <ThemeShortcut />
               <OfflineBanner />
               <Navbar />
-            <main id="main" className="flex-1">{children} <Analytics /><SpeedInsights /></main>
+            <main id="main" className="flex-1">{children}</main>
 
             <FooterSection />
+            <Analytics />
+            <SpeedInsights />
             </TooltipProvider>
           </LenisProvider>
         </ThemeProvider>

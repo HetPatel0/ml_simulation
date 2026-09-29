@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:26.400
+Linear Regression: Your First ML Superpower What is Linear Regression? Think of linear regression as drawing the "line of best fit" through a scatter plot of your life decisions. Got data points scattered all over? Linear regression finds the straight line that gets as close as possible to all of them. It's the "Hello World" of machine learning - simple, powerful, and the foundation for understanding more complex algorithms. If you only learn one ML algorithm, make it this one. Fun Fact
+
+00:00:26.400 --> 00:00:52.000
+Linear regression was invented by Francis Galton in the 1880s to study how children's heights relate to their parents'. He called it "regression to the mean" because tall parents tended to have slightly shorter children. The name stuck! How Does It Actually Work? Here's the process broken down into steps that actually make sense: Step 1: Start with Data You have pairs of (X, Y) values. X is what you know (hours studied), Y is what you want to predict (exam score). Step 2: Assume a Linear Relationship We bet that the relationship follows a straight line:
+
+00:00:52.000 --> 00:01:17.875
+Where m is the slope (how steep the line is) and b is the y-intercept (where the line crosses the y-axis). Step 3: Make Predictions For each X value, calculate what Y would be using your current m and b guesses. These are your predictions (ŷ, pronounced "y-hat"). Step 4: Measure How Wrong You Are Compare each prediction to the actual value. The difference is called a "residual" or error. We square these errors (to make them all positive) and add them up. Step 5: Find the Best Line Adjust m and b to make that total error as small as possible.
+
+00:01:17.875 --> 00:01:44.300
+This is the "least squares" method - we're minimizing squared errors. Aha! Here's the cool part... Here's the cool part: there's a formula that directly computes the perfect m and b without any guessing! No iterations, no trial and error - just pure math giving us the optimal answer in one shot. The Math (Don't Skip This - It's Actually Cool) For simple linear regression (one feature), the formulas for the optimal slope and intercept are: Where x̄ and ȳ are the means (averages) of X and Y. Intuition Check The slope formula is basically asking:
+
+00:01:44.300 --> 00:02:11.025
+"When X goes up, does Y go up too?" If they move together, slope is positive. If X goes up while Y goes down, slope is negative. Worked Example with Real Numbers Is This the Right Tool for the Job? Use linear regression when: The relationship looks linear - Plot your data first! If it looks like a curve, you might want polynomial regression instead. You need interpretable results - The coefficients tell you exactly how much Y changes when X changes by 1 unit. As a baseline model - Always try linear regression first. If it works well enough, why complicate things?
+
+00:02:11.025 --> 00:02:37.025
+For continuous predictions - Predicting numbers, not categories. Rookie Mistake If your data looks like a banana, don't try to fit a ruler through it! Linear regression assumes linearity. Forcing it on curved data will give you terrible predictions and misleading coefficients. The Knobs and Dials You Can Tweak sklearn's LinearRegression is refreshingly simple - not many hyperparameters to tune. Here's what you can adjust: Calculate the intercept (b) for the model Set False if your data is already centered around zero Make a copy of X before fitting
+
+00:02:37.025 --> 00:03:03.650
+Set False to save memory on huge datasets (but careful - X gets modified!) Number of CPU cores to use for computation Only matters for multi-target regression. -1 = use all cores Force coefficients to be positive Useful when negative relationships don't make sense (e.g., price vs. size) Where You'll Actually Use This Real-World Scenarios Predicting house prices: Square footage, bedrooms, location → price Estimating salaries: Years of experience, education level → salary Forecasting sales: Advertising spend, season, price → units sold Medical dosing: Patient weight, age → medication dosage
+
+00:03:03.650 --> 00:03:30.000
+Netflix Uses This When Netflix predicts how long you'll watch a show, they might use linear regression as part of their system - combining factors like time of day, your watch history, and episode length. Let's Build Something Here's a simple example predicting coffee consumption based on sleep (we've all been there): Full Pipeline: House Price Prediction Here's a more realistic example with multiple features and proper evaluation: Level Up: From Good to Great Common Gotchas and How to Fix Them Poor R² score? Try adding polynomial features or interaction terms.
+
+00:03:30.000 --> 00:03:55.900
+Maybe the relationship isn't purely linear. Coefficients seem wrong? Check for multicollinearity (features that are highly correlated with each other). Predictions way off for new data? You might be overfitting. Try regularization (Ridge or Lasso regression). Pro Tip Always scale your features when using multiple variables with different units! A coefficient for "square feet" (thousands) vs "bedrooms" (single digits) will be misleading otherwise. Use StandardScaler . When to Level Up to Something Else Curved relationships? → Polynomial Regression Too many features? → Ridge/Lasso Regression
+
+00:03:55.900 --> 00:04:21.250
+Outliers destroying your fit? → RANSAC or Huber Regression Predicting categories? → Logistic Regression Now Go Play With It! The best way to understand linear regression is to see it in action. Add some points, watch the line adjust, and get a feel for how it works: Click to add points and watch the regression line update in real-time See how the least squares method minimizes errors visually

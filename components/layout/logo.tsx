@@ -10,7 +10,7 @@ export default function Logo() {
       className="flex items-center  font-semibold tracking-tight select-none "
     >
       <Image
-        src="/logo.png"
+        src="/logo.webp"
         alt="ML Simulation Logo"
         width={60}
         height={60}

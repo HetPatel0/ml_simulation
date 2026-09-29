@@ -10,7 +10,31 @@ import {
   Volume2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { articleAudio } from "@/lib/article-audio";
+import { articleAudio, articleSubtitles } from "@/lib/article-audio";
+
+type Cue = { start: number; end: number; text: string };
+
+function toSec(t: string): number {
+  const parts = t.trim().split(":").map(Number);
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  return parts[0] ?? 0;
+}
+
+/** Minimal WEBVTT parse: header + blank-line-separated cues. */
+function parseVtt(src: string): Cue[] {
+  const cues: Cue[] = [];
+  for (const block of src.split(/\r?\n\r?\n/)) {
+    const lines = block.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    if (lines.length < 2 || lines[0] === "WEBVTT") continue;
+    const m = lines[0].match(/(.+?)\s*-->\s*(.+)/);
+    if (!m) continue;
+    const text = lines.slice(1).join(" ");
+    if (!text) continue;
+    cues.push({ start: toSec(m[1]), end: toSec(m[2]), text });
+  }
+  return cues;
+}
 
 function formatTime(sec: number): string {
   if (!isFinite(sec) || sec < 0) sec = 0;
@@ -37,13 +61,18 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
   const params = useParams();
   const slug = typeof params?.slug === "string" ? params.slug : null;
   const src = slug ? (articleAudio[slug] ?? null) : null;
+  const vttSrc = slug ? (articleSubtitles[slug] ?? null) : null;
 
   const [expanded, setExpanded] = useState(false);
+  // Ref (not state): avoids set-state-in-effect, no extra render.
+  const autoPlayRef = useRef(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [speedIndex, setSpeedIndex] = useState(0);
   const [failed, setFailed] = useState(false);
+  const [cues, setCues] = useState<Cue[]>([]);
+  const [ccOn, setCcOn] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -79,6 +108,34 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
   useEffect(() => {
     if (audioRef.current) audioRef.current.playbackRate = SPEEDS[speedIndex];
   }, [speedIndex, expanded, src]);
+
+  // Captions load lazily with the player; tiny text file, cached by headers.
+  useEffect(() => {
+    if (!expanded || !vttSrc) return;
+    let dead = false;
+    fetch(vttSrc)
+      .then((r) => (r.ok ? r.text() : ""))
+      .then((t) => {
+        if (!dead && t) setCues(parseVtt(t));
+      })
+      .catch(() => {});
+    return () => {
+      dead = true;
+    };
+  }, [expanded, vttSrc]);
+
+  // Tapping Listen expands AND starts playback — the tap is a user gesture,
+  // so autoplay is allowed. Runs after the <audio> element mounts.
+  useEffect(() => {
+    if (expanded && autoPlayRef.current) {
+      autoPlayRef.current = false;
+      const audio = audioRef.current;
+      if (audio) {
+        if (audio.ended) audio.currentTime = 0;
+        void audio.play().catch(() => setFailed(true));
+      }
+    }
+  }, [expanded]);
 
   if (!src) return null;
 
@@ -116,6 +173,7 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
         type="button"
         onClick={() => {
           setFailed(false);
+          autoPlayRef.current = true;
           setExpanded(true);
         }}
         aria-label={`Listen to ${title}`}
@@ -136,12 +194,17 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
   const pill =
     "flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
+  const activeCue =
+    ccOn && isPlaying
+      ? cues.find((c) => currentTime >= c.start && currentTime < c.end)
+      : undefined;
+
   return (
+    <div className={cn("inline-flex max-w-full flex-col gap-1.5", className)}>
     <div
       className={cn(
         "inline-flex h-9 items-center gap-0.5 rounded-full border border-border bg-card pr-1 pl-1 shadow-xs",
         failed && "border-destructive/50",
-        className,
       )}
       role="group"
       aria-label={`Audio player: ${title}`}
@@ -190,9 +253,34 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
       >
         {SPEEDS[speedIndex]}x
       </button>
+      <button
+        type="button"
+        onClick={() => vttSrc && setCcOn((v) => !v)}
+        disabled={!vttSrc}
+        aria-pressed={ccOn}
+        aria-label={vttSrc ? "Toggle captions" : "No captions yet for this article"}
+        title={vttSrc ? "Toggle captions" : "Captions appear after audio is regenerated"}
+        className={cn(
+          "flex h-9 cursor-pointer items-center rounded-full px-2 text-xs font-bold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default disabled:opacity-40",
+          ccOn
+            ? "bg-primary/15 text-primary"
+            : "text-muted-foreground hover:bg-accent hover:text-foreground",
+        )}
+      >
+        CC
+      </button>
       {failed && (
         <span className="px-2 text-xs text-destructive">Audio unavailable</span>
       )}
+    </div>
+    {activeCue && (
+      <p
+        aria-live="polite"
+        className="max-w-80 rounded-lg border border-border bg-muted/60 px-3 py-1.5 text-xs leading-relaxed text-foreground"
+      >
+        {activeCue.text}
+      </p>
+    )}
     </div>
   );
 }

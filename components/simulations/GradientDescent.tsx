@@ -153,7 +153,7 @@ export default function GradientDescent() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 mb-10">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 mb-10">
       <SimHeader
         title="Gradient Descent"
         subtitle=<>
@@ -163,7 +163,7 @@ export default function GradientDescent() {
 
       <div className="flex flex-col gap-6 lg:flex-row">
         <Card className="flex flex-1 items-center justify-center p-4">
-          <div ref={containerRef} className="w-full max-w-2xl">
+          <div ref={containerRef} className="w-full">
             <canvas
               ref={canvasRef}
               width={size.width}

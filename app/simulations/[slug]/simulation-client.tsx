@@ -1,18 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
+import { SimulationSkeleton } from "@/components/ui/loading-skeleton";
 import { SimulationErrorBoundary } from "@/components/simulations/simulation-error-boundary";
 
-const SimulationLoader = () => (
-  <div
-    role="status"
-    aria-label="Loading simulation"
-    className="flex min-h-[420px] w-full items-center justify-center"
-  >
-    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-  </div>
-);
+const SimulationLoader = () => <SimulationSkeleton />;
 
 const dynamicSimulation = (importer: () => Promise<{ default: React.ComponentType }>) =>
   dynamic(importer, { ssr: false, loading: SimulationLoader });
@@ -41,6 +33,18 @@ const simulationComponents: Record<string, React.ComponentType> = {
   ),
   "kernel-trick": dynamicSimulation(
     () => import("@/components/simulations/KernelTrickVisualizer"),
+  ),
+  "k-nearest-neighbors": dynamicSimulation(
+    () => import("@/components/simulations/KNearestNeighbors"),
+  ),
+  "decision-trees": dynamicSimulation(
+    () => import("@/components/simulations/DecisionTree"),
+  ),
+  "naive-bayes": dynamicSimulation(
+    () => import("@/components/simulations/NaiveBayes"),
+  ),
+  "naive-bayes-gaussian": dynamicSimulation(
+    () => import("@/components/simulations/NaiveBayesGaussian"),
   ),
   "svr-visualizer": dynamicSimulation(
     () => import("@/components/simulations/SVRVisualizer"),

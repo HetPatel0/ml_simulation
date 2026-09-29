@@ -126,7 +126,7 @@ export default function PolynomialRegressionArticle() {
       author="Keval Kansagra"
       description='Linear regression said "I can only draw straight lines." Polynomial regression said "Hold my beer."'
       image={{
-        src: "/article/regression/polynomial-regression.png",
+        src: "/article/regression/polynomial-regression.webp",
         alt: "Polynomial Regression Visualization",
       }}
     >

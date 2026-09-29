@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ArticleShare } from "@/components/articles/layout/article-share";
 
 interface SimHeaderProps {
   title: string;
@@ -35,6 +36,10 @@ export default function SimHeader({ title, subtitle }: SimHeaderProps) {
           </Button>
 
           <div className="mx-auto h-6" />
+
+          <div className="absolute right-7">
+            <ArticleShare title={title} />
+          </div>
         </div>
       </div>
       <div className="mt-6 text-center">

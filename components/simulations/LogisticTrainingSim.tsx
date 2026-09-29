@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import SimHeader from "./sim-header";
 import { Button } from "@/components/ui/button";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
@@ -16,6 +18,39 @@ type LogEntry = {
   b: number;
   db: number;
 };
+
+/** Column header with an instant hover tooltip (drops below the sticky row). */
+function ThTip({
+  label,
+  tip,
+  align = "center",
+  className = "",
+}: {
+  label: string;
+  tip: string;
+  align?: "left" | "center" | "right";
+  className?: string;
+}) {
+  const pos =
+    align === "left"
+      ? "left-0"
+      : align === "right"
+        ? "right-0"
+        : "left-1/2 -translate-x-1/2";
+  return (
+    <th
+      className={`group relative px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider ${className}`}
+    >
+      {label}
+      <span
+        role="tooltip"
+        className={`pointer-events-none absolute top-full z-20 mt-2 w-52 rounded-lg border border-border bg-popover px-3 py-2 text-left text-xs font-normal normal-case leading-snug tracking-normal text-popover-foreground opacity-0 shadow-lg transition-all duration-150 group-hover:translate-y-0 group-hover:opacity-100 translate-y-1 ${pos}`}
+      >
+        {tip}
+      </span>
+    </th>
+  );
+}
 
 export default function LogisticTrainingSim() {
   const { containerRef, canvasRef, size } = useResponsiveCanvas({
@@ -41,6 +76,7 @@ export default function LogisticTrainingSim() {
     b: 0,
   });
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [showLog, setShowLog] = useState(false);
 
   // Constants
   const LEARNING_RATE = 0.05;
@@ -311,42 +347,95 @@ export default function LogisticTrainingSim() {
         </div>
       </div>
 
-      {/* Log Table */}
+      {/* Log Table — collapsed by default so the interactive stage fits
+          one screen for projection; expands in place when needed. */}
       <Card>
-        <CardHeader className="py-4">
+        <button
+          type="button"
+          onClick={() => setShowLog((v) => !v)}
+          aria-expanded={showLog}
+          className="flex w-full cursor-pointer items-center justify-between px-6 py-4 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+        >
           <CardTitle className="text-base">
             Training Log (Last 50 Updates)
           </CardTitle>
-        </CardHeader>
-        <CardContent className="p-0 max-h-48 overflow-y-auto">
-          <table className="w-full text-sm text-right border-collapse">
-            <thead className="bg-muted/50 text-muted-foreground sticky top-0">
-              <tr>
-                <th className="p-2 text-left">Epoch</th>
-                <th className="p-2">Loss</th>
-                <th className="p-2">Likelihood</th>
-                <th className="p-2">w</th>
-                <th className="p-2">dw</th>
-              </tr>
-            </thead>
-            <tbody className="font-mono text-xs">
-              {logs.map((log, i) => (
-                <tr
-                  key={i}
-                  className="border-b border-muted/50 even:bg-muted/20 hover:bg-muted/50"
-                >
-                  <td className="p-2 text-left">{log.epoch}</td>
-                  <td className="p-2 text-red-600">{log.loss.toFixed(4)}</td>
-                  <td className="p-2 text-green-600">{log.mle}</td>
-                  <td className="p-2">{log.w.toFixed(3)}</td>
-                  <td className="p-2 text-muted-foreground">
-                    {log.dw.toFixed(4)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </CardContent>
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+              showLog && "rotate-180",
+            )}
+          />
+        </button>
+        {showLog && (
+          <CardContent
+            className="p-0 max-h-56 overflow-hidden rounded-b-xl border-t"
+            // Lenis hijacks wheel events page-wide; without this the inner
+            // table scroll never receives them (nested-scroll dead zone).
+            data-lenis-prevent
+          >
+            <div className="max-h-56 overflow-y-auto" data-lenis-prevent>
+              <table className="w-full border-collapse text-sm">
+                <thead className="sticky top-0 z-10">
+                  <tr className="bg-muted/90 text-muted-foreground backdrop-blur">
+                    <ThTip
+                      label="Epoch"
+                      tip="Training pass counter — one full gradient-descent sweep over the dataset."
+                      align="left"
+                      className="text-left"
+                    />
+                    <ThTip
+                      label="Loss ↓"
+                      tip="Log loss (binary cross-entropy) — model error. Lower is better."
+                      className="text-right"
+                    />
+                    <ThTip
+                      label="Likelihood ↑"
+                      tip="P(Data|Model) — probability the data came from this model. Higher is better."
+                      className="text-right"
+                    />
+                    <ThTip
+                      label="w"
+                      tip="Current slope weight of the logistic model."
+                      className="text-right"
+                    />
+                    <ThTip
+                      label="dw"
+                      tip="Gradient of loss w.r.t. w (dw = Σ(pred−y)·x) — the slope correction applied each update."
+                      align="right"
+                      className="text-right"
+                    />
+                  </tr>
+                </thead>
+                <tbody className="font-mono text-xs tabular-nums">
+                  {logs.map((log, i) => (
+                    <tr
+                      key={i}
+                      className="border-t border-border/50 transition-colors first:border-t-0 even:bg-muted/20 hover:bg-primary/5"
+                    >
+                      <td className="px-4 py-1.5 text-left">
+                        <span className="inline-flex min-w-10 justify-center rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                          {log.epoch}
+                        </span>
+                      </td>
+                      <td className="px-4 py-1.5 text-right font-semibold text-red-600 dark:text-red-400">
+                        {log.loss.toFixed(4)}
+                      </td>
+                      <td className="px-4 py-1.5 text-right font-semibold text-emerald-600 dark:text-emerald-400">
+                        {log.mle}
+                      </td>
+                      <td className="px-4 py-1.5 text-right text-foreground">
+                        {log.w.toFixed(3)}
+                      </td>
+                      <td className="px-4 py-1.5 text-right text-muted-foreground">
+                        {log.dw.toFixed(4)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        )}
       </Card>
     </div>
   );

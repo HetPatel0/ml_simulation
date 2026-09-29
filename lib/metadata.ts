@@ -65,6 +65,30 @@ export const simulationMetadata: Record<
       "See how kernel methods transform non-linearly separable data into higher dimensions where it becomes separable.",
     image: "/og/kernel-trick.jpg",
   },
+  "k-nearest-neighbors": {
+    title: "K-Nearest Neighbors Playground",
+    description:
+      "Click anywhere and watch the k closest points vote. Tune k, switch distance metrics, and see why feature scaling matters.",
+    image: "/og/k-nearest-neighbors.jpg",
+  },
+  "decision-trees": {
+    title: "Decision Tree Playground",
+    description:
+      "Watch one tree grow split by split, then push depth and feel overfitting happen.",
+    image: "/og/decision-trees.jpg",
+  },
+  "naive-bayes": {
+    title: "Naive Bayes Detective",
+    description:
+      "Stack word clues, tune priors and smoothing, and watch posterior odds move like a detective weighing evidence.",
+    image: "/og/naive-bayes.jpg",
+  },
+  "naive-bayes-gaussian": {
+    title: "Gaussian Naive Bayes",
+    description:
+      "Drag class blobs and watch the Bayes decision boundary follow the math.",
+    image: "/og/naive-bayes.jpg",
+  },
   "svr-visualizer": {
     title: "Support Vector Regression",
     description:
@@ -153,6 +177,27 @@ export const articleMetadata: Record<
     image: "/og/svr.jpg",
     author: "Het Bhuva",
   },
+  "what-is-ml": {
+    title: "Regression, Classification, and Deep Learning",
+    description:
+      "Learn what a model is, how regression and classification differ, where deep learning fits, and which tools beginners use first.",
+    image: "/og/home.jpg",
+    author: "Keval Kansagra",
+  },
+  "first-project": {
+    title: "From Messy CSV to Working Prediction API",
+    description:
+      "Build a local prediction API with a virtual environment, pandas, scikit-learn, FastAPI, and the beginner AI engineering loop.",
+    image: "/og/home.jpg",
+    author: "Keval Kansagra",
+  },
+  "good-vs-bad-models": {
+    title: "Your Model Is Cheating",
+    description:
+      "Understand underfitting, overfitting, validation, L1, L2, and regularization through one visual model experiment.",
+    image: "/og/home.jpg",
+    author: "Keval Kansagra",
+  },
 };
 
 // Maps articles to their related simulations
@@ -162,8 +207,8 @@ export const articleSimulationMap: Record<string, string[]> = {
   "polynomial-regression": ["polynomial-regression"],
   "logistic-regression": ["logistic-regression", "logistic-function", "logistic-training"],
   "decision-trees": [],
-  "k-nearest-neighbors": [],
-  "naive-bayes": [],
+  "k-nearest-neighbors": ["k-nearest-neighbors"],
+  "naive-bayes": ["naive-bayes", "naive-bayes-gaussian"],
   svr: ["svr-visualizer", "svr-kernel-lift"],
   "kernel-trick": ["kernel-trick"],
   "least-squares": ["least-squares"],

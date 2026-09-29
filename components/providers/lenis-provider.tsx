@@ -17,6 +17,10 @@ export default function LenisProvider({
     const lenis = new Lenis({
       duration: 1.2,
       smoothWheel: true,
+      // Handle anchor links natively so TOC / skip-link jumps stay smooth
+      // without the removed CSS `scroll-behavior: smooth` fighting the rAF loop.
+      allowNestedScroll:true,
+      anchors: true,
     });
 
     // Exposed for anchor navigation (e.g. article TOC scroll-spy links).

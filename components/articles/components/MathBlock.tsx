@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import katex from "katex";
+// KaTeX CSS stays static (small, render-blocking by design to avoid FOUC);
+// the ~200KB JS parser loads lazily so non-math pages never pay for it.
 import "katex/dist/katex.min.css";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +20,10 @@ export function MathBlock({
   const containerRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (containerRef.current) {
+    let cancelled = false;
+    // Dynamic import code-splits KaTeX out of the article bundle.
+    import("katex").then(({ default: katex }) => {
+      if (cancelled || !containerRef.current) return;
       try {
         katex.render(formula, containerRef.current, {
           displayMode: display === "block",
@@ -33,7 +37,10 @@ export function MathBlock({
           containerRef.current.textContent = formula;
         }
       }
-    }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [formula, display]);
 
   if (display === "inline") {

@@ -161,7 +161,7 @@ export default function SVRArticle() {
       author="Het Bhuva"
       description="What if your regression model could ignore small errors and only freak out about the big ones? Enter SVR."
       image={{
-        src: "/article/regression/svr.png",
+        src: "/images/regression/svr.webp",
         alt: "Support Vector Regression Visualization",
       }}
     >

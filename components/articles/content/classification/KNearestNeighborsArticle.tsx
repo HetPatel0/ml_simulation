@@ -7,6 +7,7 @@ import {
   CalloutBox,
   AhaBox,
   ParameterTable,
+  SimulationLink,
 } from "../../components";
 
 const knnParams = [
@@ -103,7 +104,7 @@ export default function KNearestNeighborsArticle() {
       author="Het Bhuva"
       description="KNN is the machine learning version of asking, 'What happened to the most similar cases we have already seen?'"
       image={{
-        src: "/images/classification/k-nearest-neighbors.svg",
+        src: "/images/classification/k-nearest-neighbors-v2.webp",
         alt: "K-nearest neighbors classification diagram",
       }}
     >
@@ -141,7 +142,10 @@ export default function KNearestNeighborsArticle() {
       <MathBlock formula={"d(x, x_i) = \\sqrt{\\sum_{j=1}^{n}(x_j - x_{ij})^2}"} />
       <p>
         Smaller distance means the points are more similar under the chosen metric.
+        Manhattan distance works the same way but sums absolute differences
+        instead of squaring — like walking city blocks instead of flying straight:
       </p>
+      <MathBlock formula={"d(x, x_i) = \\sum_{j=1}^{n}|x_j - x_{ij}|"} />
 
       <h3>Step 3: Pick the Closest k Neighbors</h3>
       <p>
@@ -261,6 +265,16 @@ export default function KNearestNeighborsArticle() {
           smooth.
         </p>
       </CalloutBox>
+
+      <h2>Now Go Play With It!</h2>
+      <p>
+        The best way to understand KNN is to feel it. Click anywhere, change k,
+        and watch the neighborhood vote:
+      </p>
+      <SimulationLink
+        simulationSlug="k-nearest-neighbors"
+        description="Click to place a query point and watch the k closest neighbors vote"
+      />
     </ArticlePost>
   );
 }

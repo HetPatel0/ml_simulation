@@ -7,6 +7,7 @@ import {
   CalloutBox,
   AhaBox,
   ParameterTable,
+  SimulationLink,
 } from "../../components";
 
 const treeParams = [
@@ -114,7 +115,7 @@ export default function DecisionTreeArticle() {
       author="Het Bhuva"
       description="If a model could think in yes/no questions, it would look like a decision tree. Split, split again, and keep going until each branch feels confident."
       image={{
-        src: "/images/classification/decision-tree.svg",
+        src: "/images/classification/decision-tree-v2.webp",
         alt: "Decision tree classifier diagram",
       }}
     >
@@ -282,6 +283,16 @@ export default function DecisionTreeArticle() {
           You will feel overfitting immediately.
         </p>
       </CalloutBox>
+
+      <h2>Now Go Play With It!</h2>
+      <p>
+        The best way to feel overfitting is to cause it: grow the tree split
+        by split, push depth up, and watch test accuracy fall:
+      </p>
+      <SimulationLink
+        simulationSlug="decision-trees"
+        description="Watch one tree grow, then push depth and feel overfitting happen"
+      />
     </ArticlePost>
   );
 }

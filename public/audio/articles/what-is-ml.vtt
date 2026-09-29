@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:25.850
+Regression, Classification, and Deep Learning: What Kind of Guess Are You Making? One Student, Three Questions Imagine a student walks into your tiny machine learning lab. You know their hours studied and hours slept. Now ask three different questions: What score will they get? The answer is a number. That is a regression task. Will they pass? The answer is a category. That is a classification task. Can we tell whether a photo shows a correct answer? The answer may still be a label, but the input is now a messy image. A deep learning model may be useful.
+
+00:00:25.850 --> 00:00:52.950
+Here is the sentence that keeps the whole topic tidy: regression and classification describe the job; deep learning describes one kind of machinery. The One-Sentence Version A model is maths fitted to examples. Regression predicts a number. Classification predicts a label or class. Deep learning is a family of flexible models that can do regression, classification, and more. What Is a Model, Really? A model is a function with adjustable parameters. You give it features such as study hours and sleep hours. It combines them using its parameters and produces a prediction. Read that as:
+
+00:00:52.950 --> 00:01:19.275
+input x goes through a function f with parameters w , producing prediction ŷ . Training means choosing values for w that make the predictions less wrong on the training examples. For a simple score model, the function may be no more mysterious than: The weights say how much each feature matters to the fitted equation. The bias gives the equation a starting point. The model is not a tiny person inside your laptop. It is a set of numbers selected from data. Regression: When the Answer Slides Regression is for a target where nearby values make sense:
+
+00:01:19.275 --> 00:01:46.575
+score, price, temperature, demand, or delivery time. Predicting 71.4 points is meaningful. Predicting 71.4 as a class is not. A common training loss is mean squared error. It measures the distance between the real answer and the model's answer, squares the distance, then averages the result: Squaring prevents positive and negative mistakes from cancelling out and makes large mistakes hurt more. Lower MSE is better, but the useful question is always: lower than what baseline, on which data? Classification: When the Answer Is a Bucket
+
+00:01:46.575 --> 00:02:13.400
+Classification chooses among labels such as pass or fail, spam or not spam, and cat or dog. Many classifiers first produce a score or probability, then apply a threshold to turn that number into a label. This means “the probability of label y given input x .” If the model estimates an 0.82 chance of passing, a default 0.5 threshold would say pass. In real work, the threshold depends on the cost of false positives and false negatives. It is a decision, not a law of nature. The Logistic Regression Name Trap
+
+00:02:13.400 --> 00:02:40.700
+Logistic regression has “regression” in its name, but it is commonly used for classification. It fits a relationship between features and log-odds, then turns that score into a probability. Judge a model by the target it predicts, not by one word in its name. Deep Learning: More Machinery, Same Basic Idea Deep learning uses neural networks with layers of learned parameters. Those layers can build increasingly useful representations: edges and shapes in an image, patterns in audio, or relationships in text. The important correction is that deep learning is not a third output type.
+
+00:02:40.700 --> 00:03:07.625
+A neural network can predict a number, a class, the next token, or a representation. It is often a good choice when the input is large, messy, or high-dimensional, but a classical model can still be the better choice for a small, clean table. The Supervised Learning Loop For the supervised examples in this article, the loop is simple: Collect: features plus a target for each row. Predict: let the current model make guesses. Measure: calculate a loss or metric. Fit: change parameters or split rules to reduce error. Check: evaluate on validation data the model did not use to fit.
+
+00:03:07.625 --> 00:03:35.025
+This is a useful beginner map, not a claim that every learning system trains in exactly the same way. Trees, neural networks, and clustering algorithms use different fitting procedures. The common idea is that data and an objective shape a function that produces useful outputs. Aha! Here's the cool part... Regression and classification tell you what the answer looks like. Deep learning tells you one possible way to build the fitter. Do not confuse the question with the machinery answering it. Where the Technology Fits You do not need four frameworks to answer one beginner question.
+
+00:03:35.025 --> 00:04:01.700
+Each tool has a different job: pandas reads and cleans tables. Use it before model training, not as the model itself. scikit-learn gives you classical estimators, pipelines, metrics, and validation. It is the first default for clean tabular data. FastAPI puts a trained model behind an HTTP endpoint. It serves predictions; it does not train the model. PyTorch gives you tensors, neural network layers, automatic differentiation, and optimizers. Reach for it when the input or model needs deep learning. Freshers should expect to move between these jobs:
+
+00:04:01.700 --> 00:04:29.325
+inspect data, choose a baseline, train, evaluate, package, serve, and monitor. The model is one component in that loop. Try Two Baselines with scikit-learn This code demonstrates the API difference between a number and a label. It is a toy demonstration, not a fair model competition. A real comparison needs a train and validation split, suitable metrics, and more than eight rows. The first estimator learns a score. The second learns a probability of passing. Same feature table, different target column, different question. Optional Bridge: The Same Fitted-Math Idea in PyTorch
+
+00:04:29.325 --> 00:04:55.600
+Do not install PyTorch for the first CSV project just to sound advanced. Here is the smallest training loop so you can see what a neural-network framework adds: tensors, a neural network module, a loss, gradients, and parameter updates. The loop is longer because you are spelling out the training machinery. scikit-learn hides most of those details behind fit . PyTorch becomes useful when you need custom layers, image or text models, or a training loop you control. What Freshers Should Expect Industry ML is rarely “pick an algorithm and celebrate.” Expect to spend time on:
+
+00:04:55.600 --> 00:05:23.450
+checking whether the data represents the problem you care about; cleaning missing, duplicated, and inconsistent values; building a dumb baseline before a fancy model; choosing metrics that match the cost of mistakes; preventing leakage between training and evaluation; examining errors instead of staring at one score; serving predictions and watching whether real inputs drift. Start Simple For a small table, begin with a simple scikit-learn baseline. If it solves the problem, you have a useful model and a benchmark.
+
+00:05:23.450 --> 00:05:45.800
+If it fails, the failure tells you what to investigate before you add a neural network. Now Go Play With It Change the student's hours and watch the answer change. Then ask yourself a better question: did you change the output type, the model family, or only the input? Drag points around and feel how regression fits numbers Turn scores into probabilities and labels

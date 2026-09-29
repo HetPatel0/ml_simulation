@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:26.200
+Least Squares: The 200-Year-Old Formula Running Your Models What is Least Squares? Least squares is the mathematical method for finding the "best" line through your data. "Best" means the line that minimizes the sum of squared differences between your predictions and the actual values. It's not just any method - it's THE method that powers linear regression, polynomial regression, and many other models. Historical Fun Fact Carl Friedrich Gauss invented least squares in 1795... at age 18! He used it to predict the orbit of the asteroid Ceres.
+
+00:00:26.200 --> 00:00:52.550
+When Ceres reappeared exactly where Gauss predicted, he became instantly famous. What were you doing at 18? How Does It Actually Work? Step 1: Make Predictions For each data point, calculate what your line predicts: Step 2: Calculate Errors (Residuals) The error for each point is the difference between actual and predicted: Step 3: Square the Errors Squaring makes all errors positive and penalizes big errors more: Step 4: Sum Them Up Total error is the sum of all squared errors: Step 5: Find the Minimum Find the values of m and b that minimize this sum. Calculus gives us exact formulas! Aha!
+
+00:00:52.550 --> 00:01:18.150
+Here's the cool part... Unlike gradient descent (which iterates to find the answer), least squares has a closed-form solution - a formula that directly computes the optimal m and b in one shot. No iterations, no guessing, just pure math! Why Squared Errors? Why not just add up the errors? Or use absolute values? Great question! The Magic Formulas For Simple Linear Regression (One Feature) For Multiple Features (Matrix Form) When you have multiple features, the formula becomes beautifully compact: This gives you ALL the optimal coefficients in one matrix operation! Intuition
+
+00:01:18.150 --> 00:01:44.475
+The slope formula asks: "When X goes up, does Y tend to go up or down?" It's measuring how X and Y move together (covariance) relative to how much X varies on its own (variance). Worked Examples Manual Calculation Matrix Solution Multiple Regression The Geometry (Optional But Cool) If you take linear algebra, you'll learn that least squares has a beautiful geometric interpretation: Your target y is a vector in n-dimensional space Your predictions ŷ must lie in the "column space" of X Least squares finds the point in that space closest to y
+
+00:01:44.475 --> 00:02:10.750
+The residual vector (y - ŷ) is perpendicular to the column space This is why the formula involves X^T X - it's creating a projection matrix! Where You'll Actually Use This Least squares is the engine behind: Linear Regression: Every sklearn LinearRegression uses this Polynomial Regression: Same method, just with polynomial features Curve Fitting: scipy.optimize.curve_fit uses least squares Signal Processing: Noise reduction, trend extraction Computer Vision: Camera calibration, image stitching GPS Uses This Your phone's GPS uses least squares to estimate your position.
+
+00:02:10.750 --> 00:02:37.825
+It receives signals from multiple satellites with timing errors, and least squares finds the position that best fits all the noisy measurements. Level Up: From Good to Great When Least Squares Struggles Outliers: Squaring means one outlier can dominate. Try robust regression (Huber, RANSAC). Multicollinearity: When features are correlated, X^T X becomes nearly singular. Try Ridge regression. Too many features: Overfitting risk. Try Lasso (L1) for automatic feature selection. Numerical Stability Never compute (X^T X)^(-1) directly in production code! It's numerically unstable.
+
+00:02:37.825 --> 00:03:04.475
+Use QR decomposition or sklearn instead. This is why we have libraries. Alternatives to Know Ridge Regression: Adds L2 penalty to prevent overfitting Lasso: Adds L1 penalty, can zero out features Gradient Descent: For huge datasets where matrix inversion is too slow Now Go Play With It! See least squares in action! Add points and watch the line adjust to minimize squared errors: Click to add points and watch the best-fit line update instantly Experiment Try adding an outlier (a point far from the others) and watch how much it pulls the line!
+
+00:03:04.475 --> 00:03:12.050
+That's because squaring the error makes big mistakes REALLY expensive. This is both a feature and a bug of least squares.

@@ -90,7 +90,7 @@ export function ArticleTocMobile({ items, activeId, className }: ArticleTocProps
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center gap-2 rounded-xl border border-border bg-card/95 px-4 py-3 text-sm font-medium text-foreground shadow-md backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="flex w-full cursor-pointer items-center gap-2 rounded-xl border border-border bg-card/95 px-4 py-3 text-sm font-medium text-foreground shadow-md backdrop-blur focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <ListTree className="h-4 w-4 shrink-0 text-primary" />
         <span className="flex-1 truncate text-left">

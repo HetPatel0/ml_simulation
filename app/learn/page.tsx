@@ -1,45 +1,53 @@
-"use client";
+// app/learn/page.tsx — server shell (SEO + static header),
+// interactive search/filter lives in the client island below.
+import type { Metadata } from "next";
+import { BookOpen } from "lucide-react";
+import {
+  ArticleBrowser,
+  type Article,
+} from "@/components/listings/article-browser";
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, X, BookOpen, SearchX } from "lucide-react";
-import { LearningCard } from "@/components/cards/learning-card";
-import { useSearchShortcut } from "@/lib/hooks/use-search-shortcut";
-
-interface Article {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  badge: string;
-  category:
-    | "regression"
-    | "classification"
-    | "clustering"
-    | "testing"
-    | "tuning"
-    | "cleaning"
-    | "other";
-}
-
-const CATEGORY_TITLES: Record<Article["category"], string> = {
-  regression: "Regression",
-  classification: "Classification",
-  clustering: "Clustering",
-  testing: "Testing",
-  tuning: "Fine Tuning HyperParameters",
-  cleaning: "Cleaning Datas",
-  other: "Advanced & Experimental",
+export const metadata: Metadata = {
+  title: "ML Articles",
+  description:
+    "Articles & visual explanations to understand machine learning concepts",
+  alternates: { canonical: "/learn" },
 };
 
 const articles: Article[] = [
+  {
+    id: "what-is-ml",
+    title: "Regression, Classification, and Deep Learning",
+    description:
+      "What is a model, what does the answer shape mean, and where does deep learning fit?",
+    image: "/article/beginner/what-is-ml-hero.webp",
+    badge: "Beginner",
+    category: "beginner",
+  },
+  {
+    id: "first-project",
+    title: "From Messy CSV to Working Prediction API",
+    description:
+      "Use venv, pandas, scikit-learn, and FastAPI to build a local prediction service.",
+    image: "/article/beginner/first-project-hero.webp",
+    badge: "Beginner",
+    category: "beginner",
+  },
+  {
+    id: "good-vs-bad-models",
+    title: "Your Model Is Cheating",
+    description:
+      "Find the sweet spot between underfitting, overfitting, and too much model wiggle.",
+    image: "/article/beginner/good-vs-bad-hero.webp",
+    badge: "Beginner",
+    category: "beginner",
+  },
   {
     id: "gradient-descent",
     title: "Gradient Descent",
     description:
       "Visualize how gradient descent optimizes models by minimizing a loss function",
-    image: "/images/regression/gradient-descent.png",
+    image: "/images/regression/gradient-descent.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -48,7 +56,7 @@ const articles: Article[] = [
     title: "Linear Regression",
     description:
       "Interactive exploration of linear regression, least squares fitting, and model behavior",
-    image: "/images/regression/linear-regression.png",
+    image: "/images/regression/linear-regression.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -57,7 +65,7 @@ const articles: Article[] = [
     title: "Polynomial Regression",
     description:
       "Understand how polynomial features allow regression models to fit non-linear patterns",
-    image: "/images/regression/polynomial-regression.png",
+    image: "/images/regression/polynomial-regression.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -66,7 +74,7 @@ const articles: Article[] = [
     title: "Support Vector Regression",
     description:
       "Explore SVR concepts including epsilon tubes, margins, and support vectors",
-    image: "/images/regression/svr.png",
+    image: "/images/regression/svr.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -75,7 +83,7 @@ const articles: Article[] = [
     title: "Logistic Regression",
     description:
       "Visual and interactive guide to binary classification, sigmoid functions, and decision boundaries",
-    image: "/images/classification/logistic-regression.png",
+    image: "/images/classification/logistic-regression.webp",
     badge: "Classification",
     category: "classification",
   },
@@ -84,7 +92,7 @@ const articles: Article[] = [
     title: "Decision Trees",
     description:
       "Learn how trees split data with impurity measures, pruning, and flowchart-like rules",
-    image: "/images/classification/decision-tree.svg",
+    image: "/images/classification/decision-tree-v2.webp",
     badge: "Classification",
     category: "classification",
   },
@@ -93,7 +101,7 @@ const articles: Article[] = [
     title: "K-Nearest Neighbors",
     description:
       "Distance-based classification with local voting, feature scaling, and choosing the right k",
-    image: "/images/classification/k-nearest-neighbors.svg",
+    image: "/images/classification/k-nearest-neighbors-v2.webp",
     badge: "Classification",
     category: "classification",
   },
@@ -102,7 +110,7 @@ const articles: Article[] = [
     title: "Naive Bayes",
     description:
       "Probability-driven classification with Bayes' theorem, priors, and smoothing",
-    image: "/images/classification/naive-bayes.svg",
+    image: "/images/classification/naive-bayes-v2.webp",
     badge: "Classification",
     category: "classification",
   },
@@ -111,43 +119,13 @@ const articles: Article[] = [
     title: "Kernel Methods",
     description:
       "Visualize how kernel tricks transform data into higher-dimensional spaces",
-    image: "/images/other/kernel-trick.png",
+    image: "/images/other/kernel-trick.webp",
     badge: "Advanced",
     category: "other",
   },
 ];
 
-export default function SimulationsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useSearchShortcut(() => setSearchQuery(""));
-
-  const query = searchQuery.trim().toLowerCase();
-
-  const filteredArticles = articles.filter(
-    (article) =>
-      article.title.toLowerCase().includes(query) ||
-      article.description.toLowerCase().includes(query) ||
-      article.category.toLowerCase().includes(query),
-  );
-
-  const groupedArticles = filteredArticles.reduce<
-    Record<Article["category"], Article[]>
-  >(
-    (acc, article) => {
-      acc[article.category].push(article);
-      return acc;
-    },
-    {
-      regression: [],
-      classification: [],
-      clustering: [],
-      testing: [],
-      tuning: [],
-      cleaning: [],
-      other: [],
-    },
-  );
-
+export default function LearnPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="mb-8">
@@ -162,85 +140,7 @@ export default function SimulationsPage() {
         </p>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-10">
-        <Search
-          aria-hidden
-          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-        />
-
-        <Input
-          ref={searchInputRef}
-          type="text"
-          aria-label="Search articles"
-          placeholder="Search articles… (⌘+K)"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 pr-10 border-2"
-        />
-
-        {searchQuery && (
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Clear search"
-            onClick={() => setSearchQuery("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      {/* Sections */}
-      <div className="space-y-16">
-        {(Object.keys(CATEGORY_TITLES) as Article["category"][]).map(
-          (category) => {
-            const items = groupedArticles[category];
-            if (items.length === 0) return null;
-
-            return (
-              <section key={category} className="space-y-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {CATEGORY_TITLES[category]}
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {items.map((article) => (
-                    <LearningCard
-                      key={article.id}
-                      title={article.title}
-                      description={article.description}
-                      href={`/learn/${article.id}`}
-                      image={article.image}
-                      badge={article.badge}
-                    />
-                  ))}
-                </div>
-              </section>
-            );
-          },
-        )}
-      </div>
-
-      {filteredArticles.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/60 py-20 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <SearchX className="h-6 w-6" aria-hidden />
-          </div>
-          <div className="space-y-1">
-            <p className="font-medium text-foreground">
-              No articles found
-            </p>
-            <p className="text-muted-foreground">
-              Nothing matches &quot;{searchQuery}&quot;
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => setSearchQuery("")}>
-            Clear search
-          </Button>
-        </div>
-      )}
+      <ArticleBrowser articles={articles} />
     </div>
   );
 }

@@ -2,9 +2,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
-html {
-  scroll-behavior: smooth;
-}
+/* NOTE: no global `scroll-behavior: smooth` — Lenis owns smooth scrolling.
+   The CSS rule fights Lenis's rAF loop and forces extra compositing. */
 
 :root {
   color-scheme: light dark;
@@ -40,9 +39,9 @@ html {
   --sidebar-accent-foreground: oklch(0.6723 0.1606 244.9955);
   --sidebar-border: oklch(0.9271 0.0101 238.5177);
   --sidebar-ring: oklch(0.6818 0.1584 243.354);
-  --font-sans: Open Sans, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
+  --font-mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
   --radius: 1.3rem;
   --shadow-x: 0px;
   --shadow-y: 2px;
@@ -105,9 +104,9 @@ html {
   --sidebar-accent-foreground: oklch(0.6692 0.1607 245.011);
   --sidebar-border: oklch(0.3795 0.022 240.5943);
   --sidebar-ring: oklch(0.6818 0.1584 243.354);
-  --font-sans: Open Sans, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
+  --font-mono: var(--font-geist-mono), ui-monospace, Menlo, monospace;
   --radius: 1.3rem;
   --shadow-x: 0px;
   --shadow-y: 2px;
@@ -185,6 +184,38 @@ html {
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+  }
+  /* Branded text selection — primary tint in both themes. */
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+}
+
+/* Fast shimmer sweep for skeleton loaders (freefrontend-style):
+   a light band sweeping across a muted base, ~1.1s loop. Uses
+   color-mix off --foreground so it adapts to light/dark theme. */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@layer utilities {
+  .skeleton-shimmer {
+    background-color: var(--muted);
+    background-image: linear-gradient(
+      100deg,
+      transparent 20%,
+      color-mix(in oklch, var(--foreground) 14%, transparent) 50%,
+      transparent 80%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+    animation: skeleton-shimmer 1.1s linear infinite;
   }
 }
 

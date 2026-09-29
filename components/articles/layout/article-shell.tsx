@@ -27,17 +27,42 @@ export function ArticleShell({
   const activeId = useActiveSection(toc.map((t) => t.id));
 
   useEffect(() => {
-    if (contentRef.current) {
-      const items = collectToc(contentRef.current);
-      setToc(items);
-      // Deep-link support: ids are assigned client-side, so handle initial hash here.
-      if (window.location.hash) {
-        const id = decodeURIComponent(window.location.hash.slice(1));
-        if (items.some((t) => t.id === id)) {
-          requestAnimationFrame(() => scrollToSection(id));
-        }
+    const root = contentRef.current;
+    if (!root) return;
+
+    // Deep-link support: ids are assigned client-side, so handle initial
+    // hash once the real headings exist (not while the skeleton shows).
+    let hashHandled = false;
+    const handleHash = (items: TocItem[]) => {
+      if (hashHandled || !window.location.hash) return;
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (items.some((t) => t.id === id)) {
+        hashHandled = true;
+        requestAnimationFrame(() => scrollToSection(id));
       }
-    }
+    };
+
+    const collect = () => {
+      const items = collectToc(root);
+      handleHash(items);
+      setToc((prev) => {
+        if (
+          prev.length === items.length &&
+          prev.every((p, i) => p.id === items[i].id && p.title === items[i].title)
+        ) {
+          return prev;
+        }
+        return items;
+      });
+    };
+
+    collect();
+    // Article bodies arrive asynchronously (per-slug dynamic import), so a
+    // collect-on-mount alone runs while the skeleton is showing and the TOC
+    // stays empty until the next reload. Re-collect when DOM lands instead.
+    const observer = new MutationObserver(collect);
+    observer.observe(root, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [children]);
 
   return (

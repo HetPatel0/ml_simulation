@@ -67,7 +67,7 @@ ML Simulations is an interactive educational platform designed to help users und
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (New York style)
 - **Animation**: [Framer Motion](https://www.framer.com/motion/)
 - **Smooth Scroll**: [Lenis](https://github.com/darkroomengineering/lenis)
-- **Icons**: [Lucide React](https://lucide.dev/), [Hugeicons](https://hugeicons.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
 - **Math Rendering**: [KaTeX](https://katex.org/)
 - **Syntax Highlighting**: [react-syntax-highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
 - **Article Narration (opt-in, author machine only)**: [Kokoro](https://github.com/hexgrad/kokoro) neural TTS (`kokoro-js`, 82M params, Apache-2.0) — installed separately when generating `.mp3` files; never a project dependency, never shipped to visitors
@@ -137,9 +137,7 @@ ml_simulation/
 │   │   ├── LogisticTrainingSim.tsx
 │   │   ├── PolynomialRegression.tsx
 │   │   ├── SVRVisualizer.tsx
-│   │   ├── SupportVectorRegression.tsx
 │   │   ├── SvrKernelLift.tsx
-│   │   ├── SVRKernelLiftSimulation.tsx
 │   │   └── KernelTrickVisualizer.tsx
 │   └── articles/                 # Article content components
 │       ├── layout/               # Article chrome (wrapper, header, TOC, actions)

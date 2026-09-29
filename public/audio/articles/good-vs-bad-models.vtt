@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:25.875
+Your Model Is Cheating: Finding the Sweet Spot Between Too Simple and Too Clever The Model Audition You have one noisy dataset and three candidates. The first draws a straight ruler through everything. The second follows the trend. The third wiggles through every dot like it has something to prove. Which one learned the pattern, and which one memorized the dots? You cannot answer by looking only at the training score. You need examples the model did not use while fitting. The One-Sentence Version Underfitting means the model is too simple to learn the signal.
+
+00:00:25.875 --> 00:00:52.075
+Overfitting means it is too flexible and learns noise. A good model performs well on unseen data, beats a simple baseline, and keeps a reasonable gap between training and validation performance. Read the Two Scores Training error tells you how well the model fits examples it has practiced on. Validation error tells you how well it handles examples held out while you choose the model. Test error is the final grade, checked once after decisions are finished. Both errors high: the model is probably underfitting. Try better features or a little more capacity. Training low, validation high:
+
+00:00:52.075 --> 00:01:18.350
+the model is probably overfitting. Simplify it, regularize it, or collect better data. Both low and close: promising, as long as the metric matches the real problem and beats a baseline. Underfit, Sweet Spot, Overfit Model complexity is how much shape or flexibility the model is allowed to use. A degree-1 polynomial is a line. A degree-2 polynomial can make a curve. A degree-15 polynomial can twist itself around many accidental details. As complexity rises, training error often falls for this family of models. Validation error may fall first, reach a useful region, and then rise.
+
+00:01:18.350 --> 00:01:44.050
+That picture is a teaching pattern, not a promise that every dataset produces a smooth U. A large positive gap is a warning sign. The model is brilliant on rehearsal and shaky on new questions. Do the Experiment Without Cheating We will create a noisy curve, keep a final test set untouched, and use a validation set to choose among degrees. This matters because if you keep choosing the model with the best test score, the test set slowly becomes part of training through your decisions. Degree 1 is the ruler. Degree 15 is the spaghetti candidate.
+
+00:01:44.050 --> 00:02:09.975
+Degree 2 may be the sweet spot for this generated curve, but the code must decide using validation data. Only after choosing should you evaluate once on the untouched test set. The Test Set Is Not a Tuning Knob Use validation data or cross-validation while comparing degrees and hyperparameters. Keep the test set quiet until the end. Otherwise the final number becomes optimistic because you have repeatedly reacted to it. What Does the Metric Mean? Mean squared error averages squared misses.
+
+00:02:09.975 --> 00:02:36.500
+Lower is better, but its units are squared, so mean absolute error or root mean squared error can be easier to explain in the original target units. A metric is not a universal goodness score. For a rare-event classifier, accuracy can look impressive while missing almost every important positive case. Pick metrics based on the errors the project can afford. Regularization: Charge the Model for Extra Wiggle Regularization adds a penalty to the loss. The model can still fit the data, but unnecessary complexity becomes expensive. L1: The Snipper L1 can push some weights exactly to zero.
+
+00:02:36.500 --> 00:03:02.550
+That can make a model sparser, but with correlated features the selected feature may be unstable. Zero does not automatically mean “this feature is the only truth.” L2: The Shrinker L2 discourages very large weights and usually keeps many features in play. Because the penalty depends on coefficient size, scale features inside a pipeline before using L1 or L2. Run Three Controlled Comparisons Change one idea at a time. Keep the data split and validation metric fixed. Baseline: predict the training mean. A real model must beat this boring reference. Complexity run:
+
+00:03:02.550 --> 00:03:30.000
+compare degree 1, degree 2, and degree 15 on validation data. Regularization run: rescue the flexible degree-15 model with Ridge, Lasso, or ElasticNet. The regularization block assumes X_train , X_val , y_train , and y_val from the previous experiment. In a project, put all preprocessing in the pipeline and tune alpha with validation or cross-validation. The Parameters Worth Checking How much curve the polynomial model can use. Too small can underfit. Too large can memorize noise. Strength of Ridge or Lasso regularization.
+
+00:03:30.000 --> 00:03:57.225
+Larger values shrink weights more, but excessive shrinkage can underfit. ElasticNet mix between L1 and L2 penalties. 1.0 is L1, 0.0 is L2, and values between them mix both behaviors. degree , alpha , and l1_ratio affect model behavior. test_size affects how evaluation is estimated, not how intelligent the model is. Change two or three related values, record the validation metric, and stop when the result is stable enough for the problem. Where the Technology Fits pandas helps you inspect duplicates, missing values, and feature distributions before the experiment.
+
+00:03:57.225 --> 00:04:23.400
+scikit-learn supplies the pipelines, estimators, regularizers, metrics, and cross-validation used here. FastAPI belongs after model selection, when you want to serve the chosen pipeline to another application. PyTorch belongs when the problem needs a neural network or a custom training loop. Do not use it to hide a data quality problem. Aha! Here's the cool part... A model that wins training is not necessarily a model that learned. Keep one honest holdout, compare against a baseline, and prefer the simplest model that performs well enough on new data. Now Go Play With It
+
+00:04:23.400 --> 00:04:44.750
+Move the polynomial degree slider before looking at the error. Predict when validation error will start rising, then check your guess. The point is not to find a magical degree. It is to feel the moment the model starts learning the noise. Raise the degree and watch a good fit become too flexible See how a too-simple line misses a curved pattern

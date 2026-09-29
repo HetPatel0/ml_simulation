@@ -128,7 +128,7 @@ export default function GradientDescentArticle() {
       author="Keval Kansagra"
       description="Imagine you're blindfolded on a mountain and need to find the lowest valley. Your only superpower? You can feel which way is downhill."
       image={{
-        src: "/article/regression/gradient-descent.png",
+        src: "/article/regression/gradient-descent.webp",
         alt: "Gradient Descent Visualization",
       }}
     >

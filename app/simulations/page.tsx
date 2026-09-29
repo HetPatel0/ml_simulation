@@ -1,33 +1,17 @@
-// app/simulations/page.tsx
-"use client";
+// app/simulations/page.tsx — server shell (SEO + static header),
+// interactive search/filter lives in the client island below.
+import type { Metadata } from "next";
+import { Play } from "lucide-react";
+import {
+  SimulationBrowser,
+  type Simulation,
+} from "@/components/listings/simulation-browser";
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, X, Play, SearchX } from "lucide-react";
-import { LearningCard } from "@/components/cards/learning-card";
-import { useSearchShortcut } from "@/lib/hooks/use-search-shortcut";
-
-interface Simulation {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  badge: string;
-  category:
-    | "regression"
-    | "classification"
-    | "clustering"
-    | "testing"
-    | "other";
-}
-
-const CATEGORY_TITLES: Record<Simulation["category"], string> = {
-  regression: "Regression",
-  classification: "Classification",
-  clustering: "Clustering",
-  testing: "Testing",
-  other: "Advanced & Experimental",
+export const metadata: Metadata = {
+  title: "ML Simulations",
+  description:
+    "Interactive visualizations to understand machine learning algorithms",
+  alternates: { canonical: "/simulations" },
 };
 
 const simulations: Simulation[] = [
@@ -36,7 +20,7 @@ const simulations: Simulation[] = [
     title: "Gradient Descent",
     description:
       "Visualize how gradient descent optimization algorithm finds the minimum of a function",
-    image: "/images/regression/gradient-descent.png",
+    image: "/images/regression/gradient-descent.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -45,7 +29,7 @@ const simulations: Simulation[] = [
     title: "Least Squares",
     description:
       "Interactive demonstration of the least squares method for linear regression",
-    image: "/images/regression/least-squares.png",
+    image: "/images/regression/least-squares.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -54,7 +38,7 @@ const simulations: Simulation[] = [
     title: "Linear Regression Interactive",
     description:
       "Build intuition for linear regression with interactive data points",
-    image: "/images/regression/linear-regression.png",
+    image: "/images/regression/linear-regression.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -62,7 +46,7 @@ const simulations: Simulation[] = [
     id: "polynomial-regression",
     title: "Polynomial Regression",
     description: "Explore how polynomial features can fit non-linear patterns",
-    image: "/images/regression/polynomial-regression.png",
+    image: "/images/regression/polynomial-regression.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -70,7 +54,7 @@ const simulations: Simulation[] = [
     id: "logistic-regression",
     title: "Logistic Regression",
     description: "Understanding binary classification with logistic regression",
-    image: "/images/classification/logistic-regression.png",
+    image: "/images/classification/logistic-regression.webp",
     badge: "Classification",
     category: "classification",
   },
@@ -78,7 +62,7 @@ const simulations: Simulation[] = [
     id: "logistic-function",
     title: "Logistic Function Visualizer",
     description: "Visualize the sigmoid function and decision boundaries",
-    image: "/images/classification/logistic-function.png",
+    image: "/images/classification/logistic-function.webp",
     badge: "Classification",
     category: "classification",
   },
@@ -86,7 +70,39 @@ const simulations: Simulation[] = [
     id: "logistic-training",
     title: "Logistic Training Simulation",
     description: "Step-by-step training process of logistic regression",
-    image: "/images/classification/logistic-training.png",
+    image: "/images/classification/logistic-training.webp",
+    badge: "Classification",
+    category: "classification",
+  },
+  {
+    id: "k-nearest-neighbors",
+    title: "K-Nearest Neighbors Playground",
+    description: "Click anywhere and watch the k closest points vote on its label",
+    image: "/images/classification/knn-sim.webp",
+    badge: "Classification",
+    category: "classification",
+  },
+  {
+    id: "decision-trees",
+    title: "Decision Tree Playground",
+    description: "Watch one tree grow split by split, then feel overfitting",
+    image: "/images/classification/decision-tree-v2.webp",
+    badge: "Classification",
+    category: "classification",
+  },
+  {
+    id: "naive-bayes",
+    title: "Naive Bayes Detective",
+    description: "Stack word clues and watch posterior odds move",
+    image: "/images/classification/ham-or-spam.webp",
+    badge: "Classification",
+    category: "classification",
+  },
+  {
+    id: "naive-bayes-gaussian",
+    title: "Gaussian Naive Bayes",
+    description: "Drag class blobs and watch the boundary follow the math",
+    image: "/images/classification/gaussian-naive-bayes.webp",
     badge: "Classification",
     category: "classification",
   },
@@ -94,7 +110,7 @@ const simulations: Simulation[] = [
     id: "kernel-trick",
     title: "Kernel Trick Visualizer",
     description: "See how kernel methods transform data into higher dimensions",
-    image: "/images/other/kernel-trick.png",
+    image: "/images/other/kernel-trick.webp",
     badge: "Advanced",
     category: "other",
   },
@@ -102,7 +118,7 @@ const simulations: Simulation[] = [
     id: "svr-visualizer",
     title: "Support Vector Regression",
     description: "Understand SVR with epsilon tubes and support vectors",
-    image: "/images/regression/svr.png",
+    image: "/images/regression/svr.webp",
     badge: "Regression",
     category: "regression",
   },
@@ -111,41 +127,13 @@ const simulations: Simulation[] = [
     title: "SVR Kernel Lift",
     description:
       "See how SVR lifts non-linear regression data into a space where a flat plane can fit.",
-    image: "/images/regression/svr-kernel-lift.png",
+    image: "/images/regression/svr-kernel-lift.webp",
     badge: "Kernel Geometry",
     category: "regression",
   },
 ];
 
 export default function SimulationsPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useSearchShortcut(() => setSearchQuery(""));
-
-  const query = searchQuery.trim().toLowerCase();
-
-  const filteredSimulations = simulations.filter(
-    (sim) =>
-      sim.title.toLowerCase().includes(query) ||
-      sim.description.toLowerCase().includes(query) ||
-      sim.category.toLowerCase().includes(query),
-  );
-
-  const groupedSimulations = filteredSimulations.reduce<
-    Record<Simulation["category"], Simulation[]>
-  >(
-    (acc, sim) => {
-      acc[sim.category].push(sim);
-      return acc;
-    },
-    {
-      regression: [],
-      classification: [],
-      clustering: [],
-      testing: [],
-      other: [],
-    },
-  );
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <div className="mb-8">
@@ -160,86 +148,7 @@ export default function SimulationsPage() {
         </p>
       </div>
 
-      {/* Search */}
-      <div className="relative mb-10">
-        <Search
-          aria-hidden
-          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-        />
-
-        <Input
-          ref={searchInputRef}
-          type="text"
-          aria-label="Search simulations"
-          placeholder="Search simulations… (⌘+K)"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 pr-10 border-2"
-        />
-
-        {searchQuery && (
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Clear search"
-            onClick={() => setSearchQuery("")}
-            className="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      {/* Sections */}
-      <div className="space-y-16">
-        {(Object.keys(CATEGORY_TITLES) as Simulation["category"][]).map(
-          (category) => {
-            const sims = groupedSimulations[category];
-            if (sims.length === 0) return null;
-
-            return (
-              <section key={category} className="space-y-6">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  {CATEGORY_TITLES[category]}
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {sims.map((sim) => (
-                    <LearningCard
-                      key={sim.id}
-                      title={sim.title}
-                      description={sim.description}
-                      href={`/simulations/${sim.id}`}
-                      image={sim.image}
-                      badge={sim.badge}
-                      variant="simulation"
-                    />
-                  ))}
-                </div>
-              </section>
-            );
-          },
-        )}
-      </div>
-
-      {filteredSimulations.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/60 py-20 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <SearchX className="h-6 w-6" aria-hidden />
-          </div>
-          <div className="space-y-1">
-            <p className="font-medium text-foreground">
-              No simulations found
-            </p>
-            <p className="text-muted-foreground">
-              Nothing matches &quot;{searchQuery}&quot;
-            </p>
-          </div>
-          <Button variant="outline" size="sm" onClick={() => setSearchQuery("")}>
-            Clear search
-          </Button>
-        </div>
-      )}
+      <SimulationBrowser simulations={simulations} />
     </div>
   );
 }

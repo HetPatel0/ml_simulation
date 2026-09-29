@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: meta.title,
     description: meta.description,
     authors: [{ name: meta.author }],
+    alternates: { canonical: `/learn/${slug}` },
     openGraph: {
       title: `${meta.title} | ML Simulations`,
       description: meta.description,

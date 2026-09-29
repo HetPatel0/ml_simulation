@@ -1,22 +1,17 @@
-"use client";
+import type { Metadata } from "next";
+import { HomeClient } from "@/components/hero/home-client";
 
-import { useRef } from "react";
-import { HeroSection } from "@/components/hero/HeroSection";
-import { StatsSection } from "@/components/hero/StatsSection";
-import { ApproachSection } from "@/components/hero/ApproachSection";
-import { FeaturedSection } from "@/components/hero/FeaturedSection";
-import { CTASection } from "@/components/hero/CTASection";
+export const metadata: Metadata = {
+  title: "ML Simulations - Interactive Machine Learning Education",
+  description:
+    "Watch machine learning algorithms come alive through interactive visualizations. Adjust parameters, see results instantly.",
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   return (
-    <main ref={containerRef} className="min-h-screen">
-      <HeroSection containerRef={containerRef} />
-      <StatsSection />
-      <ApproachSection />
-      <FeaturedSection />
-      <CTASection />
+    <main className="min-h-screen">
+      <HomeClient />
     </main>
   );
 }

@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:25.500
+From Messy CSV to Working Prediction API The Challenge Can you teach your laptop to estimate coffee intake from sleep hours, test the guess on rows it has never seen, and put the result behind a URL? We will build a deliberately tiny project. The data is synthetic, so it teaches the mechanics of a pipeline. It does not prove that sleep causes coffee consumption, and it is not health advice. What You Will Build A local prediction service. You will send sleep_hours=5.5 to an endpoint and receive JSON containing a predicted coffee count. Local means your laptop can call it.
+
+00:00:25.500 --> 00:00:52.625
+It is not a public production deployment yet. The Smallest AI Engineering Loop The toy version is: define, isolate, inspect, clean, split, train, evaluate, save, serve. Real systems add versioning, monitoring, and retraining, but the shape is already here. Define the input and the answer you want to predict. Create an isolated environment so this project has its own packages. Inspect and clean the data before trusting it. Split examples into training and unseen evaluation rows. Fit a simple model and measure its mistakes. Save the fitted model, then serve it through an endpoint. Step 1:
+
+00:00:52.625 --> 00:01:19.700
+Build a Python Sandbox A virtual environment is an isolated Python environment with its own interpreter path and installed packages. It is not a magical second computer. It is a boundary that stops one project's dependencies from casually breaking another project. Mac or Linux: mkdir creates the project folder. cd moves the terminal into that folder. python -m venv .venv creates the isolated environment. source .venv/bin/activate activates it for this terminal. python -m pip install ... installs packages into the selected Python environment. Windows PowerShell:
+
+00:01:19.700 --> 00:01:46.650
+Command Prompt uses .venv\\\\Scripts\\\\activate.bat instead. Seeing (.venv) in your prompt means the environment is active. Run deactivate when you want to leave it. Step 2: Make Tiny Data Save this as data.csv . Ten rows are small enough to inspect with your own eyes. That is useful for learning, not enough for a real performance claim. Step 3: Meet pandas pandas is the data workbench. It turns a CSV into a labeled DataFrame , which feels like a spreadsheet you can control with Python. Use it for inspection and processing, not for training the model itself. read_csv loads the file.
+
+00:01:46.650 --> 00:02:14.475
+info , head , and describe help you understand its shape. isna finds missing values. drop_duplicates , to_numeric , and dropna perform visible cleaning. to_csv saves the cleaned table for the next step. Inspection Is Not Cleaning Looking at missing values is inspection. Choosing whether to remove, fill, or investigate them is cleaning. The correct decision depends on the meaning of the data. CSV, pandas, and a Data Warehouse These names describe different layers, not different sizes of the same object: CSV: a portable file for exchanging rows and columns. pandas:
+
+00:02:14.475 --> 00:02:42.075
+in-memory inspection and transformation in Python. Data warehouse: persistent, shared, queryable analytics storage, usually accessed with SQL. Model: fitted maths that turns features into predictions. FastAPI: the service window that lets another program ask for a prediction. A real project might query a warehouse, bring a slice into pandas, clean and validate it, train a model, and then serve predictions with FastAPI. A warehouse is not simply a giant pandas DataFrame. Step 4: Split Features from the Answer In machine learning, X is usually the feature table and y is the target column.
+
+00:02:42.075 --> 00:03:08.975
+Here, X contains sleep hours and y contains coffee count. Hold out some rows before you fit the model. Training rows are practice questions. Test rows are exam questions. If the model sees the exam answers while training, the grade stops being honest. Step 5: Train and Evaluate with scikit-learn scikit-learn gives us estimators with a friendly pattern: create the model, call fit , call predict , and measure the errors. Linear regression learns a line: m is the slope, b is the intercept, and the model chooses them from the training rows.
+
+00:03:08.975 --> 00:03:34.850
+The intercept is the predicted target when the feature is zero, which may be outside the meaningful range of this toy example. The script prints MAE, the average absolute miss in coffee units, and R2, a relative score that can be useful but is hard to trust on tiny datasets. The test set here has only two rows, so the scores are a classroom illustration, not a reliable estimate of real performance. No Data Leakage If you later add scaling or imputation, fit those transformations on training data only.
+
+00:03:34.850 --> 00:04:02.100
+A scikit-learn Pipeline keeps the preprocessing and model together so the same steps run at prediction time without peeking at held-out data. Step 6: Serve It with FastAPI Training creates a model artifact. Serving loads that artifact and reuses it for requests. FastAPI is not retraining the model on every request. pickle.load reloads the fitted model. Only load model files you trust. FastAPI() creates the application. @app.get("/predict") connects a URL to the function below it. sleep_hours: float asks FastAPI to parse and validate the query value.
+
+00:04:02.100 --> 00:04:28.500
+The DataFrame keeps the feature name used during training. The returned dictionary becomes JSON. Run the training script, then start the local server: python train.py creates or replaces model.pkl . uvicorn app:app --reload means: run the app object from app.py , and reload during development when code changes. Open http://127.0.0.1:8000/docs or use a second terminal: This is local serving. Public deployment would add a host, HTTPS, authentication, logging, versioned artifacts, and monitoring. Restart the server after retraining because it may still hold the old model in memory.
+
+00:04:28.500 --> 00:04:54.050
+The Three Knobs You Can Actually Change Fraction of rows held out for the final classroom test. Affects how much data is available for training and how noisy the score is. Seed that makes the random split repeatable. Use it while learning so your result can be reproduced. Lets the linear model learn its starting point. Keep it True unless you have a strong reason that the line must pass through zero. test_size and random_state control the experiment, not the model's intelligence. fit_intercept changes the fitted equation. Change one setting at a time and write down what happened.
+
+00:04:54.050 --> 00:05:20.475
+Where PyTorch Fits PyTorch belongs later in the path, when you have an image, audio, text, or another problem that benefits from a neural network. It gives you tensors, neural network modules, losses, gradients, and optimizers. You do not need it to build this first tabular API. The full journey is now visible: pandas prepares data, scikit-learn fits a baseline, FastAPI serves it, and PyTorch becomes an option for deeper models. Aha! Here's the cool part... You just built the smallest useful version of an AI engineering pipeline.
+
+00:05:20.475 --> 00:05:46.250
+Real systems add more data, stronger validation, model versioning, monitoring, and retraining. They do not replace the basic loop you just learned. Now Go Play With It Change one row, retrain, restart the server, and call the endpoint again. Watch the prediction move. Then change the feature name and see how quickly a model-serving contract can break. See the line your tiny model is trying to fit Watch squared errors shrink around the fitted line

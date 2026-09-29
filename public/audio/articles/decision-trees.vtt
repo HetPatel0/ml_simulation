@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:25.725
+Decision Trees: The Flowchart That Learns What is a Decision Tree? A decision tree is exactly what it sounds like: a tree of questions. At each node, the model asks something like "Is credit score above 650?" or "Did the email contain the word free?" Then it follows the matching branch. Keep stacking those questions and you get a model that can classify new examples using a sequence of simple rules. That's why decision trees are popular when interpretability matters. Why People Like Trees
+
+00:00:25.725 --> 00:00:52.875
+The scikit-learn docs describe decision trees as non-parametric supervised models that learn simple decision rules from features. That makes them easy to explain to humans compared with many black-box models. How Does It Actually Work? Step 1: Start with the Full Dataset The root node contains every training example. Right now it is messy because multiple classes are mixed together. Step 2: Search for the Best Question The tree tries many possible splits and asks: which question makes the child nodes purer?
+
+00:00:52.875 --> 00:01:18.650
+In other words, after splitting, do the branches contain more of a single class and less of a mixture? Step 3: Measure Impurity A common choice is Gini impurity. Lower impurity means the node is more class-consistent. Another option is entropy, which comes from information theory: Step 4: Recurse on Each Child Node Once the tree finds a strong split, it repeats the same process on the child nodes. Each branch gets more specialized. Step 5: Stop Before the Tree Becomes Weird If you let a tree keep splitting forever, it can memorize the training data.
+
+00:01:18.650 --> 00:01:45.000
+So we usually stop with rules like max depth, minimum samples per node, or post-pruning. Aha! Here's the cool part... A decision tree is basically a learned if/else program . The model is not solving equations at prediction time. It is walking down a flowchart. The Math Behind a Good Split Suppose the root node has 10 emails: 6 spam and 4 not spam. That node is mixed, so impurity is fairly high. If we split on the word "free," the children become much cleaner: Intuition A good split creates branches that are boring. Boring is good here.
+
+00:01:45.000 --> 00:02:10.825
+You want one branch to look mostly like class A and the other branch to look mostly like class B. The Knobs and Dials You Can Tweak Here are the parameters you will adjust most often in sklearn's DecisionTreeClassifier : Function used to measure split quality: 'gini', 'entropy', or 'log_loss'. Usually small differences, but 'entropy' can prefer slightly more informative splits. Maximum depth of the tree. The fastest way to stop overfitting. Smaller depth = simpler tree. Minimum samples required before a node is allowed to split. Higher values make the tree less eager to keep branching.
+
+00:02:10.825 --> 00:02:37.975
+Minimum samples that must remain in every leaf node. Useful for preventing tiny, noisy leaves that memorize the data. Cost-complexity pruning strength. Increase it to prune weak branches and shrink an overgrown tree. Classic Tree Failure Mode An unrestricted tree can keep splitting until each leaf contains just one or two training examples. Training accuracy becomes amazing. Generalization becomes terrible. This is textbook overfitting. Where You'll Actually Use This Credit decisions: Easy-to-audit rule-based classification. Medical triage: Clear branching logic can be easier to inspect.
+
+00:02:37.975 --> 00:03:04.650
+Fraud screening: Fast non-linear rules over tabular features. Feature discovery: Trees often reveal which variables matter first. Why Trees Show Up Everywhere Random forests and gradient-boosted trees are both built from decision trees. So even if you outgrow a single tree, the core idea stays useful. Let's Build Something Here is a small decision tree classifier that learns approval rules from tabular data: Level Up: From Good to Great Prune Aggressively Start with max_depth , min_samples_leaf , and ccp_alpha . Those three controls solve most "my tree memorized the dataset" problems.
+
+00:03:04.650 --> 00:03:30.475
+Watch Out for Instability Tiny changes in the data can produce a different tree. That is normal. Trees are high-variance models, which is one reason ensembles like random forests tend to be more robust. Compare Against Simpler Baselines If a shallow tree does not beat logistic regression, that usually means your problem may not need fancy branching structure in the first place. Challenge Train the same tree twice: once with max_depth=2 and once with max_depth=None . Then compare train accuracy and validation accuracy. You will feel overfitting immediately.

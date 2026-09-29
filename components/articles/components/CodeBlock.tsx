@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+// PrismLight + explicit language registration: ships only the 4 grammars we
+// use instead of the full Prism bundle (~all languages).
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
+import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
+import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
+import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
 import {
   oneDark,
   oneLight,
@@ -9,6 +15,11 @@ import {
 import { Check, Copy, Terminal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
+
+SyntaxHighlighter.registerLanguage("python", python);
+SyntaxHighlighter.registerLanguage("bash", bash);
+SyntaxHighlighter.registerLanguage("javascript", javascript);
+SyntaxHighlighter.registerLanguage("typescript", typescript);
 
 interface CodeBlockProps {
   code: string;
@@ -54,6 +65,10 @@ export function CodeBlock({
 
   return (
     <div
+      // Theme (resolvedTheme) is client-only: server prerenders light while a
+      // dark-mode visitor hydrates dark. Suppress the expected mismatch for
+      // this subtree instead of flashing a wrong theme.
+      suppressHydrationWarning
       className={cn(
         "relative my-6 rounded-xl overflow-hidden border shadow-sm",
         isDark
@@ -129,7 +144,11 @@ export function CodeBlock({
           lineNumberStyle={{
             minWidth: "2.5em",
             paddingRight: "1em",
-            color: isDark ? "hsl(var(--muted-foreground) / 0.5)" : "hsl(var(--muted-foreground) / 0.6)",
+            // NOTE: --muted-foreground holds oklch(), so it can't sit inside
+            // hsl(). The invalid declaration was dropped and numbers fell
+            // back to near-white — unreadable in dark mode. Plain rgba works
+            // in both themes.
+            color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)",
             userSelect: "none",
           }}
         >

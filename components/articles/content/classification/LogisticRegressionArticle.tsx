@@ -147,7 +147,7 @@ export default function LogisticRegressionArticle() {
       author="Keval Kansagra"
       description='Despite having "regression" in its name, this algorithm is secretly a classification superstar. Time to unmask the imposter!'
       image={{
-        src: "/article/classification/logistic-regression.png",
+        src: "/article/classification/logistic-regression.webp",
         alt: "Logistic Regression Visualization",
       }}
     >

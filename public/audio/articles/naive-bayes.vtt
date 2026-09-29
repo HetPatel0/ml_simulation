@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:27.100
+Naive Bayes: Fast Classification with Probability What is Naive Bayes? Naive Bayes is a family of classifiers built around Bayes' theorem. It asks: given the features I observed, which class is now most probable? The "naive" part is the assumption that features are conditionally independent once you know the class. That assumption is often wrong in the real world, but the method still works shockingly well for many tasks. What the Official Guide Says The scikit-learn Naive Bayes guide frames these models as Bayes-theorem classifiers with strong independence assumptions between features.
+
+00:00:27.100 --> 00:00:54.075
+That sentence is basically the whole algorithm. How Does It Actually Work? Step 1: Start with a Prior Belief Before seeing any features, each class has a prior probability. Maybe 40% of emails are spam and 60% are not spam. Step 2: Score How Likely the Features Are For each class, the model estimates how likely the observed features would be if that class were true. Step 3: Apply Bayes' Theorem The denominator is the same for every class, so for prediction we mostly care about the relative scores. Step 4: Pick the Biggest Posterior Probability
+
+00:00:54.075 --> 00:01:20.875
+After combining the prior and the feature evidence, whichever class gets the largest posterior wins. Aha! Here's the cool part... Naive Bayes is like a detective stacking clues. One clue might be weak. Ten clues pointing the same way can become overwhelming. Worked Example with Numbers Spam detection is the classic Naive Bayes demo because words act like many small clues: Why Smoothing Matters If a word never appeared in spam during training, the raw probability would be zero, and one zero wipes out the entire product. Smoothing fixes that by giving unseen events a tiny non-zero chance.
+
+00:01:20.875 --> 00:01:47.725
+Common Naive Bayes Variants GaussianNB: Best for continuous features like measurements or sensor values. MultinomialNB: Great for counts, especially text classification. BernoulliNB: Useful when features are binary yes/no signals. The Knobs and Dials You Can Tweak These are the settings you will most often touch across sklearn's Naive Bayes estimators: Additive smoothing strength for Multinomial and Bernoulli Naive Bayes. Higher values protect against zero probabilities but can oversmooth the evidence. Whether the model should learn class priors from the training data.
+
+00:01:47.725 --> 00:02:15.075
+Turn it off only when you want to impose equal priors or set your own. Manual prior probabilities for each class. Useful when domain knowledge says the real-world class balance differs from the sample. Whether sklearn should preserve the provided alpha exactly. Mostly relevant when experimenting with extremely small smoothing values. GaussianNB stability term added to variances. Important when continuous features have tiny variances or numerical issues. Strong Probabilities, Not Always Calibrated
+
+00:02:15.075 --> 00:02:41.750
+Naive Bayes can be very good at ranking classes while still being overconfident about the actual probability values. The chosen class is often useful even when the raw probabilities need calibration. Where You'll Actually Use This Spam filtering: The textbook Naive Bayes use case. Document classification: News tags, support tickets, sentiment baselines. Medical screening: Combining many small indicator signals. Fast baselines: When you need a strong first pass with minimal compute. Why It Stays Relevant
+
+00:02:41.750 --> 00:03:08.050
+Naive Bayes trains extremely fast, handles high-dimensional sparse text well, and often gives you a surprisingly hard baseline to beat on small NLP tasks. Let's Build Something Here is a tiny text classifier using bag-of-words features and MultinomialNB : Level Up: From Good to Great Match the Variant to the Data Do not throw GaussianNB at word counts or MultinomialNB at continuous sensor data just because the names are familiar. The distributional assumption matters. Respect Feature Correlation Highly correlated features can make the model double-count evidence.
+
+00:03:08.050 --> 00:03:33.050
+Naive Bayes can still work, but that independence assumption is being stretched. Use It as a Serious Baseline If a more complicated classifier barely beats Naive Bayes, your extra complexity may not be worth it. Challenge Train two text models with alpha=1.0 and alpha=0.01 . Then compare how often each model becomes overconfident on rare words.

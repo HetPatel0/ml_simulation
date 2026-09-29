@@ -7,6 +7,7 @@ import {
   CalloutBox,
   AhaBox,
   ParameterTable,
+  SimulationLink,
 } from "../../components";
 
 const naiveBayesParams = [
@@ -111,7 +112,7 @@ export default function NaiveBayesArticle() {
       author="Het Bhuva"
       description="Naive Bayes looks at clues, multiplies evidence, and makes a surprisingly strong classification decision from simple probability rules."
       image={{
-        src: "/images/classification/naive-bayes.svg",
+        src: "/images/classification/naive-bayes-v2.webp",
         alt: "Naive Bayes probability diagram",
       }}
     >
@@ -279,6 +280,20 @@ export default function NaiveBayesArticle() {
           Then compare how often each model becomes overconfident on rare words.
         </p>
       </CalloutBox>
+
+      <h2>Now Go Play With It!</h2>
+      <p>
+        The best way to feel Bayes&apos; theorem is to stack clues yourself.
+        Toggle words, drag the prior, and spring the zero trap:
+      </p>
+      <SimulationLink
+        simulationSlug="naive-bayes"
+        description="Stack word clues and watch posterior odds move like a detective"
+      />
+      <SimulationLink
+        simulationSlug="naive-bayes-gaussian"
+        description="Drag Gaussian blobs and watch the Bayes boundary follow"
+      />
     </ArticlePost>
   );
 }

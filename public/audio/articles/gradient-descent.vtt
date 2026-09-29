@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:25.175
+Gradient Descent: The Engine Behind Machine Learning What is Gradient Descent? Picture this: you're dropped blindfolded on a hilly landscape. Your goal is to find the lowest point. What do you do? You feel the ground with your feet, figure out which direction goes downhill, and take a step that way. Repeat until you can't go any lower. That's gradient descent in a nutshell - it's how machine learning models "learn" by iteratively adjusting their parameters to minimize errors. Fun Fact Gradient descent was first proposed by Cauchy in 1847!
+
+00:00:25.175 --> 00:00:50.125
+It took over 150 years for computers to become powerful enough to make it the backbone of modern AI. How Does It Actually Work? Let's break down the algorithm step by step: Step 1: Start Somewhere Random Initialize your parameters (weights) with random values. You have to start somewhere, and random is as good as anything when you don't know the answer. Step 2: Calculate the Cost How wrong are your current predictions? The cost function (like Mean Squared Error) gives you a single number representing your total wrongness. Step 3: Find the Slope (Gradient)
+
+00:00:50.125 --> 00:01:17.400
+The gradient tells you which direction is "downhill." Mathematically, it's the derivative of the cost function with respect to each parameter. Step 4: Take a Step Downhill Update your parameters by moving in the opposite direction of the gradient: Where α (alpha) is the learning rate - how big of a step you take. Step 5: Repeat Until You're Happy Keep iterating until the cost stops decreasing (convergence) or you hit your maximum number of iterations. Aha! Here's the cool part... The gradient always points UPHILL (toward increasing values).
+
+00:01:17.400 --> 00:01:42.700
+That's why we SUBTRACT it - we want to go downhill to minimize the cost! The Math (Don't Skip This - It's Actually Cool) Let's work through a concrete example. We want to minimize f(x) = x² (a simple parabola - the minimum is obviously at x=0, but let's pretend we don't know that). The Derivative The derivative of x² is 2x. This tells us the slope at any point: At x=4: gradient = 2(4) = 8 → steep uphill to the right At x=1: gradient = 2(1) = 2 → gentle uphill to the right At x=0: gradient = 2(0) = 0 → flat! We found the minimum! At x=-2: gradient = 2(-2) = -4 → uphill to the left
+
+00:01:42.700 --> 00:02:08.075
+Worked Example with Numbers The Learning Rate: Most Important Hyperparameter The learning rate (α) is like your step size when walking down that hill: Learning Rate Disasters Too high: You'll overshoot the valley and end up on the other side, then overshoot again, bouncing back and forth until you fly off to infinity. Too low: You'll inch along so slowly that you'll run out of patience (or compute budget) before reaching the minimum. Types of Gradient Descent When training on large datasets, computing the gradient on ALL data points is expensive. Here are three variants: 1.
+
+00:02:08.075 --> 00:02:35.150
+Batch Gradient Descent Uses the ENTIRE dataset for each update. Accurate but slow and memory-hungry. 2. Stochastic Gradient Descent (SGD) Uses ONE random sample at a time. Fast and uses little memory, but noisy. The randomness can actually help escape local minima! 3. Mini-batch Gradient Descent The Goldilocks approach - uses a small batch (typically 32-256 samples). Best of both worlds: reasonably accurate and reasonably fast. Pro Tip In practice, almost everyone uses mini-batch gradient descent. A batch size of 32 is a common starting point. The Knobs and Dials You Can Tweak
+
+00:02:35.150 --> 00:03:01.375
+Here are the key parameters for sklearn's SGDRegressor: Step size for each iteration Too high = overshoot and diverge. Too low = takes forever to converge. Maximum number of iterations Increase if not converging. But watch for overfitting! Stopping tolerance for convergence Lower = more precision, but longer training time Initial learning rate for some schedules Starting point for adaptive learning rate methods Where You'll Actually Use This Gradient descent is the optimization engine behind almost everything in ML: Neural Networks: Backpropagation IS gradient descent Large-scale regression:
+
+00:03:01.375 --> 00:03:27.750
+When data doesn't fit in memory Online learning: When data arrives in streams Deep learning: Adam, RMSprop are fancy versions of GD ChatGPT Uses This When training GPT models, OpenAI uses a variant called Adam optimizer (Adaptive Moment estimation) - which is essentially gradient descent with some clever tricks to adapt the learning rate automatically. Let's Build Something First, let's implement gradient descent from scratch to really understand it: Using sklearn's SGDRegressor In practice, you'll use sklearn's implementation. Here's how: Level Up: From Good to Great
+
+00:03:27.750 --> 00:03:54.700
+Common Gotchas and How to Fix Them Loss exploding to infinity? Learning rate is too high. Try reducing it by a factor of 10. Loss barely moving? Learning rate might be too low, OR you forgot to scale your features (SGD hates unscaled data!). Stuck in local minimum? Try adding momentum or switching to Adam optimizer. Critical: Always Scale Your Features! Gradient descent is VERY sensitive to feature scales. If one feature ranges 0-1 and another 0-1000000, the gradients will be all over the place. Always use StandardScaler or similar before training. Advanced Optimizers to Know Momentum:
+
+00:03:54.700 --> 00:04:20.450
+Remembers previous gradients, like a ball rolling downhill RMSprop: Adapts learning rate per-parameter Adam: Combines momentum + RMSprop (most popular today) Now Go Play With It! The best way to understand gradient descent is to watch it in action. Try different learning rates and see what happens: Adjust the learning rate and watch the algorithm find the minimum in real-time Challenge Before clicking into the simulation, predict: what happens when you set the learning rate to 1.0 or higher? Then go test your hypothesis!

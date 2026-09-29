@@ -145,7 +145,7 @@ export default function LeastSquaresArticle() {
       author="Het Bhuva"
       description="Every time you fit a line to data, this elegant 200-year-old formula is doing the heavy lifting behind the scenes."
       image={{
-        src: "/images/regression/least-squares.png",
+        src: "/images/regression/least-squares.webp",
         alt: "Least Squares Visualization",
       }}
     >
