@@ -22,8 +22,15 @@ const nextConfig: NextConfig = {
       "katex",
     ],
   },
-  async headers() {
+  async redirects() {
     return [
+      // /privacy merged into /about#privacy — keep old links working.
+      { source: "/privacy", destination: "/about#privacy", permanent: true },
+      // /newsletter route removed — home strip form remains the signup path.
+      { source: "/newsletter", destination: "/#newsletter-heading", permanent: true },
+    ];
+  },
+  async headers() {    return [
       {
         source: "/:path*.{png,jpg,jpeg,webp,avif,svg}",
         headers: [

@@ -4,11 +4,28 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { MoveLeft, Home } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { EGG_IDS, markFound } from "@/lib/fun/eggs";
+import { playBoo } from "@/lib/fun/sound";
 
 function FloatingGhost() {
+  const boo = () => {
+    playBoo();
+    const isNew = markFound(EGG_IDS.ghostBoo);
+    if (isNew) {
+      toast.success("Boo! Ghost egg found.", {
+        description: "Egg 3 of 3. Did you find the keyboard one?",
+      });
+    }
+  };
+
   return (
-    <motion.div
-      className="relative"
+    <motion.button
+      type="button"
+      onClick={boo}
+      aria-label="Boo the ghost (easter egg)"
+      title="psst… click me"
+      className="relative cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       animate={{
         y: [0, -12, 0],
       }}
@@ -68,7 +85,7 @@ function FloatingGhost() {
 
       {/* Glow effect */}
       <div className="absolute inset-0 blur-2xl bg-primary/10 rounded-full -z-10" />
-    </motion.div>
+    </motion.button>
   );
 }
 

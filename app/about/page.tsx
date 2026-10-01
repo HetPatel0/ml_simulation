@@ -106,6 +106,59 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ================= PRIVACY ================= */}
+      <section id="privacy" className="px-6 lg:px-12 py-12 border-t border-border/50 scroll-mt-14">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-2xl font-bold tracking-tight mb-2">
+            Privacy
+          </h2>
+          <p className="text-muted-foreground mb-6">
+            No account needed. Here is what leaves your browser and what
+            stays on your device.
+          </p>
+          <ul className="space-y-4 text-muted-foreground leading-relaxed max-w-2xl">
+            <li className="flex items-start gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 mt-2" />
+              <span>
+                <span className="text-foreground font-medium">Analytics — </span>
+                privacy-friendly page analytics (Vercel Analytics and Speed
+                Insights) show which articles help learners. No advertising
+                trackers, no cross-site cookies.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 mt-2" />
+              <span>
+                <span className="text-foreground font-medium">Newsletter — </span>
+                if you subscribe, your address is stored by Kit (our email
+                provider) solely to send new-article alerts. Every email
+                contains a one-click unsubscribe link. We never sell addresses
+                and keep no subscriber database of our own.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 mt-2" />
+              <span>
+                <span className="text-foreground font-medium">On-device storage — </span>
+                quiz answers live in localStorage under keys like{" "}
+                <code>ml-quiz:&lt;slug&gt;</code> and auto-erase 30 minutes
+                after your last answer. Sound preference lives under{" "}
+                <code>ml-fun:sound</code> and found easter eggs under{" "}
+                <code>ml-fun:eggs</code>. Clear site data to erase them sooner.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 mt-2" />
+              <span>
+                <span className="text-foreground font-medium">Contact — </span>
+                questions? Open an issue on the public GitHub repository linked
+                in the footer.
+              </span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
       {/* ================= CTA ================= */}
       <section className="px-6 lg:px-12 py-12 border-t border-border/50">
         <div className="mx-auto max-w-5xl text-center">

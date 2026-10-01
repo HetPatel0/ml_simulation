@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { ThemeShortcut } from "@/components/theme/theme-shortcut";
+import { EggListener } from "@/components/fun/egg-listener";
 import { OfflineBanner } from "@/components/layout/offline-banner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
@@ -130,6 +131,7 @@ export default function RootLayout({
                 Skip to content
               </a>
               <ThemeShortcut />
+              <EggListener />
               <OfflineBanner />
               <Navbar />
             <main id="main" className="flex-1">{children}</main>

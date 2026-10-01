@@ -1,8 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { SoundToggle } from "@/components/fun/sound-toggle";
+import {
+  celebratePass,
+  celebratePerfect,
+} from "@/lib/fun/celebrate";
+import {
+  playCorrect,
+  playPerfect,
+  playWin,
+  playWrong,
+} from "@/lib/fun/sound";
 import {
   CheckCircle2,
   XCircle,
@@ -14,6 +25,36 @@ import {
 import type { QuizQuestion } from "@/lib/quizzes";
 
 const STORAGE_PREFIX = "ml-quiz:";
+/** Quiz answers auto-expire 30 mins after last save — short memory, not a record. */
+const QUIZ_TTL_MS = 30 * 60 * 1000;
+
+type StoredQuiz = { savedAt: number; answers: Record<string, number> };
+
+function loadStoredQuiz(slug: string): StoredQuiz {
+  if (typeof window === "undefined") return { savedAt: 0, answers: {} };
+  const key = `${STORAGE_PREFIX}${slug}`;
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return { savedAt: 0, answers: {} };
+    const parsed = JSON.parse(raw) as Partial<StoredQuiz>;
+    if (
+      typeof parsed.savedAt !== "number" ||
+      !parsed.answers ||
+      typeof parsed.answers !== "object"
+    ) {
+      // Legacy raw-answers shape (no timestamp) — drop under new expiry policy.
+      localStorage.removeItem(key);
+      return { savedAt: 0, answers: {} };
+    }
+    if (Date.now() - parsed.savedAt > QUIZ_TTL_MS) {
+      localStorage.removeItem(key);
+      return { savedAt: 0, answers: {} };
+    }
+    return { savedAt: parsed.savedAt, answers: parsed.answers };
+  } catch {
+    return { savedAt: 0, answers: {} };
+  }
+}
 
 /**
  * Stepper quiz: one question at a time (1/4 → 4/4) with Back / Next,
@@ -30,19 +71,46 @@ export function QuizBlock({
   title?: string;
 }) {
   const [index, setIndex] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, number>>(() => {
-    if (typeof window === "undefined") return {};
-    try {
-      const raw = localStorage.getItem(`${STORAGE_PREFIX}${slug}`);
-      return raw ? (JSON.parse(raw) as Record<string, number>) : {};
-    } catch {
-      return {};
-    }
-  });
+  const [initial] = useState<StoredQuiz>(() => loadStoredQuiz(slug));
+  const [answers, setAnswers] = useState<Record<string, number>>(
+    () => initial.answers,
+  );
+  const savedAtRef = useRef<number>(initial.savedAt);
   const [finished, setFinished] = useState(false);
 
   const total = questions.length;
   const q = questions[Math.min(index, total - 1)];
+
+  // Active expiry: clear answers 30 mins after last save even if tab stays open.
+  useEffect(() => {
+    if (Object.keys(answers).length === 0) return;
+    const elapsed = savedAtRef.current
+      ? Date.now() - savedAtRef.current
+      : 0;
+    const remaining = QUIZ_TTL_MS - elapsed;
+    if (remaining <= 0) {
+      setAnswers({});
+      setIndex(0);
+      setFinished(false);
+      try {
+        localStorage.removeItem(`${STORAGE_PREFIX}${slug}`);
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    const id = setTimeout(() => {
+      setAnswers({});
+      setIndex(0);
+      setFinished(false);
+      try {
+        localStorage.removeItem(`${STORAGE_PREFIX}${slug}`);
+      } catch {
+        /* ignore */
+      }
+    }, remaining);
+    return () => clearTimeout(id);
+  }, [answers, slug]);
 
   const score = useMemo(
     () => questions.filter((item) => answers[item.id] === item.answerIndex).length,
@@ -57,7 +125,12 @@ export function QuizBlock({
 
   const persist = (next: Record<string, number>) => {
     try {
-      localStorage.setItem(`${STORAGE_PREFIX}${slug}`, JSON.stringify(next));
+      // eslint-disable-next-line react-hooks/purity -- event handler timestamp, not render output
+      savedAtRef.current = Date.now();
+      localStorage.setItem(
+        `${STORAGE_PREFIX}${slug}`,
+        JSON.stringify({ savedAt: savedAtRef.current, answers: next }),
+      );
     } catch {
       /* private mode — in-memory only */
     }
@@ -68,12 +141,29 @@ export function QuizBlock({
     const next = { ...answers, [q.id]: oi };
     setAnswers(next);
     persist(next);
+    if (oi === q.answerIndex) playCorrect();
+    else playWrong();
+  };
+
+  const showScore = () => {
+    const finalScore = questions.filter(
+      (item) => answers[item.id] === item.answerIndex,
+    ).length;
+    setFinished(true);
+    if (finalScore === total) {
+      playPerfect();
+      void celebratePerfect();
+    } else if (finalScore >= Math.ceil(total * 0.7)) {
+      playWin();
+      void celebratePass();
+    }
   };
 
   const reset = () => {
     setAnswers({});
     setIndex(0);
     setFinished(false);
+    savedAtRef.current = 0;
     try {
       localStorage.removeItem(`${STORAGE_PREFIX}${slug}`);
     } catch {
@@ -93,7 +183,7 @@ export function QuizBlock({
         </h2>
         <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground" aria-live="polite">
           {score === total
-            ? "Perfect — you nailed every concept."
+            ? "Perfect. You nailed every concept."
             : score >= Math.ceil(total * 0.7)
               ? "Solid. Review the ones you missed with Back, or retake fresh."
               : "Worth a re-read — scroll up, then retake."}
@@ -144,9 +234,12 @@ export function QuizBlock({
             {title}
           </h2>
         </div>
-        <p className="shrink-0 rounded-full border border-border px-3 py-1 font-mono text-xs text-muted-foreground" aria-live="polite">
-          {index + 1}/{total}
-        </p>
+        <div className="flex shrink-0 items-center gap-2">
+          <SoundToggle />
+          <p className="rounded-full border border-border px-3 py-1 font-mono text-xs text-muted-foreground" aria-live="polite">
+            {index + 1}/{total}
+          </p>
+        </div>
       </div>
 
       {/* Progress dots */}
@@ -223,7 +316,7 @@ export function QuizBlock({
             )}
             <div>
               <p className="font-medium">
-                {isCorrect ? "Right." : "Not quite — the right answer is highlighted."}
+                {isCorrect ? "Right." : "Not quite. The right answer is highlighted."}
               </p>
               <p className="mt-0.5 text-foreground/80">{q.explanation}</p>
             </div>
@@ -245,7 +338,7 @@ export function QuizBlock({
             Next <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         ) : (
-          <Button size="sm" onClick={() => setFinished(true)} disabled={!revealed}>
+          <Button size="sm" onClick={showScore} disabled={!revealed}>
             See score ({Object.keys(answers).length}/{total} answered)
           </Button>
         )}

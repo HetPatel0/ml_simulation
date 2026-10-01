@@ -179,7 +179,7 @@ export function ArticleSkeleton() {
   );
 }
 
-/** Mirrors /newsletter, /privacy, /sitemap-page: icon header, lede, body lines. */
+/** Mirrors /about, /sitemap-page: icon header, lede, body lines. */
 export function PageSkeleton({ lines = 6 }: { lines?: number }) {
   return (
     <div
