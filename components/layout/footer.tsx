@@ -2,48 +2,39 @@ import Logo from "@/components/layout/logo";
 import Link from "next/link";
 
 const links = [
-  {
-    title: "Open Source",
-    href: "https://github.com/HetPatel0/ml_simulation",
-    target: "_blank",
-    rel: "noopener noreferrer",
-  },
-
-  {
-    title: "About",
-    href: "/about",
-  },
+  { title: "Learn", href: "/learn" },
+  { title: "Simulations", href: "/simulations" },
+  { title: "Cheatsheets", href: "/cheatsheets" },
+  { title: "About", href: "/about" },
+  { title: "Sitemap", href: "/sitemap-page" },
 ];
 
 export default function FooterSection() {
   return (
-    <footer className="py-7 md:py-15 border-t">
+    <footer className="border-t py-7 md:py-10">
       <div className="mx-auto max-w-5xl px-6">
         <div className="mx-auto block size-fit">
           <Logo />
         </div>
 
-        <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
-          {links.map((link, index) => (
+        <div className="my-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+          {links.map((link) => (
             <Link
-              key={index}
+              key={link.href}
               href={link.href}
-              scroll={true}
-              target={link.target}
-              className="text-muted-foreground hover:text-primary block duration-150"
+              className="block text-muted-foreground duration-150 hover:text-primary"
             >
               <span>{link.title}</span>
             </Link>
           ))}
         </div>
-        <div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
+        <div className="my-6 flex flex-wrap justify-center gap-6 text-sm">
           <Link
             href="https://x.com/Het1501"
-            scroll={true}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="X/Twitter"
-            className="text-muted-foreground hover:text-primary block"
+            className="block text-muted-foreground hover:text-primary"
           >
             <svg
               className="size-6"
@@ -60,11 +51,10 @@ export default function FooterSection() {
           </Link>
           <Link
             href="https://www.linkedin.com/in/het-bhuva-b1330b332/"
-            scroll={true}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="text-muted-foreground hover:text-primary block"
+            className="block text-muted-foreground hover:text-primary"
           >
             <svg
               className="size-6"
@@ -81,11 +71,10 @@ export default function FooterSection() {
           </Link>
           <Link
             href="https://github.com/HetPatel0/"
-            scroll={true}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="text-muted-foreground hover:text-primary block"
+            className="block text-muted-foreground hover:text-primary"
           >
             <svg
               className="size-6"
@@ -101,7 +90,7 @@ export default function FooterSection() {
             </svg>
           </Link>
         </div>
-        <span className="text-muted-foreground block text-center text-sm">
+        <span className="block text-center text-sm text-muted-foreground">
           {" "}
           © {new Date().getFullYear()} ML simulation, All rights reserved
         </span>

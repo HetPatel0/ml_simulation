@@ -30,6 +30,11 @@ const CTASection = dynamic(() =>
     default: m.CTASection,
   })),
 );
+const NewsletterCTA = dynamic(() =>
+  import("@/components/newsletter/newsletter-cta").then((m) => ({
+    default: m.NewsletterCTA,
+  })),
+);
 
 export function HomeClient() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,6 +45,7 @@ export function HomeClient() {
       <StatsSection />
       <ApproachSection />
       <FeaturedSection />
+      <NewsletterCTA />
       <CTASection />
     </div>
   );

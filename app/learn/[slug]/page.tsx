@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { articleMetadata, siteConfig } from "@/lib/metadata";
 import ArticleClient from "./article-client";
 import { ArticleShell } from "@/components/articles/layout/article-shell";
+import { BreadcrumbJsonLd } from "@/components/articles/layout/article-breadcrumb";
 import { BackToTop } from "@/components/layout/back-to-top";
 
 
@@ -53,8 +54,30 @@ export default async function ArticlePage({ params }: Props) {
     notFound();
   }
 
+  const meta = articleMetadata[slug];
+
+  const quizJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    name: `${meta.title} — self-check quiz`,
+    about: meta.description,
+    url: `${siteConfig.url}/learn/${slug}#quiz-${slug}`,
+  };
+
   return (
     <article className="min-h-screen">
+      <BreadcrumbJsonLd
+        siteUrl={siteConfig.url}
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Learn", href: "/learn" },
+          { label: meta.title, href: `/learn/${slug}` },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(quizJsonLd) }}
+      />
       <ArticleShell>
         <ArticleClient slug={slug} />
       </ArticleShell>

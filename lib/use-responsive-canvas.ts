@@ -24,15 +24,20 @@ export function useResponsiveCanvas(options: UseResponsiveCanvasOptions = {}) {
     const containerWidth = containerRef.current.clientWidth;
     const width = Math.min(containerWidth, maxWidth);
     const height = Math.max(width / aspectRatio, minHeight);
+    const next = { width: Math.floor(width), height: Math.floor(height) };
 
-    setSize({ width: Math.floor(width), height: Math.floor(height) });
+    // Skip re-render when size is unchanged (ResizeObserver fires often).
+    setSize((prev) => (prev.width === next.width && prev.height === next.height ? prev : next));
   }, [maxWidth, aspectRatio, minHeight]);
 
   useEffect(() => {
     updateSize();
 
+    // Debounced observer: rapid resizes (drawer, rotate) recalc once.
+    let timer: ReturnType<typeof setTimeout> | null = null;
     const resizeObserver = new ResizeObserver(() => {
-      updateSize();
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(updateSize, 100);
     });
 
     if (containerRef.current) {
@@ -40,6 +45,7 @@ export function useResponsiveCanvas(options: UseResponsiveCanvasOptions = {}) {
     }
 
     return () => {
+      if (timer) clearTimeout(timer);
       resizeObserver.disconnect();
     };
   }, [updateSize]);

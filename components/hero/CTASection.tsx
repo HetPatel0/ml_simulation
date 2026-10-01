@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="px-6 lg:px-12 py-32">
+    <section className="border-y border-border bg-muted/30">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="max-w-2xl mx-auto text-center rounded-2xl border border-border bg-card/50 py-12 px-6 sm:px-12"
+        className="max-w-5xl mx-auto px-6 py-12 text-center"
       >
         <h2 className="text-3xl md:text-4xl font-light tracking-tight">
           Ready to <span className="font-medium text-primary">explore</span>?

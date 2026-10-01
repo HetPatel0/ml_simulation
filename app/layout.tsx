@@ -6,6 +6,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { ThemeShortcut } from "@/components/theme/theme-shortcut";
 import { OfflineBanner } from "@/components/layout/offline-banner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 import LenisProvider from "@/components/providers/lenis-provider";
 import FooterSection from "@/components/layout/footer";
 import { siteConfig } from "@/lib/metadata";
@@ -134,6 +135,7 @@ export default function RootLayout({
             <main id="main" className="flex-1">{children}</main>
 
             <FooterSection />
+            <Toaster />
             <Analytics />
             <SpeedInsights />
             </TooltipProvider>

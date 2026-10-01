@@ -108,7 +108,7 @@ export function CardGridSkeleton({ count = 6 }: { count?: number }) {
     </section>
   );
 }
-/** Mirrors /learn + /simulations: header, search bar, card grid. */
+/** Mirrors /learn + /simulations + /cheatsheets: header, search bar, quick tags, card grid. */
 export function ListingSkeleton({ cards = 6 }: { cards?: number }) {
   return (
     <div
@@ -125,7 +125,15 @@ export function ListingSkeleton({ cards = 6 }: { cards?: number }) {
         </div>
         <Bar className="h-6 w-1/2" />
       </div>
-      <Bar className="h-10 w-full mb-10 rounded-md" />
+      <Bar className="h-10 w-full mb-3 rounded-md" />
+      {/* Quick tags row */}
+      <div className="mb-10 flex flex-wrap items-center gap-2" aria-hidden>
+        <Bar className="h-4 w-14" />
+        <Bar className="h-7 w-20 rounded-full" />
+        <Bar className="h-7 w-24 rounded-full" />
+        <Bar className="h-7 w-28 rounded-full" />
+        <Bar className="h-7 w-16 rounded-full" />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: cards }, (_, i) => (
           <CardSkeleton key={i} />
@@ -166,6 +174,85 @@ export function ArticleSkeleton() {
         <Bar className="h-7 w-1/2 pt-2" />
         <Bar className="h-4 w-full" />
         <Bar className="h-4 w-2/3" />
+      </div>
+    </div>
+  );
+}
+
+/** Mirrors /newsletter, /privacy, /sitemap-page: icon header, lede, body lines. */
+export function PageSkeleton({ lines = 6 }: { lines?: number }) {
+  return (
+    <div
+      role="status"
+      aria-busy="true"
+      aria-label="Loading"
+      className="container mx-auto px-4 py-8 max-w-5xl"
+    >
+      <span className="sr-only">Loading…</span>
+      <div className="mb-8 space-y-2">
+        <div className="flex items-center gap-3 mb-2">
+          <Bar className="h-10 w-10 rounded-lg" />
+          <Bar className="h-9 w-64" />
+        </div>
+        <Bar className="h-6 w-1/2" />
+      </div>
+      <div className="max-w-2xl space-y-4">
+        {Array.from({ length: lines }, (_, i) => (
+          <Bar key={i} className={cn("h-4", i % 3 === 2 ? "w-5/6" : "w-full")} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Mirrors cheatsheets/[slug]: Back/Share top bar + Learn-style title + TOC shell. */
+export function CheatsheetDetailSkeleton() {
+  return (
+    <div
+      role="status"
+      aria-busy="true"
+      aria-label="Loading cheatsheet"
+      className="min-h-screen"
+    >
+      <span className="sr-only">Loading cheatsheet…</span>
+      {/* Top bar (Back + Share), contained in max-w-5xl like the real page */}
+      <div className="mx-auto w-full max-w-5xl">
+        <div className="flex items-center justify-between border-b px-4 py-5">
+          <Bar className="h-8 w-20 rounded-md" />
+          <Bar className="h-9 w-28 rounded-full" />
+        </div>
+      </div>
+      {/* ArticleShell grid: left TOC rail + Learn-style title + body */}
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:grid lg:grid-cols-[240px_minmax(0,44rem)_240px] lg:justify-center lg:gap-8">
+        <div className="hidden lg:block">
+          <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-hidden py-10">
+            <Bar className="mb-3 h-3 w-24" />
+            <div className="space-y-2">
+              <Bar className="h-6 w-full" />
+              <Bar className="h-6 w-11/12" />
+              <Bar className="h-6 w-10/12" />
+            </div>
+          </div>
+        </div>
+        <div className="mx-auto w-full min-w-0 max-w-[44rem]">
+          <div className="space-y-6 py-8">
+            <Bar className="h-4 w-2/3" />
+            <Bar className="h-9 w-3/4" />
+            <Bar className="h-4 w-1/4" />
+            <Bar className="h-6 w-full" />
+            <Bar className="h-4 w-1/3" />
+          </div>
+          <div className="space-y-4">
+            <Bar className="h-7 w-1/2 pt-2" />
+            <Bar className="h-4 w-full" />
+            <Bar className="h-4 w-full" />
+            <Bar className="h-4 w-5/6" />
+            <Bar className="h-7 w-1/2 pt-2" />
+            <Bar className="h-4 w-full" />
+            <Bar className="h-4 w-2/3" />
+          </div>
+        </div>
+        <div className="hidden lg:block" />
       </div>
     </div>
   );

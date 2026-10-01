@@ -1,12 +1,13 @@
-import { ArticleShell } from "@/components/articles/layout/article-shell";
 import { ArticleSkeleton } from "@/components/ui/loading-skeleton";
 
-export default function ArticleLoading() {
+export default function Loading() {
   return (
-    <article className="min-h-screen">
-      <ArticleShell>
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:grid lg:grid-cols-[240px_minmax(0,44rem)_240px] lg:justify-center lg:gap-8">
+      <div className="hidden lg:block" />
+      <div className="mx-auto w-full min-w-0 max-w-[44rem]">
         <ArticleSkeleton />
-      </ArticleShell>
-    </article>
+      </div>
+      <div className="hidden lg:block" />
+    </div>
   );
 }

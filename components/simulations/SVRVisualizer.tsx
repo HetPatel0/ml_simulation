@@ -170,14 +170,92 @@ export default function SVRVisualizer() {
     return () => cancelAnimationFrame(rafId);
   }, [draw]);
 
-  /* ---------- Interaction ---------- */
-  const handleClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left - size.width / 2) / (size.width / 2.5);
-    const y = -(e.clientY - rect.top - size.height / 2) / (size.width / 2.5);
+  /* ---------- Interaction: drag to move, right-click to delete ---------- */
+  const dragIdxRef = useRef<number | null>(null);
 
-    pointsRef.current.push({ x, y });
-    alphasRef.current.push(0);
+  /** Client coords -> canvas pixels (canvas is w-full, may be CSS-stretched). */
+  const toCanvasPx = (e: { clientX: number; clientY: number; currentTarget: HTMLCanvasElement }) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    return {
+      px: (e.clientX - rect.left) * (size.width / rect.width),
+      py: (e.clientY - rect.top) * (size.height / rect.height),
+      cssScale: size.width / rect.width,
+    };
+  };
+
+  const dataFromPx = (px: number, py: number) => {
+    const scale = size.width / 2.5;
+    return { x: (px - size.width / 2) / scale, y: -(py - size.height / 2) / scale };
+  };
+
+  /** Index of point within grab radius, else null. */
+  const nearPoint = (px: number, py: number, cssScale: number) => {
+    const scale = size.width / 2.5;
+    const radius = 14 * cssScale;
+    for (let i = pointsRef.current.length - 1; i >= 0; i--) {
+      const p = pointsRef.current[i];
+      const qx = p.x * scale + size.width / 2;
+      const qy = -p.y * scale + size.height / 2;
+      if (Math.hypot(qx - px, qy - py) <= radius) return i;
+    }
+    return null;
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (e.button === 2) return; // right-click handled by onContextMenu
+    const { px, py, cssScale } = toCanvasPx(e);
+    const idx = nearPoint(px, py, cssScale);
+    if (idx !== null) {
+      dragIdxRef.current = idx; // hold and move existing point
+    } else {
+      const { x, y } = dataFromPx(px, py);
+      pointsRef.current.push({ x, y });
+      alphasRef.current.push(0);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const drag = dragIdxRef.current;
+    if (drag === null) return;
+    const { px, py } = toCanvasPx(e);
+    pointsRef.current[drag] = dataFromPx(px, py);
+  };
+
+  const endDrag = () => {
+    dragIdxRef.current = null;
+  };
+
+  const handleContextMenu = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    e.preventDefault(); // suppress browser menu
+    const { px, py, cssScale } = toCanvasPx(e);
+    const idx = nearPoint(px, py, cssScale);
+    if (idx !== null) {
+      pointsRef.current.splice(idx, 1);
+      alphasRef.current.splice(idx, 1);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const t = e.touches[0];
+    const { px, py, cssScale } = toCanvasPx({
+      clientX: t.clientX,
+      clientY: t.clientY,
+      currentTarget: e.currentTarget,
+    });
+    const idx = nearPoint(px, py, cssScale);
+    if (idx !== null) dragIdxRef.current = idx;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const drag = dragIdxRef.current;
+    if (drag === null) return;
+    const t = e.touches[0];
+    const { px, py } = toCanvasPx({
+      clientX: t.clientX,
+      clientY: t.clientY,
+      currentTarget: e.currentTarget,
+    });
+    pointsRef.current[drag] = dataFromPx(px, py);
   };
 
   /* ---------- UI ---------- */
@@ -189,15 +267,27 @@ export default function SVRVisualizer() {
       />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div ref={containerRef}>
-          <canvas
-            ref={canvasRef}
-            width={size.width}
-            height={size.height}
-            onMouseDown={handleClick}
-            className="w-full rounded-xl border bg-white cursor-crosshair"
-          />
-        </div>
+        <Card className="flex min-w-0 flex-1 items-center justify-center p-4">
+          <div ref={containerRef} className="w-full">
+            <canvas
+              ref={canvasRef}
+              width={size.width}
+              height={size.height}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={endDrag}
+              onMouseLeave={endDrag}
+              onContextMenu={handleContextMenu}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={endDrag}
+              className="w-full rounded-lg border bg-white cursor-crosshair touch-none"
+            />
+            <p className="mt-2 text-center text-xs text-muted-foreground">
+              Click to add · drag a point to move it · right-click a point to delete it
+            </p>
+          </div>
+        </Card>
 
         <Card className="p-4 space-y-5">
           <div className="space-y-2">

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { blurDataURL } from "@/lib/blur";
 import { ArticleActions } from "./article-actions";
+import { Breadcrumb } from "./article-breadcrumb";
 import { slugify } from "./use-active-section";
 
 function extractText(node: React.ReactNode): string {
@@ -63,6 +64,8 @@ type ArticlePostProps = {
   };
   children?: React.ReactNode;
   className?: string;
+  /** Optional breadcrumb trail. When omitted, a Home / Learn / title trail renders. */
+  breadcrumb?: { label: string; href?: string }[];
 };
 
 export function ArticlePost({
@@ -73,6 +76,7 @@ export function ArticlePost({
   image,
   children,
   className,
+  breadcrumb,
 }: ArticlePostProps) {
   // Deterministic across server/client (memo on stable children identity).
   const body = React.useMemo(
@@ -83,6 +87,15 @@ export function ArticlePost({
     <article className={cn("mx-auto w-full max-w-none py-8 sm:py-12", className)}>
       {/* Header */}
       <header className="space-y-6">
+        <Breadcrumb
+          items={
+            breadcrumb ?? [
+              { label: "Home", href: "/" },
+              { label: "Learn", href: "/learn" },
+              { label: title },
+            ]
+          }
+        />
         <h1 className="text-3xl font-semibold leading-tight tracking-tight">
           {title}
         </h1>

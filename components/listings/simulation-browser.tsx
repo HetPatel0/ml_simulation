@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X, SearchX } from "lucide-react";
 import { LearningCard } from "@/components/cards/learning-card";
+import { QuickTags } from "@/components/listings/quick-tags";
 import { useSearchShortcut } from "@/lib/hooks/use-search-shortcut";
 
 export interface Simulation {
@@ -88,6 +89,7 @@ export function SimulationBrowser({
         deferredQuery &&
         !sim.title.toLowerCase().includes(deferredQuery) &&
         !sim.description.toLowerCase().includes(deferredQuery) &&
+        !sim.badge.toLowerCase().includes(deferredQuery) &&
         !sim.category.toLowerCase().includes(deferredQuery)
       ) {
         continue;
@@ -96,6 +98,12 @@ export function SimulationBrowser({
     }
     return groups;
   }, [simulations, deferredQuery]);
+
+  // Quick tags use card badges only — no freeform terms.
+  const badgeTags = useMemo(
+    () => Array.from(new Set(simulations.map((s) => s.badge))),
+    [simulations],
+  );
 
   const resultCount = useMemo(
     () =>
@@ -109,7 +117,7 @@ export function SimulationBrowser({
   return (
     <>
       {/* Search */}
-      <div className="relative mb-10 ">
+      <div className="relative mb-3 ">
         <Search
           aria-hidden
           className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
@@ -137,6 +145,12 @@ export function SimulationBrowser({
           </Button>
         )}
       </div>
+
+      <QuickTags
+        tags={badgeTags}
+        activeQuery={searchQuery}
+        onSelect={setSearchQuery}
+      />
 
       {/* Sections */}
       <div className="space-y-16">

@@ -13,6 +13,9 @@ export default function LenisProvider({
       "(prefers-reduced-motion: reduce)"
     ).matches;
     if (prefersReducedMotion) return;
+    // Skip smooth-scroll on small screens: native scroll is faster and
+    // avoids fighting bottom nav / keyboard.
+    if (window.innerWidth < 768) return;
 
     const lenis = new Lenis({
       duration: 1.2,
@@ -26,14 +29,26 @@ export default function LenisProvider({
     // Exposed for anchor navigation (e.g. article TOC scroll-spy links).
     (window as unknown as { __lenis?: Lenis }).__lenis = lenis;
 
+    let rafId = 0;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafId);
+      } else {
+        rafId = requestAnimationFrame(raf);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("visibilitychange", onVisibility);
       if ((window as unknown as { __lenis?: Lenis }).__lenis === lenis) {
         delete (window as unknown as { __lenis?: Lenis }).__lenis;
       }

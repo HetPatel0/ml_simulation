@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { ArticleSkeleton } from "@/components/ui/loading-skeleton";
+import { QuizBlock } from "@/components/articles/components/QuizBlock";
+import { quizzes } from "@/lib/quizzes";
 
 const ArticleLoader = () => <ArticleSkeleton />;
 
@@ -62,5 +64,12 @@ export default function ArticleClient({ slug }: { slug: string }) {
     return null;
   }
 
-  return <ArticleComponent />;
+  const questions = quizzes[slug] ?? [];
+
+  return (
+    <>
+      <ArticleComponent />
+      {questions.length > 0 && <QuizBlock slug={slug} questions={questions} />}
+    </>
+  );
 }

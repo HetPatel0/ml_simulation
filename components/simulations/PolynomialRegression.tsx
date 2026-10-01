@@ -269,7 +269,7 @@ export default function PolynomialRegression() {
   /* -------------------- UI -------------------- */
   return (
     <div
-      className="gap-6 max-w-5xl mx-auto "
+      className="flex flex-col gap-6 mb-8 w-full max-w-5xl mx-auto"
       onMouseUp={() => setDragIdx(null)}
       onTouchEnd={() => setDragIdx(null)}
     >
