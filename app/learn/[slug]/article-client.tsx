@@ -7,52 +7,73 @@ import { quizzes } from "@/lib/quizzes";
 
 const ArticleLoader = () => <ArticleSkeleton />;
 
-const dynamicArticle = (importer: () => Promise<{ default: React.ComponentType }>) =>
-  dynamic(importer, { loading: ArticleLoader });
+// Dynamic import that appends the quiz INSIDE the resolved chunk, so
+// "Check your understanding" only appears once the article body has loaded
+// (never floating above the skeleton).
+const dynamicArticleWithQuiz = (
+  slug: string,
+  importer: () => Promise<{ default: React.ComponentType }>,
+) =>
+  dynamic(
+    () =>
+      importer().then((mod) => {
+        const Body = mod.default;
+        const questions = quizzes[slug] ?? [];
+        return {
+          default: () => (
+            <>
+              <Body />
+              {questions.length > 0 && <QuizBlock slug={slug} questions={questions} />}
+            </>
+          ),
+        };
+      }),
+    { loading: ArticleLoader },
+  );
 
 // Per-slug dynamic imports: each article (~12-13KB) loads only when its
 // route is visited, instead of bundling all 10 into every learn page.
 const articleComponents: Record<string, React.ComponentType> = {
-  "gradient-descent": dynamicArticle(
+  "gradient-descent": dynamicArticleWithQuiz("gradient-descent",
     () => import("@/components/articles/content/regression/GradientDescentArticle"),
   ),
-  "least-squares": dynamicArticle(
+  "least-squares": dynamicArticleWithQuiz("least-squares",
     () => import("@/components/articles/content/regression/LeastSquaresArticle"),
   ),
-  "linear-regression": dynamicArticle(
+  "linear-regression": dynamicArticleWithQuiz("linear-regression",
     () => import("@/components/articles/content/regression/LinearRegressionArticle"),
   ),
-  "polynomial-regression": dynamicArticle(
+  "polynomial-regression": dynamicArticleWithQuiz("polynomial-regression",
     () =>
       import("@/components/articles/content/regression/PolynomialRegressionArticle"),
   ),
-  "logistic-regression": dynamicArticle(
+  "logistic-regression": dynamicArticleWithQuiz("logistic-regression",
     () =>
       import("@/components/articles/content/classification/LogisticRegressionArticle"),
   ),
-  "decision-trees": dynamicArticle(
+  "decision-trees": dynamicArticleWithQuiz("decision-trees",
     () => import("@/components/articles/content/classification/DecisionTreeArticle"),
   ),
-  "k-nearest-neighbors": dynamicArticle(
+  "k-nearest-neighbors": dynamicArticleWithQuiz("k-nearest-neighbors",
     () =>
       import("@/components/articles/content/classification/KNearestNeighborsArticle"),
   ),
-  "naive-bayes": dynamicArticle(
+  "naive-bayes": dynamicArticleWithQuiz("naive-bayes",
     () => import("@/components/articles/content/classification/NaiveBayesArticle"),
   ),
-  "kernel-trick": dynamicArticle(
+  "kernel-trick": dynamicArticleWithQuiz("kernel-trick",
     () => import("@/components/articles/content/advanced/KernelTrickArticle"),
   ),
-  svr: dynamicArticle(
+  svr: dynamicArticleWithQuiz("svr",
     () => import("@/components/articles/content/regression/SVRArticle"),
   ),
-  "what-is-ml": dynamicArticle(
+  "what-is-ml": dynamicArticleWithQuiz("what-is-ml",
     () => import("@/components/articles/content/beginner/WhatIsMlArticle"),
   ),
-  "first-project": dynamicArticle(
+  "first-project": dynamicArticleWithQuiz("first-project",
     () => import("@/components/articles/content/beginner/FirstProjectArticle"),
   ),
-  "good-vs-bad-models": dynamicArticle(
+  "good-vs-bad-models": dynamicArticleWithQuiz("good-vs-bad-models",
     () => import("@/components/articles/content/beginner/GoodVsBadModelsArticle"),
   ),
 };
@@ -64,12 +85,5 @@ export default function ArticleClient({ slug }: { slug: string }) {
     return null;
   }
 
-  const questions = quizzes[slug] ?? [];
-
-  return (
-    <>
-      <ArticleComponent />
-      {questions.length > 0 && <QuizBlock slug={slug} questions={questions} />}
-    </>
-  );
+  return <ArticleComponent />;
 }
