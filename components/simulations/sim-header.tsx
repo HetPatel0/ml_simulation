@@ -23,7 +23,7 @@ export default function SimHeader({ title, subtitle }: SimHeaderProps) {
 
   return (
     <header className="w-full">
-      <div className="flex items-center justify-center border-b py-5">
+      <div className="flex items-center justify-center overflow-x-clip border-b py-5">
         <div className="relative flex w-full max-w-6xl items-center px-4">
           <Button
             variant="ghost"
@@ -38,7 +38,7 @@ export default function SimHeader({ title, subtitle }: SimHeaderProps) {
           <div className="mx-auto h-6" />
 
           <div className="absolute right-7">
-            <ArticleShare title={title} />
+            <ArticleShare title={title} align="right" />
           </div>
         </div>
       </div>

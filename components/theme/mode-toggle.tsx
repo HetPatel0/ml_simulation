@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { playThemeSwitch } from "@/lib/fun/sound";
 import {
   Tooltip,
   TooltipContent,
@@ -32,7 +33,12 @@ export function ModeToggle({
   const { resolvedTheme, setTheme } = useTheme();
 
   const toggleTheme = useCallback(() => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    const toDark = resolvedTheme !== "dark";
+    // Optimistic DOM flip: applies in the same frame as the click.
+    // setTheme (state + re-render of CodeBlocks etc.) syncs after.
+    document.documentElement.classList.toggle("dark", toDark);
+    setTheme(toDark ? "dark" : "light");
+    playThemeSwitch(toDark);
   }, [resolvedTheme, setTheme]);
 
   return (

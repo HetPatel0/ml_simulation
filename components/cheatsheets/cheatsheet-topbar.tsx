@@ -22,7 +22,9 @@ export function CheatsheetTopBar({ title }: { title: string }) {
   };
 
   return (
-    <div className="flex items-center justify-center border-b py-5">
+    // overflow-x-clip: the absolutely-positioned share popup must never
+    // widen the page on mid/small screens, even while open.
+    <div className="flex items-center justify-center overflow-x-clip border-b py-5">
       <div className="relative flex w-full max-w-6xl items-center px-4">
         <Button
           variant="ghost"
@@ -37,7 +39,7 @@ export function CheatsheetTopBar({ title }: { title: string }) {
         <div className="mx-auto h-6" />
 
         <div className="absolute right-7">
-          <ArticleShare title={title} />
+          <ArticleShare title={title} align="right" />
         </div>
       </div>
     </div>

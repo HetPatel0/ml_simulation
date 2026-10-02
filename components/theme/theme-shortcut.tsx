@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { playThemeSwitch } from "@/lib/fun/sound";
 
 export function ThemeShortcut() {
   const { setTheme } = useTheme();
@@ -26,7 +27,10 @@ export function ThemeShortcut() {
         e.preventDefault();
         const isDark = document.documentElement.classList.contains("dark");
         const next = isDark ? "light" : "dark";
+        // Optimistic DOM flip first (same-frame), state sync after.
+        document.documentElement.classList.toggle("dark", next === "dark");
         setTheme(next);
+        playThemeSwitch(next === "dark");
         setAnnouncement(`Theme changed to ${next}`);
       }
     };

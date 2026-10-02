@@ -181,6 +181,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    /* No scroll chaining past the viewport: kills pull-to-refresh /
+       rubber-band traps on touch devices. Lenis owns in-page smooth
+       scrolling; nested scrollers opt out via data-lenis-prevent. */
+    overscroll-behavior: none;
+  }
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);

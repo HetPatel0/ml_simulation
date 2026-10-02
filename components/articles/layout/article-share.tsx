@@ -29,6 +29,13 @@ function WhatsAppIcon({ className }: { className?: string }) {
 type ArticleShareProps = {
   title: string;
   className?: string;
+  /**
+   * Which edge of the button the popup anchors to. Use "right" when the
+   * button sits at the right edge of the viewport (cheatsheet / sim
+   * topbars) so the ~290px reaction bar opens inward instead of
+   * overflowing past the viewport on mid/small screens.
+   */
+  align?: "left" | "right";
 };
 
 /**
@@ -36,7 +43,7 @@ type ArticleShareProps = {
  * the button, one column per target — icon on top, label underneath.
  * Order: Copy, X, LinkedIn, WhatsApp.
  */
-export function ArticleShare({ title, className }: ArticleShareProps) {
+export function ArticleShare({ title, className, align = "left" }: ArticleShareProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -153,12 +160,13 @@ export function ArticleShare({ title, className }: ArticleShareProps) {
         Share
       </button>
 
-      {/* Reaction bar — below the button, opening toward the right */}
+      {/* Reaction bar — below the button, opening toward the inner side */}
       <div
         role="menu"
         aria-label="Share options"
         className={cn(
-          "absolute top-full left-0 z-50 mt-2 flex max-w-[calc(100vw-2rem)] items-stretch gap-1 rounded-2xl border border-border bg-card/95 p-2 shadow-xl backdrop-blur transition-all duration-200",
+          "absolute top-full z-50 mt-2 flex max-w-[calc(100vw-2rem)] items-stretch gap-1 rounded-2xl border border-border bg-card/95 p-2 shadow-xl backdrop-blur transition-all duration-200",
+          align === "right" ? "right-0" : "left-0",
           open
             ? "visible scale-100 opacity-100"
             : "invisible scale-90 opacity-0 pointer-events-none",

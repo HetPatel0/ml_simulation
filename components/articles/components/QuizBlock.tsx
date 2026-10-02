@@ -10,6 +10,7 @@ import {
 } from "@/lib/fun/celebrate";
 import {
   playCorrect,
+  playFail,
   playPerfect,
   playWin,
   playWrong,
@@ -156,6 +157,8 @@ export function QuizBlock({
     } else if (finalScore >= Math.ceil(total * 0.7)) {
       playWin();
       void celebratePass();
+    } else {
+      playFail();
     }
   };
 
