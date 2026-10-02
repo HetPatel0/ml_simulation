@@ -7,7 +7,7 @@ import { SimulationLink } from "@/components/articles/components";
 import { Breadcrumb, BreadcrumbJsonLd } from "@/components/articles/layout/article-breadcrumb";
 import { ArticleShell } from "@/components/articles/layout/article-shell";
 import { CheatsheetTopBar } from "@/components/cheatsheets/cheatsheet-topbar";
-import { BackToTop } from "@/components/layout/back-to-top";
+import { BackToTop } from "@/components/layout/overlays/back-to-top";
 import { CheatsheetParams } from "@/components/cheatsheets/cheatsheet-params";
 import { cheatsheets, cheatsheetMetadata } from "@/lib/cheatsheets";
 import { siteConfig } from "@/lib/metadata";
@@ -72,7 +72,9 @@ export default async function CheatsheetPage({ params }: Props) {
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Badge>{sheet.badge}</Badge>
-            <span className="capitalize">{sheet.category}</span>
+            {sheet.category.toLowerCase() !== sheet.badge.toLowerCase() && (
+              <span className="capitalize">{sheet.category}</span>
+            )}
           </div>
 
           <p className="text-lg leading-relaxed text-muted-foreground">

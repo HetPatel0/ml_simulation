@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
     "audio:list": "node scripts/generate-article-audio.mjs --list",
     "audio:gen": "node scripts/generate-article-audio.mjs --slug",
     "audio:all": "node scripts/generate-article-audio.mjs --all"
@@ -48,6 +47,6 @@
     "kokoro-js": "^1.2.1",
     "sharp": "^0.35.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^7.0.2"
   }
 }

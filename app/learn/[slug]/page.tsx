@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { articleMetadata, siteConfig } from "@/lib/metadata";
 import ArticleClient from "./article-client";
 import { ArticleShell } from "@/components/articles/layout/article-shell";
+import { ServerRetryBoundary } from "@/components/feedback/server-retry-boundary";
 import { BreadcrumbJsonLd } from "@/components/articles/layout/article-breadcrumb";
-import { BackToTop } from "@/components/layout/back-to-top";
+import { BackToTop } from "@/components/layout/overlays/back-to-top";
 
 
 const validSlugs = Object.keys(articleMetadata);
@@ -79,7 +80,9 @@ export default async function ArticlePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(quizJsonLd) }}
       />
       <ArticleShell>
-        <ArticleClient slug={slug} />
+        <ServerRetryBoundary title="This article failed to load.">
+          <ArticleClient slug={slug} />
+        </ServerRetryBoundary>
       </ArticleShell>
       <BackToTop />
     </article>

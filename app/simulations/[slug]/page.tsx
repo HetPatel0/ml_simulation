@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { simulationMetadata, siteConfig } from "@/lib/metadata";
+import { ServerRetryBoundary } from "@/components/feedback/server-retry-boundary";
 import SimulationClient from "./simulation-client";
 
 const validSlugs = Object.keys(simulationMetadata);
@@ -50,7 +51,9 @@ export default async function SimulationPage({ params }: Props) {
 
   return (
     <div className="min-h-screen">
-      <SimulationClient slug={slug} />
+      <ServerRetryBoundary title="This simulation failed to load.">
+        <SimulationClient slug={slug} />
+      </ServerRetryBoundary>
     </div>
   );
 }

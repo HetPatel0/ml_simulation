@@ -34,7 +34,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4  md:grid md:grid-cols-[1fr_auto_1fr] ">
+      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:grid md:grid-cols-[1fr_auto_1fr]">
         {/* Left: Logo */}
         <div className="md:justify-self-start lg:pl-5 sm:pl-0">
           <Logo />
@@ -87,7 +87,7 @@ export function Navbar() {
       <div
         id="mobile-menu"
         className={cn(
-          "border-t bg-background md:hidden ",
+          "border-t bg-background md:hidden",
           isOpen ? "block" : "hidden",
         )}
       >

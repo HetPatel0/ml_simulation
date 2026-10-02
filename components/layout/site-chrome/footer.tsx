@@ -1,5 +1,6 @@
-import Logo from "@/components/layout/logo";
+import Logo from "@/components/layout/navigation/logo";
 import Link from "next/link";
+import { FooterYear } from "./footer-year";
 
 const links = [
   { title: "Learn", href: "/learn" },
@@ -92,7 +93,7 @@ export default function FooterSection() {
         </div>
         <span className="block text-center text-sm text-muted-foreground">
           {" "}
-          © {new Date().getFullYear()} ML simulation, All rights reserved
+          © <FooterYear /> ML simulation, All rights reserved
         </span>
       </div>
     </footer>

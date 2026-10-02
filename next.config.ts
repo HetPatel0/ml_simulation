@@ -3,12 +3,23 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
+  // Next.js 16.3 Instant Navigations: SPA-like instant shells via
+  // 'use cache' + Suspense. Will become default in a future major.
+  cacheComponents: true,
+  partialPrefetching: true,
+  // Rust React Compiler (experimental in 16.3): build-time memoization
+  // inside Turbopack instead of Babel. No Babel config in this repo.
+  reactCompiler: true,
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 80, 85],
     minimumCacheTTL: 31536000,
   },
   experimental: {
+    // 16.3 network resilience: keep navs/fetches pending offline, retry on reconnect.
+    useOffline: true,
+    // Rust port of the React Compiler (requires reactCompiler above).
+    turbopackRustReactCompiler: true,
     optimizePackageImports: [
       "lucide-react",
       "framer-motion",

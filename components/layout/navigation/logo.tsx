@@ -31,7 +31,7 @@ export default function Logo() {
       scroll={true}
       aria-label="go home"
       onClick={party}
-      className="flex items-center  font-semibold tracking-tight select-none "
+      className="flex items-center font-semibold tracking-tight select-none"
     >
       <Image
         src="/logo.webp"
