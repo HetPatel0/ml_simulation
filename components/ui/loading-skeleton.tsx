@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -8,6 +9,38 @@ import { cn } from "@/lib/utils";
 function Bar({ className = "" }: { className?: string }) {
   return (
     <div aria-hidden className={cn("skeleton-shimmer rounded-md", className)} />
+  );
+}
+
+/** Shared icon + title + lede header (listing and simple pages). */
+function ListingHeaderSkeleton() {
+  return (
+    <div className="mb-8 space-y-2">
+      <div className="flex items-center gap-3 mb-2">
+        <Bar className="h-10 w-10 rounded-lg" />
+        <Bar className="h-9 w-64" />
+      </div>
+      <Bar className="h-6 w-1/2" />
+    </div>
+  );
+}
+
+/** Shared ArticleShell grid: left rail + centered column + right rail. */
+export function DetailGridShell({
+  left,
+  children,
+  right,
+}: {
+  left?: ReactNode;
+  children: ReactNode;
+  right?: ReactNode;
+}) {
+  return (
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:grid lg:grid-cols-[240px_minmax(0,44rem)_240px] lg:justify-center lg:gap-8">
+      <div className="hidden lg:block">{left}</div>
+      <div className="mx-auto w-full min-w-0 max-w-[44rem]">{children}</div>
+      <div className="hidden lg:block">{right}</div>
+    </div>
   );
 }
 
@@ -118,13 +151,7 @@ export function ListingSkeleton({ cards = 6 }: { cards?: number }) {
       className="container mx-auto px-4 py-8 max-w-5xl"
     >
       <span className="sr-only">Loading…</span>
-      <div className="mb-8 space-y-2">
-        <div className="flex items-center gap-3 mb-2">
-          <Bar className="h-10 w-10 rounded-lg" />
-          <Bar className="h-9 w-64" />
-        </div>
-        <Bar className="h-6 w-1/2" />
-      </div>
+      <ListingHeaderSkeleton />
       <Bar className="h-10 w-full mb-3 rounded-md" />
       {/* Quick tags row */}
       <div className="mb-10 flex flex-wrap items-center gap-2" aria-hidden>
@@ -189,13 +216,7 @@ export function PageSkeleton({ lines = 6 }: { lines?: number }) {
       className="container mx-auto px-4 py-8 max-w-5xl"
     >
       <span className="sr-only">Loading…</span>
-      <div className="mb-8 space-y-2">
-        <div className="flex items-center gap-3 mb-2">
-          <Bar className="h-10 w-10 rounded-lg" />
-          <Bar className="h-9 w-64" />
-        </div>
-        <Bar className="h-6 w-1/2" />
-      </div>
+      <ListingHeaderSkeleton />
       <div className="max-w-2xl space-y-4">
         {Array.from({ length: lines }, (_, i) => (
           <Bar key={i} className={cn("h-4", i % 3 === 2 ? "w-5/6" : "w-full")} />
@@ -223,8 +244,8 @@ export function CheatsheetDetailSkeleton() {
         </div>
       </div>
       {/* ArticleShell grid: left TOC rail + Learn-style title + body */}
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:grid lg:grid-cols-[240px_minmax(0,44rem)_240px] lg:justify-center lg:gap-8">
-        <div className="hidden lg:block">
+      <DetailGridShell
+        left={
           <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-hidden py-10">
             <Bar className="mb-3 h-3 w-24" />
             <div className="space-y-2">
@@ -233,27 +254,25 @@ export function CheatsheetDetailSkeleton() {
               <Bar className="h-6 w-10/12" />
             </div>
           </div>
+        }
+      >
+        <div className="space-y-6 py-8">
+          <Bar className="h-4 w-2/3" />
+          <Bar className="h-9 w-3/4" />
+          <Bar className="h-4 w-1/4" />
+          <Bar className="h-6 w-full" />
+          <Bar className="h-4 w-1/3" />
         </div>
-        <div className="mx-auto w-full min-w-0 max-w-[44rem]">
-          <div className="space-y-6 py-8">
-            <Bar className="h-4 w-2/3" />
-            <Bar className="h-9 w-3/4" />
-            <Bar className="h-4 w-1/4" />
-            <Bar className="h-6 w-full" />
-            <Bar className="h-4 w-1/3" />
-          </div>
-          <div className="space-y-4">
-            <Bar className="h-7 w-1/2 pt-2" />
-            <Bar className="h-4 w-full" />
-            <Bar className="h-4 w-full" />
-            <Bar className="h-4 w-5/6" />
-            <Bar className="h-7 w-1/2 pt-2" />
-            <Bar className="h-4 w-full" />
-            <Bar className="h-4 w-2/3" />
-          </div>
+        <div className="space-y-4">
+          <Bar className="h-7 w-1/2 pt-2" />
+          <Bar className="h-4 w-full" />
+          <Bar className="h-4 w-full" />
+          <Bar className="h-4 w-5/6" />
+          <Bar className="h-7 w-1/2 pt-2" />
+          <Bar className="h-4 w-full" />
+          <Bar className="h-4 w-2/3" />
         </div>
-        <div className="hidden lg:block" />
-      </div>
+      </DetailGridShell>
     </div>
   );
 }

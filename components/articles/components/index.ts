@@ -1,5 +1,5 @@
 export { CodeBlock } from "./CodeBlock";
-export { MathBlock, InlineMath } from "./MathBlock";
+export { MathBlock } from "./MathBlock";
 export { CalloutBox, AhaBox } from "./CalloutBox";
 export { SimulationLink, SimulationLinks } from "./SimulationLink";
-export { ParameterTable, ParameterList } from "./ParameterTable";
+export { ParameterTable } from "./ParameterTable";

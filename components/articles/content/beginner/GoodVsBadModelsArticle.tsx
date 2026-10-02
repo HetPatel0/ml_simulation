@@ -6,7 +6,7 @@ import {
   MathBlock,
   CalloutBox,
   AhaBox,
-  SimulationLink,
+  SimulationLinks,
   ParameterTable,
 } from "../../components";
 
@@ -302,17 +302,12 @@ export default function GoodVsBadModelsArticle() {
         point is not to find a magical degree. It is to feel the moment the
         model starts learning the noise.
       </p>
-      <SimulationLink
-        simulationSlug="polynomial-regression"
-        description="Raise the degree and watch a good fit become too flexible"
-      />
-      <SimulationLink
-        simulationSlug="linear-regression"
-        description="See how a too-simple line misses a curved pattern"
-      />
-      <SimulationLink
-        simulationSlug="gradient-descent"
-        description="Watch parameters move toward lower loss"
+      <SimulationLinks
+        simulations={[
+          { slug: "polynomial-regression", description: "Raise the degree and watch a good fit become too flexible" },
+          { slug: "linear-regression", description: "See how a too-simple line misses a curved pattern" },
+          { slug: "gradient-descent", description: "Watch parameters move toward lower loss" },
+        ]}
       />
     </ArticlePost>
   );

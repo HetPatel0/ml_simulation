@@ -199,17 +199,3 @@ export const articleMetadata: Record<
     author: "Keval Kansagra",
   },
 };
-
-// Maps articles to their related simulations
-export const articleSimulationMap: Record<string, string[]> = {
-  "linear-regression": ["linear-regression", "least-squares"],
-  "gradient-descent": ["gradient-descent"],
-  "polynomial-regression": ["polynomial-regression"],
-  "logistic-regression": ["logistic-regression", "logistic-function", "logistic-training"],
-  "decision-trees": [],
-  "k-nearest-neighbors": ["k-nearest-neighbors"],
-  "naive-bayes": ["naive-bayes", "naive-bayes-gaussian"],
-  svr: ["svr-visualizer", "svr-kernel-lift"],
-  "kernel-trick": ["kernel-trick"],
-  "least-squares": ["least-squares"],
-};

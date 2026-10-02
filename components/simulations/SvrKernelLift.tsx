@@ -4,6 +4,7 @@
 
 import { useRef, useState } from "react";
 import SimHeader from "./sim-header";
+import { SIM_COLORS } from "@/lib/sim-theme";
 import Script from "next/script";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,6 +23,7 @@ export default function SVRKernelLiftSimulation() {
   const tracesRef = useRef<any>({});
   const layoutRef = useRef<any>({});
   const colors = {
+    ...SIM_COLORS,
     foreground: "#000000", // Black for text
     destructive: "#ff385f", // Red from original, good contrast
     grid: "#ddd", // Light gray for grid lines

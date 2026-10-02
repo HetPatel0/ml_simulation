@@ -6,6 +6,7 @@ import SimHeader from "./sim-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+import { SIM_COLORS } from "@/lib/sim-theme";
 
 type Point = { x: number; y: number };
 
@@ -21,10 +22,8 @@ export default function LinearRegressionInteractive() {
   const width = size.width;
   const height = size.height;
   const colors = {
-    background: '#ffffff',
+    ...SIM_COLORS,
     grid: "#f1f5f9", // Tailwind slate-100
-    destructive: "#ef4444", // Tailwind red-500
-    primary: "#2563eb", // Tailwind blue-600
   };
 
   // --- Math ---

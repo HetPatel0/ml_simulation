@@ -14,7 +14,6 @@ import {
   countStats,
   leafRules,
   makeDataset,
-  predict,
   splitOrder,
   trainTree,
   type DatasetKind,

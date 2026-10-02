@@ -12,13 +12,11 @@ import {
 import SimHeader from "./sim-header";
 import { Slider } from "@/components/ui/slider";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+import { SIM_COLORS, canvasPoint } from "@/lib/sim-theme";
 
 const colors = {
-  background: "#ffffff",
-  foreground: "#1e293b", // slate-800
-  primary: "#2563eb", // blue-600
+  ...SIM_COLORS,
   destructive: "#dc2626", // red-600
-  muted: "#94a3b8", // slate-400
   residual: "rgba(0,0,0,0.15)", // Light gray for residuals
 };
 
@@ -192,13 +190,11 @@ export default function PolynomialRegression() {
   /* -------------------- Interaction -------------------- */
   const getCoords = (e: React.MouseEvent | React.TouchEvent) => {
     const canvas = canvasRef.current!;
-    const rect = canvas.getBoundingClientRect();
 
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
 
-    const x = (clientX - rect.left) * (canvas.width / rect.width);
-    const y = (clientY - rect.top) * (canvas.height / rect.height);
+    const { x, y } = canvasPoint(canvas, clientX, clientY);
 
     return {
       x: (x - width / 2) / (width / scale),

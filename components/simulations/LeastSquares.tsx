@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import SimHeader from "./sim-header";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+import { SIM_COLORS, canvasPoint } from "@/lib/sim-theme";
 
 interface Point {
   x: number;
@@ -22,12 +23,7 @@ export default function LeastSquares() {
   const width = size.width;
   const height = size.height;
 
-  const colors = {
-    background: '#ffffff',
-    grid: "#e2e8f0", // Light gray
-    destructive: "#ef4444", // Red-500
-    primary: "#2563eb", // Blue-600
-  };
+  const colors = SIM_COLORS;
 
   // Regression Logic
   const calculateRegression = useCallback(() => {
@@ -151,19 +147,7 @@ export default function LeastSquares() {
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    // Coordinate relative to canvas element
-    const rawX = e.clientX - rect.left;
-    const rawY = e.clientY - rect.top;
-
-    // Scale for actual canvas size vs display size if responsive (simple approach here assume 1:1 or use offset)
-    // Actually getting raw pixels if canvas size matches display size.
-    // We should account for scaling if CSS resizes it, but assuming fixed internal dimensions for simulation logic logic:
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    const x = rawX * scaleX;
-    const y = rawY * scaleY;
+    const { x, y } = canvasPoint(canvas, e.clientX, e.clientY);
 
     // Logical Y is flipped
     const logicalY = height - y;

@@ -9,8 +9,7 @@ import { ArticleShell } from "@/components/articles/layout/article-shell";
 import { CheatsheetTopBar } from "@/components/cheatsheets/cheatsheet-topbar";
 import { BackToTop } from "@/components/layout/overlays/back-to-top";
 import { CheatsheetParams } from "@/components/cheatsheets/cheatsheet-params";
-import { cheatsheets, cheatsheetMetadata } from "@/lib/cheatsheets";
-import { siteConfig } from "@/lib/metadata";
+import { cheatsheets, cheatsheetMetadata, siteConfig } from "@/lib/content";
 
 type Props = { params: Promise<{ slug: string }> };
 

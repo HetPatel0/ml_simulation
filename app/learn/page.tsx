@@ -61,6 +61,15 @@ const articles: Article[] = [
     category: "regression",
   },
   {
+    id: "least-squares",
+    title: "Least Squares Method",
+    description:
+      "Understand the mathematical foundation of ordinary least squares regression and how it finds the best-fit line",
+    image: "/images/regression/least-squares.webp",
+    badge: "Regression",
+    category: "regression",
+  },
+  {
     id: "polynomial-regression",
     title: "Polynomial Regression",
     description:

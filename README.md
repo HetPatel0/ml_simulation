@@ -109,10 +109,17 @@ ml_simulation/
 │   │   ├── separator.tsx
 │   │   └── tooltip.tsx
 │   ├── layout/                   # Site chrome (header / footer)
-│   │   ├── navbar.tsx
-│   │   ├── footer.tsx
-│   │   ├── logo.tsx
-│   │   └── back-to-top.tsx
+│   │   ├── index.ts              # Barrel: navigation + site-chrome + overlays
+│   │   ├── navigation/           # Header bar + brand logo
+│   │   │   ├── navbar.tsx
+│   │   │   └── logo.tsx
+│   │   ├── site-chrome/          # Footer + year island
+│   │   │   ├── footer.tsx
+│   │   │   └── footer-year.tsx
+│   │   ├── overlays/             # Floating UI
+│   │   │   ├── offline-banner.tsx
+│   │   │   └── back-to-top.tsx
+│   │   └── content-topbar.tsx    # Shared Back/Share bar (sim/article/cheatsheet)
 │   ├── theme/                    # Theme switching
 │   │   ├── theme-provider.tsx
 │   │   ├── mode-toggle.tsx
@@ -121,6 +128,23 @@ ml_simulation/
 │   │   └── lenis-provider.tsx
 │   ├── cards/                    # Reusable cards
 │   │   └── learning-card.tsx
+│   ├── listings/                 # Search/filter/group listings
+│   │   ├── content-browser.tsx   # Shared listing (learn/sim/cheatsheets configure it)
+│   │   ├── article-browser.tsx
+│   │   ├── simulation-browser.tsx
+│   │   └── quick-tags.tsx
+│   ├── cheatsheets/              # Cheatsheet pages
+│   │   ├── cheatsheet-browser.tsx
+│   │   ├── cheatsheet-topbar.tsx
+│   │   └── cheatsheet-params.tsx
+│   ├── feedback/                 # Error / recovery UI
+│   │   └── server-retry-boundary.tsx
+│   ├── fun/                      # Easter eggs
+│   │   ├── egg-listener.tsx
+│   │   └── sound-toggle.tsx
+│   ├── newsletter/
+│   │   ├── kit-embed-form.tsx
+│   │   └── newsletter-cta.tsx
 │   ├── hero/                     # Landing page sections
 │   │   ├── HeroSection.tsx
 │   │   ├── ApproachSection.tsx
@@ -161,6 +185,10 @@ ml_simulation/
 │       │   │   ├── DecisionTreeArticle.tsx
 │       │   │   ├── KNearestNeighborsArticle.tsx
 │       │   │   └── NaiveBayesArticle.tsx
+│       │   ├── beginner/
+│       │   │   ├── WhatIsMlArticle.tsx
+│       │   │   ├── FirstProjectArticle.tsx
+│       │   │   └── GoodVsBadModelsArticle.tsx
 │       │   └── advanced/
 │       │       └── KernelTrickArticle.tsx
 │       ├── components/           # Reusable article components
@@ -172,8 +200,12 @@ ml_simulation/
 │       │   └── ParameterTable.tsx # sklearn parameter tables
 │
 ├── lib/
+│   ├── content.ts                # Single import surface (re-exports registries below)
 │   ├── utils.ts                  # Utility functions (cn())
-│   ├── metadata.ts               # SEO metadata & article-simulation mapping
+│   ├── metadata.ts               # SEO metadata (article + simulation maps)
+│   ├── cheatsheets.ts            # Cheatsheet registry (params, snippets, tips)
+│   ├── quizzes.ts                # Per-article quiz questions
+│   ├── dynamic-content.tsx        # Shared slug → lazy-chunk map helper
 │   ├── article-audio.ts          # Manifest: slug → /audio/articles/<slug>.mp3 (or null)
 │   ├── use-responsive-canvas.ts  # Canvas sizing hook
 │   └── hooks/
@@ -464,13 +496,17 @@ Contributions are welcome! Here's how you can help:
 
 4. **Register in the client component**
 
-   Add to `articleComponents` in `app/learn/[slug]/article-client.tsx`:
+   Add to the entries table in `app/learn/[slug]/article-client.tsx`
+   (shared `dynamicMap` helper keeps each article in its own chunk):
 
    ```tsx
-   const articleComponents: Record<string, React.ComponentType> = {
-     // ... existing articles
-     "your-article": YourArticle,
-   };
+   const articleComponents = dynamicMap(
+     {
+       // ... existing entries
+       "your-article": () => import(".../YourArticle"),
+     },
+     { loading: ArticleLoader, decorate: ... },
+   );
    ```
 
 5. **Add SEO metadata**
@@ -486,20 +522,9 @@ Contributions are welcome! Here's how you can help:
    },
    ```
 
-6. **Add article-simulation mapping** (if applicable)
+6. **Add to the articles listing**
 
-   Add entry to `articleSimulationMap` in `lib/metadata.ts`:
-
-   ```tsx
-   export const articleSimulationMap: Record<string, string[]> = {
-     // ... existing mappings
-     "your-article": ["your-simulation", "related-simulation"],
-   };
-   ```
-
-7. **Add to the articles listing**
-
-   Add entry to `articals` array in `app/learn/page.tsx`
+   Add entry to `articles` array in `app/learn/page.tsx`
 
 ### Article Audio (Listen Button)
 

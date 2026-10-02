@@ -28,7 +28,7 @@ export type LeafNode = {
 
 export type TreeNode = SplitNode | LeafNode;
 
-export function gini(counts: [number, number]): number {
+function gini(counts: [number, number]): number {
   const n = counts[0] + counts[1];
   if (n === 0) return 0;
   const p0 = counts[0] / n;
@@ -143,7 +143,7 @@ export function trainTree(
   return build(pts, 0);
 }
 
-export function mulberry32(seed: number) {
+function mulberry32(seed: number) {
   return () => {
     seed |= 0;
     seed = (seed + 0x6d2b79f5) | 0;

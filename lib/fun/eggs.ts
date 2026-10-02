@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 /** Local-only egg discovery — persisted so hunters keep trophies. */
-export const EGGS_KEY = "ml-fun:eggs";
+const EGGS_KEY = "ml-fun:eggs";
 
 export const EGG_IDS = {
   konami: "konami",
@@ -11,7 +11,7 @@ export const EGG_IDS = {
   ghostBoo: "ghost-boo",
 } as const;
 
-export function getFoundEggs(): string[] {
+function getFoundEggs(): string[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(EGGS_KEY);

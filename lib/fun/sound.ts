@@ -5,7 +5,7 @@
  * Setting persisted in localStorage, default ON.
  */
 
-export const SOUND_KEY = "ml-fun:sound";
+const SOUND_KEY = "ml-fun:sound";
 
 export function getSoundEnabled(): boolean {
   if (typeof window === "undefined") return true;

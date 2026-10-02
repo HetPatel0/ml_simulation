@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { articleMetadata, siteConfig } from "@/lib/metadata";
+import { articleMetadata, siteConfig } from "@/lib/content";
 import ArticleClient from "./article-client";
 import { ArticleShell } from "@/components/articles/layout/article-shell";
 import { ServerRetryBoundary } from "@/components/feedback/server-retry-boundary";

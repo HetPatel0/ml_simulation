@@ -11,6 +11,7 @@ import {
 import SimHeader from "./sim-header";
 import { Slider } from "@/components/ui/slider";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+import { SIM_COLORS } from "@/lib/sim-theme";
 
 export default function LogisticRegression() {
   const [hours, setHours] = useState(5.0);
@@ -25,7 +26,7 @@ export default function LogisticRegression() {
   const b1 = 0.8;
 
   const colors = {
-    background: '#ffffff',
+    ...SIM_COLORS,
     gridLine: "#eee",
     curve: "#3498db", // blue
     success: "#2ecc71", // green

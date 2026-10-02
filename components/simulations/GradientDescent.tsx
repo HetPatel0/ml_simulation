@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import SimHeader from "@/components/simulations/sim-header";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+import { SIM_COLORS } from "@/lib/sim-theme";
 
 export default function GradientDescent() {
   const [currentX, setCurrentX] = useState(-4);
@@ -26,12 +27,10 @@ export default function GradientDescent() {
   });
 
   const colors = {
-    background: '#ffffff',
-    foreground: '#000000',
-    primary: '#2563eb', // blue-600
-    accent: '#7c3aed', // violet-600
-    destructive: '#dc2626', // red-600
-    success: '#16a34a', // green-600
+    ...SIM_COLORS,
+    foreground: "#000000",
+    accent: "#7c3aed", // violet-600
+    destructive: "#dc2626", // red-600
   };
 
   const f = (x: number) => x * x;

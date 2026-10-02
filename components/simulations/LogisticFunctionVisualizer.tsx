@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import SimHeader from "./sim-header";
 import { Slider } from "@/components/ui/slider";
 import { useResponsiveCanvas } from "@/lib/use-responsive-canvas";
+import { SIM_COLORS } from "@/lib/sim-theme";
 
 export default function LogisticFunctionVisualizer() {
   const { containerRef, canvasRef, size } = useResponsiveCanvas({
@@ -17,10 +18,10 @@ export default function LogisticFunctionVisualizer() {
   const [w, setW] = useState(1.0);
   const [b, setB] = useState(0.0);
   const colors = {
-    background: '#ffffff',
+    ...SIM_COLORS,
     gridLine: "#e0e0e0", // Light gray
-    gridText: "#666",    // Dark gray
-    axisLine: "#aaa",    // Medium gray
+    gridText: "#666", // Dark gray
+    axisLine: "#aaa", // Medium gray
     primaryCurve: "#3498db", // Blue
   };
 

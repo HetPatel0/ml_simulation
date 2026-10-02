@@ -1,51 +1,18 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ArticleShare } from "@/components/articles/layout/article-share";
+import { ContentTopBar } from "@/components/layout/content-topbar";
+import type { ReactNode } from "react";
 
 interface SimHeaderProps {
   title: string;
-  subtitle: React.ReactNode;
+  subtitle: ReactNode;
 }
 
 export default function SimHeader({ title, subtitle }: SimHeaderProps) {
-  const router = useRouter();
-
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      router.back();
-    } else {
-      router.push("/");
-    }
-  };
-
   return (
-    <header className="w-full">
-      <div className="flex items-center justify-center overflow-x-clip border-b py-5">
-        <div className="relative flex w-full max-w-6xl items-center px-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            className="group absolute left-7 gap-2 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <ArrowLeft className="transition-transform group-hover:-translate-x-1" />
-            Back
-          </Button>
-
-          <div className="mx-auto h-6" />
-
-          <div className="absolute right-7">
-            <ArticleShare title={title} align="right" />
-          </div>
-        </div>
-      </div>
-      <div className="mt-6 text-center">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>
-        <p className="mt-2 text-base text-muted-foreground sm:text-lg">{subtitle}</p>
-      </div>
-    </header>
+    <ContentTopBar
+      shareTitle={title}
+      title={title}
+      subtitle={subtitle}
+      fallbackHref="/"
+    />
   );
 }

@@ -6,7 +6,7 @@ import {
   MathBlock,
   CalloutBox,
   AhaBox,
-  SimulationLink,
+  SimulationLinks,
   ParameterTable,
 } from "../../components";
 
@@ -440,17 +440,12 @@ export default function FirstProjectArticle() {
         again. Watch the prediction move. Then change the feature name and see
         how quickly a model-serving contract can break.
       </p>
-      <SimulationLink
-        simulationSlug="linear-regression"
-        description="See the line your tiny model is trying to fit"
-      />
-      <SimulationLink
-        simulationSlug="least-squares"
-        description="Watch squared errors shrink around the fitted line"
-      />
-      <SimulationLink
-        simulationSlug="gradient-descent"
-        description="See parameters move toward lower error"
+      <SimulationLinks
+        simulations={[
+          { slug: "linear-regression", description: "See the line your tiny model is trying to fit" },
+          { slug: "least-squares", description: "Watch squared errors shrink around the fitted line" },
+          { slug: "gradient-descent", description: "See parameters move toward lower error" },
+        ]}
       />
     </ArticlePost>
   );

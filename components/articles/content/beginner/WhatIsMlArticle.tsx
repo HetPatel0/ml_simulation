@@ -6,7 +6,7 @@ import {
   MathBlock,
   CalloutBox,
   AhaBox,
-  SimulationLink,
+  SimulationLinks,
 } from "../../components";
 
 const sklearnExample = `
@@ -285,17 +285,12 @@ export default function WhatIsMlArticle() {
         yourself a better question: did you change the output type, the model
         family, or only the input?
       </p>
-      <SimulationLink
-        simulationSlug="linear-regression"
-        description="Drag points around and feel how regression fits numbers"
-      />
-      <SimulationLink
-        simulationSlug="logistic-regression"
-        description="Turn scores into probabilities and labels"
-      />
-      <SimulationLink
-        simulationSlug="gradient-descent"
-        description="Watch parameters move to reduce the loss"
+      <SimulationLinks
+        simulations={[
+          { slug: "linear-regression", description: "Drag points around and feel how regression fits numbers" },
+          { slug: "logistic-regression", description: "Turn scores into probabilities and labels" },
+          { slug: "gradient-descent", description: "Watch parameters move to reduce the loss" },
+        ]}
       />
     </ArticlePost>
   );
