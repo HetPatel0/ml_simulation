@@ -7,6 +7,7 @@ import { ArticleImage } from "./article-image";
 import { ArticleActions } from "./article-actions";
 import { Breadcrumb } from "./article-breadcrumb";
 import { slugify } from "@/lib/slugify";
+import { ExternalSourceLink } from "./external-source-link";
 
 const WORDS_PER_MINUTE = 200;
 
@@ -93,6 +94,7 @@ type ArticlePostProps = {
   className?: string;
   /** Optional breadcrumb trail. When omitted, a Home / Learn / title trail renders. */
   breadcrumb?: { label: string; href?: string }[];
+  sources?: { label: string; url: string }[];
 };
 
 export function ArticlePost({
@@ -105,6 +107,7 @@ export function ArticlePost({
   children,
   className,
   breadcrumb,
+  sources,
 }: ArticlePostProps) {
   // Deterministic at render time; no hook needed in the server component.
   const body = assignHeadingIds(children, new Set<string>());
@@ -126,7 +129,7 @@ export function ArticlePost({
             ]
           }
         />
-        <h1 className="text-3xl font-semibold leading-tight tracking-tight">
+        <h1 className="text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
           {title}
         </h1>
 
@@ -137,7 +140,7 @@ export function ArticlePost({
         </div>
 
         {description && (
-          <p className="text-lg leading-relaxed text-muted-foreground">
+          <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
             {description}
           </p>
         )}
@@ -166,27 +169,30 @@ export function ArticlePost({
             "max-w-none text-foreground",
 
             // --- PARAGRAPHS ---
-            "[&>p]:text-lg",
+            "[&>p]:text-base",
+            "sm:[&>p]:text-lg",
             "[&>p]:leading-6",
             "[&>p]:mb-4",
             "[&>p]:font-normal",
 
             // --- H2 (Styled as H1) ---
-            "[&>h2]:text-2xl",
+            "[&>h2]:text-xl",
+            "sm:[&>h2]:text-2xl",
             "[&>h2]:font-semibold!", 
             "[&>h2]:tracking-tighter",
             "[&>h2]:leading-tight",
             "[&>h2]:mb-2", 
 
             // --- H3 ---
-            "[&>h3]:text-xl",
+            "[&>h3]:text-lg",
+            "sm:[&>h3]:text-xl",
             "[&>h3]:font-bold",
             "[&>h3]:mt-12",
             "[&>h3]:mb-4",
 
             // --- DROP CAP ---
             "[&>p:first-of-type]:first-letter:text-5xl",
-            "[&>p:first-of-type]:first-letter:font-semi-bold",
+            "[&>p:first-of-type]:first-letter:font-semibold",
             "[&>p:first-of-type]:first-letter:float-left",
             "[&>p:first-of-type]:first-letter:mr-3",
             "[&>p:first-of-type]:first-letter:leading-none",
@@ -199,6 +205,21 @@ export function ArticlePost({
           {body}
         </div>
         </div>
+      )}
+
+      {sources && sources.length > 0 && (
+        <section className="mt-12 pb-2" aria-labelledby="article-sources">
+          <h2 id="article-sources" className="mb-2 text-xl font-semibold tracking-tight sm:text-2xl">
+            Sources
+          </h2>
+          <ul className="list-disc space-y-2 pl-6 text-sm">
+            {sources.map((source) => (
+              <li key={source.url}>
+                <ExternalSourceLink href={source.url}>{source.label}</ExternalSourceLink>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {updated && (

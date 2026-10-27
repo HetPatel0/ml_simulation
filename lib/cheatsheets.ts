@@ -29,6 +29,9 @@ export type Cheatsheet = {
   description: string;
   badge: string;
   image: string;
+  hero: string;
+  /** Tailwind aspect class matching the hero image ratio (default aspect-video). */
+  heroAspect?: string;
   category: "regression" | "classification" | "beginner" | "advanced";
   params: CheatsheetParam[];
   snippet: { title: string; language: string; code: string };
@@ -47,7 +50,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "Linear Regression Cheatsheet",
     description: "sklearn LinearRegression params, assumptions, and copy-paste snippets.",
     badge: "Regression",
-    image: "/images/regression/linear-regression.webp",
+    image: "/images/cheatsheet/thumbnail/linear-regression.webp",
+    hero: "/images/cheatsheet/articles/linear-regression.webp",
+    heroAspect: "aspect-[3/2]",
     category: "regression",
     articleSlug: "linear-regression",
     simSlug: "linear-regression",
@@ -93,7 +98,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "Gradient Descent Cheatsheet",
     description: "Learning rate, batch size, momentum, and convergence diagnostics.",
     badge: "Optimization",
-    image: "/images/regression/gradient-descent.webp",
+    image: "/images/cheatsheet/thumbnail/gradient-descent.webp",
+    hero: "/images/cheatsheet/articles/gradient-descent.webp",
+    heroAspect: "aspect-[3/2]",
     category: "regression",
     articleSlug: "gradient-descent",
     simSlug: "gradient-descent",
@@ -138,7 +145,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "Logistic Regression Cheatsheet",
     description: "C, penalty, solver, and threshold tuning for binary classification.",
     badge: "Classification",
-    image: "/images/classification/logistic-regression.webp",
+    image: "/images/cheatsheet/thumbnail/logistic-regression.webp",
+    hero: "/images/cheatsheet/articles/logistic-regression.webp",
+    heroAspect: "aspect-[3/2]",
     category: "classification",
     articleSlug: "logistic-regression",
     simSlug: "logistic-regression",
@@ -184,7 +193,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "Polynomial Regression Cheatsheet",
     description: "Degree, interaction terms, and overfitting guards.",
     badge: "Regression",
-    image: "/images/regression/polynomial-regression.webp",
+    image: "/images/cheatsheet/thumbnail/polynomial-regression.webp",
+    hero: "/images/cheatsheet/articles/polynomial-regression.webp",
+    heroAspect: "aspect-[3/2]",
     category: "regression",
     articleSlug: "polynomial-regression",
     simSlug: "polynomial-regression",
@@ -226,7 +237,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "SVR Cheatsheet",
     description: "epsilon, C, kernel, and gamma for Support Vector Regression.",
     badge: "Advanced",
-    image: "/images/regression/svr.webp",
+    image: "/images/cheatsheet/thumbnail/svr.webp",
+    hero: "/images/cheatsheet/articles/svr.webp",
+    heroAspect: "aspect-[1200/514]",
     category: "advanced",
     articleSlug: "svr",
     simSlug: "svr-visualizer",
@@ -272,7 +285,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "Decision Trees Cheatsheet",
     description: "max_depth, impurity, pruning knobs that stop overfitting.",
     badge: "Classification",
-    image: "/images/classification/decision-tree-v2.webp",
+    image: "/images/cheatsheet/thumbnail/decision-trees.webp",
+    hero: "/images/cheatsheet/articles/decision-trees.webp",
+    heroAspect: "aspect-[3/2]",
     category: "classification",
     articleSlug: "decision-trees",
     simSlug: "decision-trees",
@@ -319,7 +334,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "KNN Cheatsheet",
     description: "k, weights, metric, and scaling checklist.",
     badge: "Classification",
-    image: "/images/classification/k-nearest-neighbors-v2.webp",
+    image: "/images/cheatsheet/thumbnail/k-nearest-neighbors.webp",
+    hero: "/images/cheatsheet/articles/k-nearest-neighbors.webp",
+    heroAspect: "aspect-[3/2]",
     category: "classification",
     articleSlug: "k-nearest-neighbors",
     simSlug: "k-nearest-neighbors",
@@ -366,7 +383,9 @@ export const cheatsheets: Record<string, Cheatsheet> = {
     title: "Naive Bayes Cheatsheet",
     description: "alpha smoothing, priors, and text pipeline.",
     badge: "Classification",
-    image: "/images/classification/naive-bayes-v2.webp",
+    image: "/images/cheatsheet/thumbnail/naive-bayes.webp",
+    hero: "/images/cheatsheet/articles/naive-bayes.webp",
+    heroAspect: "aspect-[3/2]",
     category: "classification",
     articleSlug: "naive-bayes",
     simSlug: "naive-bayes",
@@ -404,6 +423,71 @@ export const cheatsheets: Record<string, Cheatsheet> = {
       { label: "sklearn Naive Bayes User Guide", url: "https://scikit-learn.org/stable/modules/naive_bayes.html" },
       { label: "MultinomialNB API", url: "https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html" },
       { label: "Text classification with NB (sklearn example)", url: "https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html" },
+    ],
+  },
+  "pipeline": {
+    slug: "pipeline",
+    title: "Pipeline Cheatsheet",
+    description: "sklearn Pipeline chaining, leakage-proof fitting, and how to ship the same object to production.",
+    badge: "Workflow",
+    image: "/images/cheatsheet/articles/pipeline.webp",
+    hero: "/images/cheatsheet/articles/pipeline.webp",
+    heroAspect: "aspect-[1200/671]",
+    category: "advanced",
+    articleSlug: "pipeline",
+    params: [
+      { name: "steps", type: "list[tuple]", default: "required", description: "Ordered (name, estimator) pairs; last step is the model.", impact: "Order matters: scalers/encoders must come before the estimator." },
+      { name: "memory", type: "str | None", default: "None", description: "Directory to cache transformer outputs.", impact: "Speeds repeated GridSearchCV fits across slow transformers." },
+      { name: "verbose", type: "bool", default: "False", description: "Print per-step timing during fit.", impact: "True shows which step is the bottleneck." },
+    ],
+    snippet: {
+      title: "Production-ready pipeline",
+      language: "python",
+      code: `from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+import joblib
+
+preprocess = ColumnTransformer([
+    ("num", StandardScaler(), ["age", "income"]),
+    ("cat", OneHotEncoder(handle_unknown="ignore"), ["region"]),
+])
+
+pipe = Pipeline([
+    ("preprocess", preprocess),
+    ("model", LogisticRegression(max_iter=1000)),
+]).fit(X_train, y_train)
+
+joblib.dump(pipe, "model.joblib")  # one artifact: preprocessing + model
+
+# later, in serving:
+pipe = joblib.load("model.joblib")
+pipe.predict(X_new)                # no manual preprocessing here`,
+    },
+    tips: ["Cross-validate the whole pipeline, never the bare model.", "Tune inner steps with stepname__param strings.", "Name your steps — debugging and claims depends on it.", "One joblib dump ships preprocessing + model together."],
+    variants: [
+      { name: "Pipeline", api: "sklearn.pipeline.Pipeline", bestFor: "Chaining any ordered fit/transform sequence ending in an estimator", note: "pipe.fit() calls fit_transform on all but the last step, fit on the last" },
+      { name: "make_pipeline", api: "sklearn.pipeline.make_pipeline", bestFor: "Quick scripts — auto-names steps from class names", note: "Step names become lowercase class names; use named Pipeline when you grid-search" },
+      { name: "ColumnTransformer", api: "sklearn.compose.ColumnTransformer", bestFor: "Different transforms for numeric vs categorical columns", note: "Nest it as the first Pipeline step; handle_unknown='ignore' keeps prod safe on new categories" },
+      { name: "TransformedTargetRegressor", api: "sklearn.compose.TransformedTargetRegressor", bestFor: "Also transforming y (log target) without leaking into eval", note: "Wraps the estimator + its y-transformer into one object" },
+      { name: "Persistence", api: "joblib.dump / joblib.load", bestFor: "Shipping the exact fit/transform chain to serving", note: "Pin sklearn version: unpickling across major versions can break" },
+    ],
+    vsOthers: [
+      { versus: "Manual fit/transform calls", difference: "Hand-chaining scaler.fit + transform + model.fit lets you accidentally fit transformers on the test set. Pipeline saves the fitted state inside one object and re-applies only transform() at predict — leakage becomes hard by construction." },
+      { versus: "FeatureUnion", difference: "Pipeline is sequential (each step consumes the previous output); FeatureUnion runs transformers in parallel and concatenates their outputs. Use Pipeline for order, FeatureUnion inside a step to merge parallel branches." },
+      { versus: "Notebook preprocessing", difference: "Copy-pasted preprocessing code between notebook and serving code drifts silently. The pipeline is the single source of truth — dump and load it instead of re-implementing steps." },
+    ],
+    pitfalls: [
+      "Fitting transformers on the full dataset before splitting — test-set statistics leak into training. Fit the whole pipeline inside cross_val_score or after the split.",
+      "Wrong step types: only the LAST step may be an estimator. sklearn validates this at fit time with a ValueError.",
+      "Grid-searching with the wrong name: params use 'stepname__param' syntax — 'clf__C' not 'C'. Mechanics fail via fit-error or get_params lookup.",
+      "Unpickling across sklearn major versions: a joblib dump is not forward compatible — pin versions in requirements and retrain if the toolchain changes.",
+    ],
+    sources: [
+      { label: "sklearn Pipeline API", url: "https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html" },
+      { label: "sklearn Compose guide (ColumnTransformer)", url: "https://scikit-learn.org/stable/modules/compose.html" },
+      { label: "sklearn Model Persistence guide", url: "https://scikit-learn.org/stable/model_persistence.html" },
     ],
   },
 };

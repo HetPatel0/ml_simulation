@@ -20,7 +20,7 @@ export function ApproachSection() {
   return (
     <section className="px-6 py-24 md:py-32 lg:px-12">
       <div className="mx-auto max-w-5xl">
-        <div className="reveal mb-16 max-w-xl">
+        <div className="reveal mb-12 max-w-xl">
           <span className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
             Our Approach
           </span>

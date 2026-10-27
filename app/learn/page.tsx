@@ -137,6 +137,16 @@ const articles: Article[] = [
     readingTime: articleReadingTime["naive-bayes"],
   },
   {
+    id: "pipeline",
+    title: "How sklearn Pipelines Work",
+    description:
+      "How fit_transform chaining prevents leakage and how one object ships preprocessing and model to production.",
+    image: "/article/other/pipeline-hero.webp",
+    badge: "Workflow",
+    category: "other",
+    readingTime: articleReadingTime["pipeline"],
+  },
+  {
     id: "kernel-trick",
     title: "Kernel Methods",
     description:
@@ -156,9 +166,9 @@ export default function LearnPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <BookOpen className="h-5 w-5" />
           </div>
-          <h1 className="text-4xl font-bold">ML Articles</h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">ML Articles</h1>
         </div>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-base text-muted-foreground sm:text-lg">
           Articles & visual explanations to understand machine learning concepts
         </p>
       </div>

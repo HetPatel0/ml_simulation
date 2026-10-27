@@ -18,27 +18,27 @@ export default function FooterSection() {
           <Logo />
         </div>
 
-        <div className="my-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
+        <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="block text-muted-foreground duration-150 hover:text-primary"
+              className="text-muted-foreground transition-colors duration-150 hover:text-primary"
             >
               <span>{link.title}</span>
             </Link>
           ))}
         </div>
-        <div className="my-6 flex flex-wrap justify-center gap-6 text-sm">
+        <div className="mt-6 flex flex-wrap justify-center gap-5 text-sm">
           <Link
             href="https://x.com/Het1501"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="X/Twitter"
-            className="block text-muted-foreground hover:text-primary"
+            className="text-muted-foreground transition-colors duration-150 hover:text-primary"
           >
             <svg
-              className="size-6"
+              className="size-5"
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
@@ -55,10 +55,10 @@ export default function FooterSection() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="block text-muted-foreground hover:text-primary"
+            className="text-muted-foreground transition-colors duration-150 hover:text-primary"
           >
             <svg
-              className="size-6"
+              className="size-5"
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
@@ -75,10 +75,10 @@ export default function FooterSection() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="block text-muted-foreground hover:text-primary"
+            className="text-muted-foreground transition-colors duration-150 hover:text-primary"
           >
             <svg
-              className="size-6"
+              className="size-5"
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
               height="1em"
@@ -91,9 +91,8 @@ export default function FooterSection() {
             </svg>
           </Link>
         </div>
-        <span className="block text-center text-sm text-muted-foreground">
-          {" "}
-          © <FooterYear /> ML simulation, All rights reserved
+        <span className="mt-6 block text-center text-sm text-muted-foreground">
+          © <FooterYear /> ML Simulations. All rights reserved.
         </span>
       </div>
     </footer>

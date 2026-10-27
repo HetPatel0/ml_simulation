@@ -181,7 +181,7 @@ export function QuizBlock({
         className="my-10 rounded-xl border border-border bg-muted/20 p-5 text-center sm:p-8"
       >
         <GraduationCap className="mx-auto h-8 w-8 text-primary" aria-hidden="true" />
-        <h2 id={`quiz-${slug}`} className="mt-2 text-2xl font-semibold tracking-tight">
+        <h2 id={`quiz-${slug}`} className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
           Score {score}/{total}
         </h2>
         <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground" aria-live="polite">

@@ -20,8 +20,8 @@ export function QuickTags({
   if (tags.length === 0) return null;
   const active = activeQuery.trim().toLowerCase();
   return (
-    <div className="mb-10 flex flex-wrap items-center gap-2" aria-label="Quick searches">
-      <span className="text-xs font-medium  tracking-wider text-muted-foreground">
+    <div className="mb-8 flex flex-wrap items-center gap-2 md:mb-10" aria-label="Quick searches">
+      <span className="text-xs font-medium tracking-wider text-muted-foreground">
         {label}:
       </span>
       {tags.map((tag) => {

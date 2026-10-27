@@ -1,0 +1,22 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:25.875
+How sklearn Pipelines Work (and How to Ship One) One Object, Exact Order A pipeline is just a list of steps. Every step except the last is a transformer with fit and transform methods; the last step is an estimator. When you call pipe.fit(X_train, y_train) , sklearn walks the list in order: the earlier steps learn their parameters with fit_transform on the current data, and the final estimator fits on the output of the one before it. Aha! Here's the cool part... pipe.predict(X_test) re-applies exactly the learned transforms — transform only, never fit again.
+
+00:00:25.875 --> 00:00:52.050
+The test statistics never touch the scaler, so your evaluation measures what serving will actually do. The Leakage Problem It Solves The classic mistake in a notebook is fitting the scaler before the train/test split. The scaler then learns the mean and variance of rows that include the test set, and cross-validated scores quietly stop meaning anything. Pipelines close that hole by construction: the transformers live inside the same object you cross-validate. Tune inside the chain: feature selection placed in the pipeline is re-fit per fold. Score the whole object:
+
+00:00:52.050 --> 00:01:18.850
+cross_val_score fits and evaluates preprocessing + model together. Deploy what you validated: dump the pipeline, not a copy-pasted serving script. The step__param Naming Trick Grid search over an unexpanded chain needs names. Sklearn addresses every nested parameter with stepname__param — that is why you should name steps instead of using make_pipeline everywhere. Mixed Columns with ColumnTransformer Real data is rarely all-numbers.
+
+00:01:18.850 --> 00:01:45.050
+Put a ColumnTransformer as your first pipeline step and it routes numeric columns and categorical columns through different transforms, then hands the concatenation to the model. handle_unknown="ignore" is production hygiene: a category that appears at serving time but not in training would otherwise crash the endpoint. How We Use It in Production In serving code you paste no preprocessing. The pipeline you validated in training is the model you deploy: dump it with joblib, load it in the API process, and call .predict on raw request rows.
+
+00:01:45.050 --> 00:02:11.975
+Preprocessing and model move together, in the same order, every time. Production Checklist Pin the sklearn version in requirements (unpickling across major versions breaks), version the artifact file with a build hash, keep training column order documented, and retrain when the toolchain changes — a joblib file is not forward compatible. Useful Pipeline Parameters Ordered (name, transformer/estimator) pairs. Last step is the model; every earlier step must be a transformer. Folder for caching transformer outputs between fits. GridSearchCV refits get much faster when early steps are expensive.
+
+00:02:11.975 --> 00:02:39.125
+Print elapsed time per step during fit. First tool for finding the slow step in a long chain. Common Pitfalls Non-transformer mid-step: every step except the last must have transform ; sklearn raises TypeError at fit time for intermediate estimators. Calling fit_transform at inference: serving must only transform (or simply predict ) — re-fitting on request data means talking to production drift again. Wrong grid keys: "C" instead of "model__C" in GridSearchCV params — modern sklearn errors on unknown keys instead of ignoring them. Cached staleness with memory:
+
+00:02:39.125 --> 00:03:04.850
+cached transformer outputs assume the input data does not change — clear the cache directory when data pipelines change. One-Sentence Summary A pipeline locks your preprocessing to your estimator in one ordered object: cross-validate it as a whole, grid-search into it with step__param strings, and ship it to production as a single joblib artifact the API loads — no duplicated preprocessing code and no leakage.

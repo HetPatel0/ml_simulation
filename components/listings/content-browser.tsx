@@ -124,7 +124,7 @@ export function ContentBrowser({
           placeholder={`Search ${searchNoun}… (⌘+K)`}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border-2 pl-10 pr-10"
+          className="h-10 rounded-full border-2 pl-10 pr-10"
         />
         {searchQuery && (
           <Button
@@ -146,13 +146,13 @@ export function ContentBrowser({
       />
 
       {/* Sections */}
-      <div className="space-y-16">
+      <div className="space-y-12 md:space-y-16">
         {categories.map(({ value, title }) => {
           const list = grouped[value] ?? [];
           if (list.length === 0) return null;
           return (
             <section key={value} className="space-y-6">
-              <h2 className="text-2xl font-semibold tracking-tight">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
                 {title}
               </h2>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

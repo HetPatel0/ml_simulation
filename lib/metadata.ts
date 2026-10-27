@@ -35,6 +35,7 @@ export const articleReadingTime: Record<string, number> = {
   "what-is-ml": 6,
   "first-project": 6,
   "good-vs-bad-models": 5,
+  pipeline: 5,
 };
 
 export const simulationMetadata: Record<
@@ -220,6 +221,13 @@ export const articleMetadata: Record<
     description:
       "Understand underfitting, overfitting, validation, L1, L2, and regularization through one visual model experiment.",
     image: "/og/home.jpg",
+    author: "Keval Kansagra",
+  },
+  pipeline: {
+    title: "How sklearn Pipelines Work",
+    description:
+      "Learn how fit_transform chaining prevents leakage, how step__param grids work, and how one joblib artifact ships preprocessing and model to production.",
+    image: "/og/pipeline.jpg",
     author: "Keval Kansagra",
   },
 };

@@ -12,6 +12,7 @@ import SVRArticle from "@/components/articles/content/regression/SVRArticle";
 import WhatIsMlArticle from "@/components/articles/content/beginner/WhatIsMlArticle";
 import FirstProjectArticle from "@/components/articles/content/beginner/FirstProjectArticle";
 import GoodVsBadModelsArticle from "@/components/articles/content/beginner/GoodVsBadModelsArticle";
+import PipelineArticle from "@/components/articles/content/other/PipelineArticle";
 
 /**
  * Server-only slug → article map. Importing the bodies here keeps their JSX
@@ -32,6 +33,7 @@ export const articleComponents = {
   "what-is-ml": WhatIsMlArticle,
   "first-project": FirstProjectArticle,
   "good-vs-bad-models": GoodVsBadModelsArticle,
+  pipeline: PipelineArticle,
 } satisfies Record<string, ComponentType>;
 
 export type ArticleSlug = keyof typeof articleComponents;

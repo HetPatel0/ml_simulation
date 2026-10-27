@@ -397,4 +397,34 @@ export const quizzes: Record<string, QuizQuestion[]> = {
       explanation: "Touch test once at the end or scores inflate.",
     },
   ],
+  pipeline: [
+    {
+      id: "pl-order",
+      question: "In pipe.fit(), pipeline steps run…",
+      options: ["In the order you passed them", "Model first, then transforms", "Randomly by sklearn", "In reverse order"],
+      answerIndex: 0,
+      explanation: "fit_transform chains through transformers, fit on the last estimator — order is the list order.",
+    },
+    {
+      id: "pl-leak",
+      question: "Scaler fit on the full set, then split. This is…",
+      options: ["Standard good practice", "Data leakage into the test set", "Faster and equally valid", "Fixed by raising max_iter"],
+      answerIndex: 1,
+      explanation: "Test-row statistics leak into training — put the scaler inside the pipeline and cross-validate that.",
+    },
+    {
+      id: "pl-grid",
+      question: "Grid-searching C inside a pipeline uses…",
+      options: ['The bare key "C"', 'The key "model__C"', "A separate dict per step", "Impossible for pipelines"],
+      answerIndex: 1,
+      explanation: "Nested params use stepname__param strings in GridSearchCV.",
+    },
+    {
+      id: "pl-prod",
+      question: "Shipping sklearn to production, best practice?",
+      options: ["Paste notebook steps into serving", "Retrain scaler per request", "joblib dump the full pipeline", "Export raw X and y only"],
+      answerIndex: 2,
+      explanation: "One artifact carries preprocessing + model; serving only calls predict.",
+    },
+  ],
 };

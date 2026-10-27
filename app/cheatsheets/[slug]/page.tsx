@@ -6,6 +6,8 @@ import { CodeBlock } from "@/components/articles/components";
 import { SimulationLink } from "@/components/articles/components";
 import { Breadcrumb, BreadcrumbJsonLd } from "@/components/articles/layout/article-breadcrumb";
 import { ArticleShell } from "@/components/articles/layout/article-shell";
+import { ArticleImage } from "@/components/articles/layout/article-image";
+import { ExternalSourceLink } from "@/components/articles/layout/external-source-link";
 import { CheatsheetTopBar } from "@/components/cheatsheets/cheatsheet-topbar";
 import { BackToTop } from "@/components/layout/overlays/back-to-top";
 import { CheatsheetParams } from "@/components/cheatsheets/cheatsheet-params";
@@ -65,7 +67,7 @@ export default async function CheatsheetPage({ params }: Props) {
               { label: sheet.title },
             ]}
           />
-          <h1 className="text-3xl font-semibold leading-tight tracking-tight">
+          <h1 className="text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">
             {sheet.title}
           </h1>
 
@@ -76,7 +78,7 @@ export default async function CheatsheetPage({ params }: Props) {
             )}
           </div>
 
-          <p className="text-lg leading-relaxed text-muted-foreground">
+          <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
             {sheet.description}
           </p>
 
@@ -93,11 +95,17 @@ export default async function CheatsheetPage({ params }: Props) {
             )}
           </div>
         </header>
+        <ArticleImage
+          src={sheet.hero}
+          alt={`${sheet.title} diagram`}
+          priority
+          className={sheet.heroAspect ?? "aspect-video"}
+        />
 
-        <h2 className="mb-2 mt-10 text-2xl font-semibold">Parameters</h2>
+        <h2 className="mb-2 mt-10 text-xl font-semibold tracking-tight sm:text-2xl">Parameters</h2>
         <CheatsheetParams sheet={sheet} />
 
-        <h2 className="mb-2 mt-10 text-2xl font-semibold">Model variants &amp; sub-types</h2>
+        <h2 className="mb-2 mt-10 text-xl font-semibold tracking-tight sm:text-2xl">Model variants &amp; sub-types</h2>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <thead>
@@ -121,7 +129,7 @@ export default async function CheatsheetPage({ params }: Props) {
           </table>
         </div>
 
-        <h2 className="mb-2 mt-10 text-2xl font-semibold">How it differs from other models</h2>
+        <h2 className="mb-2 mt-10 text-xl font-semibold tracking-tight sm:text-2xl">How it differs from other models</h2>
         <ul className="list-disc space-y-2 pl-6">
           {sheet.vsOthers.map((c) => (
             <li key={c.versus}>
@@ -130,38 +138,35 @@ export default async function CheatsheetPage({ params }: Props) {
           ))}
         </ul>
 
-        <h2 className="mb-2 mt-10 text-2xl font-semibold">Copy-paste snippet</h2>
+        <h2 className="mb-2 mt-10 text-xl font-semibold tracking-tight sm:text-2xl">Copy-paste snippet</h2>
         <CodeBlock code={sheet.snippet.code} language={sheet.snippet.language as "python"} title={sheet.snippet.title} />
 
-        <h2 className="mb-2 mt-10 text-2xl font-semibold">Tuning tips</h2>
+        <h2 className="mb-2 mt-10 text-xl font-semibold tracking-tight sm:text-2xl">Tuning tips</h2>
         <ul className="list-disc space-y-2 pl-6">
           {sheet.tips.map((t) => (
             <li key={t}>{t}</li>
           ))}
         </ul>
 
-        <h2 className="mb-2 mt-10 text-2xl font-semibold">Common pitfalls</h2>
+        <h2 className="mb-2 mt-10 text-xl font-semibold tracking-tight sm:text-2xl">Common pitfalls</h2>
         <ul className="list-disc space-y-2 pl-6">
           {sheet.pitfalls.map((p) => (
             <li key={p}>{p}</li>
           ))}
         </ul>
 
-        <h2 className="mb-2 mt-10 text-2xl font-semibold">Sources</h2>
-        <ul className="list-disc space-y-2 pl-6 text-sm">
+        <section className="pb-10">
+          <h2 className="mb-2 mt-10 text-xl font-semibold tracking-tight sm:text-2xl">Sources</h2>
+          <ul className="list-disc space-y-2 pl-6 text-sm">
           {sheet.sources.map((s) => (
             <li key={s.url}>
-              <a
-                className="underline underline-offset-4"
-                href={s.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalSourceLink href={s.url}>
                 {s.label}
-              </a>
+              </ExternalSourceLink>
             </li>
           ))}
-        </ul>
+          </ul>
+        </section>
 
         {sheet.simSlug && (
           <div className="mt-10">

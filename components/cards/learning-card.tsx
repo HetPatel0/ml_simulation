@@ -44,12 +44,12 @@ export function LearningCard({
   return (
     <Card
       className="
-        group/card overflow-hidden rounded-2xl
-        border-2 border-border/60
+        group/card flex h-full flex-col overflow-hidden rounded-2xl
+        border border-border/60
         bg-background
         transition-all duration-200 ease-out
         hover:-translate-y-0.5
-        hover:shadow-xl
+        hover:shadow-md
         hover:border-border
         hover:bg-muted/30
         focus-visible:outline-none
@@ -87,22 +87,22 @@ export function LearningCard({
       </Link>
 
       {/* Content */}
-      <CardHeader className="flex flex-col gap-4">
-        <div className="space-y-2.5">
-          <div className="flex flex-wrap items-center gap-2">
+      <CardHeader className="flex flex-1 flex-col gap-4">
+        <div className="flex-1 space-y-2.5">
+          <div className="flex min-h-6 flex-wrap items-center gap-2">
             {badge && (
               <Badge className="w-fit border-primary/20 bg-primary/10 font-semibold text-primary">
                 {badge}
               </Badge>
             )}
             {readingTime !== undefined && (
-              <span className="inline-flex w-fit items-center gap-1 rounded-full border border-border bg-muted/60 px-2 py-0.5 text-[11px] font-medium text-foreground">
+              <span className="inline-flex w-fit items-center gap-1 rounded-full border border-border bg-muted/60 px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                 <Clock size={12} aria-hidden="true" className="text-primary" />
                 {readingTime} min read
               </span>
             )}
           </div>
-          <CardTitle className="text-xl tracking-tight">
+          <CardTitle className="line-clamp-2 min-h-14 text-xl tracking-tight">
             <Link
               href={href}
               scroll={true}
@@ -112,16 +112,19 @@ export function LearningCard({
               {title}
             </Link>
           </CardTitle>
-          <CardDescription className="text-sm leading-relaxed">{description}</CardDescription>
+          <CardDescription className="line-clamp-3 min-h-[4.875rem] text-sm leading-relaxed">
+            {description}
+          </CardDescription>
         </div>
 
-        {/* CTA */}
-        <Button size="sm" className="w-fit self-start p-0" asChild>
+        {/* CTA — Button's own h-8/px-3 own the box; the link adds nothing
+            so Slot class merge can never fight the variant defaults. */}
+        <Button size="sm" className="mt-auto h-8 w-fit self-start gap-1.5 px-3" asChild>
           <Link
             href={href}
             scroll={true}
             prefetch={prefetch}
-            className="group inline-flex items-center gap-1 px-3 py-1.5"
+            className="group inline-flex items-center"
           >
             {ctaLabel}
 

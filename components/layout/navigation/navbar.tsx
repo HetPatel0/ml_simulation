@@ -33,10 +33,10 @@ export function Navbar() {
     pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
+    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-md">
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:grid md:grid-cols-[1fr_auto_1fr]">
         {/* Left: Logo */}
-        <div className="md:justify-self-start lg:pl-5 sm:pl-0">
+        <div className="md:justify-self-start pl-3">
           <Logo />
         </div>
 
@@ -64,7 +64,7 @@ export function Navbar() {
         {/* Right: Actions */}
         <div className="flex items-center gap-2 md:justify-self-end">
           {/* Desktop Theme Toggle */}
-          <div className="hidden md:flex mr-11">
+          <div className="hidden md:flex">
             <ModeToggle variant="ghost" />
           </div>
 
@@ -91,8 +91,8 @@ export function Navbar() {
           isOpen ? "block" : "hidden",
         )}
       >
-        <div className="mx-auto max-w-5xl space-y-2 px-3 py-4">
-          <ul className="ml-6 space-y-3 text-sm">
+        <div className="mx-auto max-w-5xl px-4 py-4">
+          <ul className="space-y-1 text-sm">
             {MENU_ITEMS.map((item) => (
               <li key={item.label}>
                 <Link
@@ -101,21 +101,20 @@ export function Navbar() {
                   onClick={() => setIsOpen(false)}
                   aria-current={isActive(item.href) ? "page" : undefined}
                   className={cn(
-                    "block rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                    "block rounded-md px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                     isActive(item.href)
                       ? "font-medium text-primary"
-                      : "text-muted-foreground hover:text-primary",
+                      : "text-muted-foreground hover:text-primary hover:bg-muted/40",
                   )}
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
-
-            <li className="mr-7 pb-4">
-              <ModeToggle variant="ghost" className="pr-4" />
-            </li>
           </ul>
+          <div className="mt-3 border-t pt-3">
+            <ModeToggle variant="ghost" />
+          </div>
         </div>
       </div>
     </header>

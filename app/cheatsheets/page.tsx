@@ -17,9 +17,9 @@ export default function CheatsheetsPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <Zap className="h-5 w-5" />
           </div>
-          <h1 className="text-4xl font-bold">ML Cheatsheets</h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">ML Cheatsheets</h1>
         </div>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-base text-muted-foreground sm:text-lg">
           Copy-paste sklearn params, snippets, and tuning tips for every ML Simulations article.
         </p>
       </div>

@@ -16,11 +16,11 @@ export function CTASection() {
           <Button
             size="lg"
             asChild
-            className="group h-11 gap-3 rounded-full px-10 text-base shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40"
+            className="group h-10 gap-2 rounded-full px-6 text-sm shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 sm:h-11 sm:gap-3 sm:px-10 sm:text-base"
           >
             <Link href="/simulations" scroll={true}>
               Start Learning
-              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </Button>
         </div>

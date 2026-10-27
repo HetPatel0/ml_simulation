@@ -33,16 +33,18 @@ export default function Logo() {
       onClick={party}
       className="flex items-center font-semibold tracking-tight select-none"
     >
+      {/* Artwork carries ~27% internal padding — 48px box keeps the
+          visible mark balanced with a 16px wordmark inside h-14 nav. */}
       <Image
         src="/logo.webp"
         alt="ML Simulation Logo"
-        width={60}
-        height={60}
+        width={48}
+        height={48}
         priority
         className="shrink-0"
       />
 
-      <span className="text-lg">
+      <span className="text-base">
         ML<span className="font-normal">Simulation</span>
       </span>
     </Link>

@@ -18,9 +18,9 @@ export default function SitemapPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
             <Map className="h-5 w-5" />
           </div>
-          <h1 className="text-4xl font-bold">Sitemap</h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Sitemap</h1>
         </div>
-        <p className="text-lg text-muted-foreground">
+        <p className="text-base text-muted-foreground sm:text-lg">
           Prefer machines? See <a className="underline" href="/sitemap.xml">sitemap.xml</a>.
         </p>
       </div>

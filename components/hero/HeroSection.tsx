@@ -14,15 +14,33 @@ const features = [
 const TRAIL_COUNT = 18;
 const TRAIL_COLS = 6;
 
+// Deterministic PRNG so the server-rendered hero is stable across builds
+// while still reading as random geometry (no hydration drift possible).
+function mulberry32(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function generateTrails() {
+  const rand = mulberry32(2026);
+  // Shuffle all trail positions so every trail gets a turn as the blue pass.
+  const blueOrder = Array.from({ length: TRAIL_COUNT }, (_, index) => index);
+  for (let i = blueOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [blueOrder[i], blueOrder[j]] = [blueOrder[j], blueOrder[i]];
+  }
+  const blueRank = new Map(blueOrder.map((id, rank) => [id, rank]));
   const trails = [];
-  const angle = 45;
-  const angleRad = (angle * Math.PI) / 180;
 
   for (let i = 0; i < TRAIL_COUNT; i++) {
-    const startX = -20 + (i % TRAIL_COLS) * 20 + ((i * 7) % 11) - 5;
-    const startY = -15 + Math.floor(i / TRAIL_COLS) * 34 + ((i * 13) % 9) - 4;
-    const length = 15 + ((i * 17) % 25);
+    const angleRad = (45 * Math.PI) / 180;
+    const startX = -20 + (i % TRAIL_COLS) * 20 + (rand() - 0.5) * 16;
+    const startY = -15 + Math.floor(i / TRAIL_COLS) * 34 + (rand() - 0.5) * 18;
+    const length = 18 + rand() * 24;
     const endX = startX + Math.cos(angleRad) * length;
     const endY = startY + Math.sin(angleRad) * length;
 
@@ -32,7 +50,7 @@ function generateTrails() {
       y1: startY,
       x2: endX,
       y2: endY,
-      isAccent: i % 6 === 0,
+      blueRank: blueRank.get(i) ?? 0,
     });
   }
 
@@ -48,11 +66,13 @@ function TrailLine({
   trail: (typeof staticTrails)[0];
   index: number;
 }) {
-  const { x1, y1, x2, y2, isAccent } = trail;
+  const { x1, y1, x2, y2, blueRank } = trail;
   const style = {
+    // One or two trails turn blue at once; the shuffled order includes all 18.
     "--trail-delay": `${((index * 0.37) % 3.2).toFixed(2)}s`,
     "--trail-duration": `${(2.2 + (index % 4) * 0.4).toFixed(2)}s`,
-    "--trail-opacity": isAccent ? 0.85 : 0.35,
+    "--trail-opacity": 0.35,
+    "--blue-delay": `${(-blueRank * 1.1).toFixed(2)}s`,
   } as CSSProperties;
 
   return (
@@ -62,10 +82,10 @@ function TrailLine({
       y1={y1}
       x2={x2}
       y2={y2}
-      stroke={isAccent ? "oklch(0.75 0.12 220)" : "currentColor"}
-      strokeWidth={isAccent ? 0.12 : 0.06}
+      stroke="currentColor"
+      strokeWidth={0.06}
       strokeLinecap="round"
-      className={isAccent ? "trail" : "trail text-muted-foreground"}
+      className="trail trail-blue-pass text-muted-foreground"
       style={style}
     />
   );
@@ -134,10 +154,10 @@ export function HeroSection() {
           <Button
             size="lg"
             asChild
-            className="group h-11 gap-2 rounded-full px-6 text-sm shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 sm:gap-3 sm:px-8 sm:text-base"
+            className="group h-9 gap-2 rounded-full px-4 text-xs shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary/40 sm:h-10 sm:gap-3 sm:px-7 sm:text-sm lg:h-11 lg:px-8 lg:text-base"
           >
             <Link href="/simulations" scroll={true}>
-              <Play className="h-3.5 w-3.5 transition-transform group-hover:scale-110 sm:h-4 sm:w-4" />
+              <Play className="h-3 w-3 transition-transform group-hover:scale-110 sm:h-3.5 sm:w-3.5 lg:h-4 lg:w-4" />
               Explore Simulations
             </Link>
           </Button>
@@ -145,10 +165,10 @@ export function HeroSection() {
             size="lg"
             variant="ghost"
             asChild
-            className="h-11 gap-2 rounded-full px-5 text-sm transition-colors hover:bg-muted/60 sm:gap-3 sm:px-6 sm:text-base lg:px-8"
+            className="h-9 gap-2 rounded-full px-3 text-xs transition-colors hover:bg-muted/60 sm:h-10 sm:gap-3 sm:px-5 sm:text-sm lg:h-11 lg:gap-3 lg:px-8 lg:text-base"
           >
             <Link href="/learn" scroll={true}>
-              <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <BookOpen className="h-3 w-3 sm:h-3.5 sm:w-3.5 lg:h-4 lg:w-4" />
               Read Articles
             </Link>
           </Button>
@@ -160,7 +180,7 @@ export function HeroSection() {
               <div className="text-xs font-semibold tracking-tight text-foreground sm:text-sm">
                 {feature.label}
               </div>
-              <div className="mt-0.5 text-[10px] text-muted-foreground sm:mt-1 sm:text-xs">
+              <div className="mt-0.5 text-xs text-muted-foreground sm:mt-1">
                 {feature.desc}
               </div>
             </div>

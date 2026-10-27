@@ -11,20 +11,20 @@ export function NewsletterCTA() {
   return (
     <section
       aria-labelledby="newsletter-heading"
-      className="reveal border-y border-border bg-white dark:border-neutral-800 dark:bg-black"
+      className="reveal border-y border-border bg-background"
     >
       <div className="mx-auto grid max-w-5xl items-center gap-6 px-6 py-10 md:grid-cols-2 md:gap-8 md:py-12">
         <div className="text-center md:text-left">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:text-neutral-400">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             Stay in loop
           </p>
           <h2
             id="newsletter-heading"
-            className="mt-2 text-2xl font-light tracking-tight text-foreground sm:text-2xl md:mt-2 md:text-3xl dark:text-neutral-50"
+            className="mt-2 text-2xl font-light tracking-tight text-foreground md:text-3xl"
           >
             New guides, <span className="font-medium text-primary">one email</span>
           </h2>
-          <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground md:mx-0 md:mt-2 dark:text-neutral-400">
+          <p className="mx-auto mt-1.5 max-w-md text-sm text-muted-foreground md:mx-0 md:mt-2">
             One email per article. No spam, unsubscribe anytime.
           </p>
         </div>

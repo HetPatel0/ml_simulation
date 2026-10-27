@@ -12,9 +12,9 @@ export default function AboutPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Info className="h-5 w-5" />
             </div>
-            <h1 className="text-4xl font-bold">About</h1>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">About</h1>
           </div>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-base text-muted-foreground sm:text-lg">
             A free platform for learning machine learning through interactive
             visualizations
           </p>
@@ -23,7 +23,7 @@ export default function AboutPage() {
 
       <section className="px-6 lg:px-12 py-12 border-t border-border/50">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold tracking-tight mb-6">
+          <h2 className="text-xl font-bold tracking-tight sm:text-2xl mb-6">
             Why This Exists
           </h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
@@ -46,7 +46,7 @@ export default function AboutPage() {
       </section>
       <section className="px-6 lg:px-12 py-12 bg-muted/30 border-y border-border/50">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold tracking-tight mb-6">
+          <h2 className="text-xl font-bold tracking-tight sm:text-2xl mb-6">
             Who This Is For
           </h2>
 
@@ -86,7 +86,7 @@ export default function AboutPage() {
       {/* ================= PRINCIPLES ================= */}
       <section className="px-6 lg:px-12 py-12">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold tracking-tight mb-6">
+          <h2 className="text-xl font-bold tracking-tight sm:text-2xl mb-6">
             Our Principles
           </h2>
 
@@ -109,7 +109,7 @@ export default function AboutPage() {
       {/* ================= PRIVACY ================= */}
       <section id="privacy" className="px-6 lg:px-12 py-12 border-t border-border/50 scroll-mt-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold tracking-tight mb-2">
+          <h2 className="text-xl font-bold tracking-tight sm:text-2xl mb-2">
             Privacy
           </h2>
           <p className="text-muted-foreground mb-6">
@@ -162,20 +162,20 @@ export default function AboutPage() {
       {/* ================= CTA ================= */}
       <section className="px-6 lg:px-12 py-12 border-t border-border/50">
         <div className="mx-auto max-w-5xl text-center">
-          <h2 className="text-2xl font-bold tracking-tight mb-3">
+          <h2 className="text-xl font-bold tracking-tight sm:text-2xl mb-3">
             Start Learning
           </h2>
           <p className="text-muted-foreground mb-6">
             Pick any simulation and start experimenting. No signup needed.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" asChild className="h-11 px-6 gap-2">
+            <Button size="lg" asChild className="h-10 gap-2 px-6 sm:h-11">
               <Link href="/simulations" scroll={true}>
                 Explore Simulations
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild className="h-11 px-6">
+            <Button size="lg" variant="outline" asChild className="h-10 px-6 sm:h-11">
               <Link href="/learn" scroll={true}>Read Articles</Link>
             </Button>
           </div>
