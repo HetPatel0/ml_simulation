@@ -1,5 +1,3 @@
-"use client";
-
 import { ArticlePost } from "../../layout/article-post";
 import {
   CodeBlock,

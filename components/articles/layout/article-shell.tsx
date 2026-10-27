@@ -30,8 +30,8 @@ export function ArticleShell({
     const root = contentRef.current;
     if (!root) return;
 
-    // Deep-link support: ids are assigned client-side, so handle initial
-    // hash once the real headings exist (not while the skeleton shows).
+    // Deep-link support: headings are server-rendered, so handle the
+    // initial hash as soon as the DOM is available.
     let hashHandled = false;
     const handleHash = (items: TocItem[]) => {
       if (hashHandled || !window.location.hash) return;
@@ -57,12 +57,10 @@ export function ArticleShell({
     };
 
     collect();
-    // Article bodies arrive asynchronously (per-slug dynamic import), so a
-    // collect-on-mount alone runs while the skeleton is showing and the TOC
-    // stays empty until the next reload. Re-collect when DOM lands instead.
-    const observer = new MutationObserver(collect);
-    observer.observe(root, { childList: true, subtree: true });
-    return () => observer.disconnect();
+    // One follow-up pass catches content that commits just after hydration
+    // (e.g. the quiz island), without observing every mutation on the page.
+    const raf = requestAnimationFrame(() => collect());
+    return () => cancelAnimationFrame(raf);
   }, [children]);
 
   return (

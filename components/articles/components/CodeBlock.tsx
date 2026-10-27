@@ -1,20 +1,14 @@
-"use client";
-
-import { useState } from "react";
-// PrismLight + explicit language registration: ships only the 4 grammars we
-// use instead of the full Prism bundle (~all languages).
+// PrismLight + explicit language registration keeps only the 4 grammars we
+// use. Rendering happens on the server: no Prism JS or theme objects ship
+// to the article route. Token colors live in globals.css.
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import python from "react-syntax-highlighter/dist/esm/languages/prism/python";
 import bash from "react-syntax-highlighter/dist/esm/languages/prism/bash";
 import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript";
 import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Check, Copy, Terminal } from "lucide-react";
+import { Terminal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
+import { CodeCopyButton } from "./CodeCopyButton";
 
 SyntaxHighlighter.registerLanguage("python", python);
 SyntaxHighlighter.registerLanguage("bash", bash);
@@ -52,40 +46,15 @@ export function CodeBlock({
   showLineNumbers = true,
   className,
 }: CodeBlockProps) {
-  const [copied, setCopied] = useState(false);
-  const { resolvedTheme } = useTheme();
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(code.trim());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const isDark = resolvedTheme === "dark";
-
   return (
     <div
-      // Theme (resolvedTheme) is client-only: server prerenders light while a
-      // dark-mode visitor hydrates dark. Suppress the expected mismatch for
-      // this subtree instead of flashing a wrong theme.
-      suppressHydrationWarning
       className={cn(
-        "relative my-6 rounded-xl overflow-hidden border shadow-sm",
-        isDark
-          ? "border-border/50 bg-card"
-          : "border-border bg-card",
-        className
+        "ml-code relative my-6 overflow-hidden rounded-xl border border-border bg-card shadow-sm",
+        className,
       )}
     >
       {/* Header */}
-      <div
-        className={cn(
-          "flex items-center justify-between px-4 py-2.5 border-b",
-          isDark
-            ? "border-border/50 bg-muted/30"
-            : "border-border bg-muted/50"
-        )}
-      >
+      <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2.5">
         <div className="flex items-center gap-3">
           <Terminal className="h-4 w-4 text-muted-foreground" />
           {title && (
@@ -95,61 +64,25 @@ export function CodeBlock({
           )}
           <span
             className={cn(
-              "text-xs px-2 py-0.5 rounded-md font-mono border",
-              languageColors[language] || languageColors.text
+              "rounded-md border px-2 py-0.5 font-mono text-xs",
+              languageColors[language] || languageColors.text,
             )}
           >
             {languageLabels[language] || language}
           </span>
         </div>
 
-        <button
-          onClick={handleCopy}
-          disabled={copied}
-          className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            copied
-              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 cursor-default"
-              : "bg-primary/10 text-primary hover:bg-primary/20 cursor-pointer"
-          )}
-        >
-          {copied ? (
-            <>
-              <Check className="h-3.5 w-3.5" />
-              Copied!
-            </>
-          ) : (
-            <>
-              <Copy className="h-3.5 w-3.5" />
-              Copy
-            </>
-          )}
-        </button>
+        <CodeCopyButton code={code} />
       </div>
 
       {/* Code */}
       <div className="overflow-x-auto">
         <SyntaxHighlighter
           language={language}
-          style={isDark ? oneDark : oneLight}
+          useInlineStyles={false}
           showLineNumbers={showLineNumbers}
-          customStyle={{
-            margin: 0,
-            padding: "1rem",
-            background: "transparent",
-            fontSize: "0.875rem",
-            lineHeight: "1.6",
-          }}
-          lineNumberStyle={{
-            minWidth: "2.5em",
-            paddingRight: "1em",
-            // NOTE: --muted-foreground holds oklch(), so it can't sit inside
-            // hsl(). The invalid declaration was dropped and numbers fell
-            // back to near-white — unreadable in dark mode. Plain rgba works
-            // in both themes.
-            color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)",
-            userSelect: "none",
+          codeTagProps={{
+            className: language ? `language-${language}` : undefined,
           }}
         >
           {code.trim()}

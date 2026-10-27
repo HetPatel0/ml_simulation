@@ -30,16 +30,16 @@ export function ModeToggle({
   className,
   variant = "outline",
 }: ThemeSwitchProps) {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   const toggleTheme = useCallback(() => {
-    const toDark = resolvedTheme !== "dark";
+    const toDark = !document.documentElement.classList.contains("dark");
     // Optimistic DOM flip: applies in the same frame as the click.
     // setTheme (state + re-render of CodeBlocks etc.) syncs after.
     document.documentElement.classList.toggle("dark", toDark);
     setTheme(toDark ? "dark" : "light");
     playThemeSwitch(toDark);
-  }, [resolvedTheme, setTheme]);
+  }, [setTheme]);
 
   return (
     <Tooltip>

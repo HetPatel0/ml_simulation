@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
-import { toast } from "sonner";
+import { notify } from "@/lib/toast";
 
 const TOAST_ID = "kit-subscribe";
 
@@ -13,10 +13,8 @@ const TOAST_ID = "kit-subscribe";
  * Posts directly to Kit; ck.js progressive-enhances with AJAX + inline
  * success/error states. Works as a plain POST without JS too.
  *
- * Toasts go through the shadcn Sonner toaster (bottom-right): ck.js gives
- * no JS callbacks, so we watch its DOM output — submit shows pending, the
- * success message / error alert resolve it. No env keys needed anywhere:
- * the form ID is public by design.
+ * ck.js is only requested once the form nears the viewport, so it never
+ * competes with the home page's LCP. Toasts go through the lazy Sonner host.
  */
 export function KitEmbedForm({
   hideChrome = false,
@@ -27,14 +25,38 @@ export function KitEmbedForm({
   className?: string;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const hasToastRef = useRef(false);
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    if (!("IntersectionObserver" in window)) {
+      setActive(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setActive(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "240px 0px" },
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!active) return;
     const root = rootRef.current;
     const form = root?.querySelector<HTMLFormElement>("form[data-sv-form]");
     if (!root || !form) return;
 
     const onSubmit = () => {
-      toast.loading("Subscribing…", { id: TOAST_ID });
+      hasToastRef.current = true;
+      notify("loading", "Subscribing…", { id: TOAST_ID });
     };
     form.addEventListener("submit", onSubmit);
 
@@ -42,26 +64,39 @@ export function KitEmbedForm({
     const observer = new MutationObserver(() => {
       const ok = root.querySelector(".formkit-alert-success");
       if (ok && ok.textContent?.trim()) {
-        toast.success("Success! You are subscribed.", { id: TOAST_ID });
+        hasToastRef.current = true;
+        notify("success", "Success! You are subscribed.", { id: TOAST_ID });
       } else {
         const err = root.querySelector(".formkit-alert-error");
         if (err && err.textContent?.trim()) {
-          toast.error(err.textContent.trim().slice(0, 120), { id: TOAST_ID });
+          hasToastRef.current = true;
+          notify("error", err.textContent.trim().slice(0, 120), {
+            id: TOAST_ID,
+          });
         }
       }
     });
-    observer.observe(root, { childList: true, subtree: true, characterData: true });
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
 
     return () => {
       form.removeEventListener("submit", onSubmit);
       observer.disconnect();
-      toast.dismiss(TOAST_ID);
+      if (hasToastRef.current) notify("dismiss", TOAST_ID);
     };
-  }, []);
+  }, [active]);
 
   return (
     <div ref={rootRef} className={`kit-themed max-w-md ${className}`.trim()}>
-      <Script src="https://f.convertkit.com/ckjs/ck.5.js" strategy="afterInteractive" />
+      {active && (
+        <Script
+          src="https://f.convertkit.com/ckjs/ck.5.js"
+          strategy="afterInteractive"
+        />
+      )}
       <form
         action="https://app.kit.com/forms/9987433/subscriptions"
         className="seva-form formkit-form"

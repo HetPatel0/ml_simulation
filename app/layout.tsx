@@ -8,7 +8,7 @@ import { EggListener } from "@/components/fun/egg-listener";
 import { OfflineBanner } from "@/components/layout/overlays/offline-banner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-import LenisProvider from "@/components/providers/lenis-provider";
+import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import FooterSection from "@/components/layout/site-chrome/footer";
 import { siteConfig } from "@/lib/metadata";
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -122,26 +122,25 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <LenisProvider>
-            <TooltipProvider>
-              <a
-                href="#main"
-                className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-md"
-              >
-                Skip to content
-              </a>
-              <ThemeShortcut />
-              <EggListener />
-              <OfflineBanner />
-              <Navbar />
+          <TooltipProvider>
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground focus:shadow-md"
+            >
+              Skip to content
+            </a>
+            <ThemeShortcut />
+            <SmoothScroll />
+            <EggListener />
+            <OfflineBanner />
+            <Navbar />
             <main id="main" className="flex-1">{children}</main>
 
             <FooterSection />
             <Toaster />
             <Analytics />
             <SpeedInsights />
-            </TooltipProvider>
-          </LenisProvider>
+          </TooltipProvider>
         </ThemeProvider>
       </body>
     </html>

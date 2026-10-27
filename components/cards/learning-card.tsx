@@ -23,6 +23,8 @@ interface LearningCardProps {
   readingTime?: number;
   /** Set for the first above-fold card so it preloads (LCP). */
   priority?: boolean;
+  /** Disable route prefetch for cards that are far below the fold. */
+  prefetch?: boolean;
 }
 
 export function LearningCard({
@@ -34,6 +36,7 @@ export function LearningCard({
   variant = "read",
   readingTime,
   priority = false,
+  prefetch = true,
 }: LearningCardProps) {
   const isSimulation = variant === "simulation";
   const ctaLabel = isSimulation ? "Run simulation" : "Read more";
@@ -57,6 +60,7 @@ export function LearningCard({
       <Link
         href={href}
         scroll={true}
+        prefetch={prefetch}
         aria-label={title}
         className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
       >
@@ -102,6 +106,7 @@ export function LearningCard({
             <Link
               href={href}
               scroll={true}
+              prefetch={prefetch}
               className="rounded-sm underline-offset-4 decoration-border hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {title}
@@ -115,6 +120,7 @@ export function LearningCard({
           <Link
             href={href}
             scroll={true}
+            prefetch={prefetch}
             className="group inline-flex items-center gap-1 px-3 py-1.5"
           >
             {ctaLabel}

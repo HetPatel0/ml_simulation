@@ -1,7 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
-
 const approaches = [
   {
     num: "01",
@@ -22,44 +18,35 @@ const approaches = [
 
 export function ApproachSection() {
   return (
-    <section className="px-6 lg:px-12 py-24 md:py-32">
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-xl mb-16"
-        >
-          <span className="text-xs font-medium tracking-[0.2em] uppercase text-primary">
+    <section className="px-6 py-24 md:py-32 lg:px-12">
+      <div className="mx-auto max-w-5xl">
+        <div className="reveal mb-16 max-w-xl">
+          <span className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
             Our Approach
           </span>
-          <h2 className="mt-4 text-3xl md:text-4xl font-light tracking-tight">
+          <h2 className="mt-4 text-3xl font-light tracking-tight md:text-4xl">
             Understanding through
             <br />
             <span className="font-medium">observation</span>
           </h2>
-        </motion.div>
+        </div>
 
-        <div className="grid md:grid-cols-3 gap-12 md:gap-8">
-          {approaches.map((item, i) => (
-            <motion.div
+        <div className="grid gap-12 md:grid-cols-3 md:gap-8">
+          {approaches.map((item) => (
+            <div
               key={item.num}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              className="group transition-transform duration-200 hover:-translate-y-1"
+              className="reveal group transition-transform duration-200 hover:-translate-y-1"
             >
-              <span className="text-2xl font-mono font-semibold text-primary/60">
+              <span className="font-mono text-2xl font-semibold text-primary/60">
                 {item.num}
               </span>
-              <h3 className="mt-3 text-xl font-medium tracking-tight group-hover:text-primary transition-colors">
+              <h3 className="mt-3 text-xl font-medium tracking-tight transition-colors group-hover:text-primary">
                 {item.title}
               </h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed text-sm">
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                 {item.desc}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

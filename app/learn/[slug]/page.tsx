@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { articleMetadata, siteConfig } from "@/lib/content";
-import ArticleClient from "./article-client";
+import { articleComponents, type ArticleSlug } from "@/lib/article-registry";
 import { ArticleShell } from "@/components/articles/layout/article-shell";
 import { ServerRetryBoundary } from "@/components/feedback/server-retry-boundary";
 import { BreadcrumbJsonLd } from "@/components/articles/layout/article-breadcrumb";
 import { BackToTop } from "@/components/layout/overlays/back-to-top";
+import { QuizBlock } from "@/components/articles/components/QuizBlock";
+import { quizzes } from "@/lib/quizzes";
 
 
 const validSlugs = Object.keys(articleMetadata);
@@ -56,6 +58,9 @@ export default async function ArticlePage({ params }: Props) {
   }
 
   const meta = articleMetadata[slug];
+  const Article = articleComponents[slug as ArticleSlug];
+  if (!Article) notFound();
+  const questions = quizzes[slug] ?? [];
 
   const quizJsonLd = {
     "@context": "https://schema.org",
@@ -81,7 +86,10 @@ export default async function ArticlePage({ params }: Props) {
       />
       <ArticleShell>
         <ServerRetryBoundary title="This article failed to load.">
-          <ArticleClient slug={slug} />
+          <Article />
+          {questions.length > 0 && (
+            <QuizBlock slug={slug} questions={questions} />
+          )}
         </ServerRetryBoundary>
       </ArticleShell>
       <BackToTop />

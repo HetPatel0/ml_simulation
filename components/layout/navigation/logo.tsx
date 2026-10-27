@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { toast } from "sonner";
+import { notify } from "@/lib/toast";
 import { EGG_IDS, markFound } from "@/lib/fun/eggs";
 import { celebrateEggRain } from "@/lib/fun/celebrate";
 import { playPop } from "@/lib/fun/sound";
@@ -19,7 +19,7 @@ export default function Logo() {
       const isNew = markFound(EGG_IDS.logoParty);
       playPop();
       void celebrateEggRain();
-      toast.success(isNew ? "Logo party! Egg found." : "Logo party again!", {
+      notify("success", isNew ? "Logo party! Egg found." : "Logo party again!", {
         description: isNew ? "Egg 2 of 3. One still hides." : undefined,
       });
     }

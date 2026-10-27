@@ -69,9 +69,9 @@ export default function SVRVisualizer() {
   /* ---------- Training ---------- */
   const trainStep = useCallback(() => {
     const pts = pointsRef.current;
-    if (!pts.length) return;
+    if (!pts.length) return true;
 
-    for (let k = 0; k < 40; k++) {
+    for (let k = 0; k < 20; k++) {
       const i = Math.floor(Math.random() * pts.length);
       const p = pts[i];
 
@@ -87,6 +87,14 @@ export default function SVRVisualizer() {
 
       alphasRef.current[i] *= 0.999;
     }
+
+    // Converged when every point sits inside the epsilon tube. Returning
+    // true lets the loop park instead of training forever.
+    let maxError = 0;
+    for (const p of pts) {
+      maxError = Math.max(maxError, Math.abs(p.y - predict(p.x)));
+    }
+    return maxError <= epsilon + 1e-4;
   }, [predict, epsilon, C, lr]);
 
   /* ---------- Draw ---------- */
@@ -143,9 +151,7 @@ export default function SVRVisualizer() {
       ctx.fillStyle = err > epsilon ? "#dc2626" : "#6b7280";
       ctx.fill();
     });
-
-    trainStep();
-  }, [size, predict, epsilon, trainStep]);
+  }, [size, predict, epsilon]);
 
   /* ---------- Init (ONCE) ---------- */
   useEffect(() => {
@@ -157,18 +163,70 @@ export default function SVRVisualizer() {
     biasRef.current = 0;
   }, []);
 
-  /* ---------- Animation loop ---------- */
-  useEffect(() => {
-    let rafId: number;
+  /* ---------- Animation loop (visible + not converged only) ---------- */
+  const rafRef = useRef(0);
+  const visibleRef = useRef(true);
+  const loopRef = useRef<() => void>(() => {});
 
+  const ensureRunning = useCallback(() => {
+    if (document.hidden || !visibleRef.current || rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => loopRef.current());
+  }, []);
+
+  useEffect(() => {
     const loop = () => {
+      rafRef.current = 0;
+      if (!visibleRef.current || document.hidden) return;
       draw();
-      rafId = requestAnimationFrame(loop);
+      if (trainStep()) return;
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    loopRef.current = loop;
+
+    const stop = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
     };
 
-    loop();
-    return () => cancelAnimationFrame(rafId);
-  }, [draw]);
+    const root = containerRef.current;
+    const observer = root
+      ? new IntersectionObserver(
+          ([entry]) => {
+            visibleRef.current = entry.isIntersecting;
+            if (entry.isIntersecting) {
+              ensureRunning();
+            } else {
+              stop();
+            }
+          },
+          { threshold: 0.01 },
+        )
+      : null;
+    observer?.observe(root!);
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        stop();
+      } else {
+        visibleRef.current = true;
+        ensureRunning();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    ensureRunning();
+    return () => {
+      stop();
+      observer?.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [draw, trainStep, containerRef, ensureRunning]);
+
+  // Redraw on parameter / data changes even when the loop is parked.
+  useEffect(() => {
+    draw();
+    ensureRunning();
+  }, [draw, ensureRunning]);
 
   /* ---------- Interaction: drag to move, right-click to delete ---------- */
   const dragIdxRef = useRef<number | null>(null);
@@ -212,6 +270,7 @@ export default function SVRVisualizer() {
       pointsRef.current.push({ x, y });
       alphasRef.current.push(0);
     }
+    ensureRunning();
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -219,6 +278,7 @@ export default function SVRVisualizer() {
     if (drag === null) return;
     const { px, py } = toCanvasPx(e);
     pointsRef.current[drag] = dataFromPx(px, py);
+    ensureRunning();
   };
 
   const endDrag = () => {
@@ -232,6 +292,7 @@ export default function SVRVisualizer() {
     if (idx !== null) {
       pointsRef.current.splice(idx, 1);
       alphasRef.current.splice(idx, 1);
+      ensureRunning();
     }
   };
 
@@ -244,6 +305,7 @@ export default function SVRVisualizer() {
     });
     const idx = nearPoint(px, py, cssScale);
     if (idx !== null) dragIdxRef.current = idx;
+    ensureRunning();
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
@@ -256,6 +318,7 @@ export default function SVRVisualizer() {
       currentTarget: e.currentTarget,
     });
     pointsRef.current[drag] = dataFromPx(px, py);
+    ensureRunning();
   };
 
   /* ---------- UI ---------- */
@@ -370,6 +433,8 @@ export default function SVRVisualizer() {
               pointsRef.current = [];
               alphasRef.current = [];
               biasRef.current = 0;
+              draw();
+              ensureRunning();
             }}
             className="cursor-pointer"
           >

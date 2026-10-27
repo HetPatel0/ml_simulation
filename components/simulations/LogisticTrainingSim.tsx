@@ -64,6 +64,7 @@ export default function LogisticTrainingSim() {
   const isTrainingRef = useRef(false);
   const epochRef = useRef(0);
   const reqIdRef = useRef<number>(0);
+  const lastUiRef = useRef(0);
 
   // UI State
   const [isTraining, setIsTraining] = useState(false);
@@ -215,23 +216,27 @@ export default function LogisticTrainingSim() {
     // Update Visuals
     draw();
 
-    // Update React State (Throttled slightly naturally by React batching, but we do every frame here)
-    // For smoother UI in heavy loads, you might throttle this part.
-    const currentStats = {
-      loss: totalLoss / m,
-      mle: logLikelihoodSum.toFixed(2),
-      dw,
-      db,
-      w,
-      b,
-    };
-    setStats(currentStats);
+    // React state at ~10 Hz instead of every animation frame. The canvas
+    // still redraws at rAF speed; only the DOM text/log updates are throttled.
+    const now = performance.now();
+    if (now - lastUiRef.current >= 100) {
+      lastUiRef.current = now;
+      const currentStats = {
+        loss: totalLoss / m,
+        mle: logLikelihoodSum.toFixed(2),
+        dw,
+        db,
+        w,
+        b,
+      };
+      setStats(currentStats);
 
-    if (epochRef.current % 5 === 0) {
-      setLogs((prev) => [
-        { epoch: epochRef.current, ...currentStats },
-        ...prev.slice(0, 49), // Keep last 50
-      ]);
+      if (epochRef.current % 5 === 0) {
+        setLogs((prev) => [
+          { epoch: epochRef.current, ...currentStats },
+          ...prev.slice(0, 49), // Keep last 50
+        ]);
+      }
     }
 
     if (epochRef.current >= MAX_EPOCHS) {
@@ -367,13 +372,8 @@ export default function LogisticTrainingSim() {
           />
         </button>
         {showLog && (
-          <CardContent
-            className="p-0 max-h-56 overflow-hidden rounded-b-xl border-t"
-            // Lenis hijacks wheel events page-wide; without this the inner
-            // table scroll never receives them (nested-scroll dead zone).
-            data-lenis-prevent
-          >
-            <div className="max-h-56 overflow-y-auto" data-lenis-prevent>
+          <CardContent className="p-0 max-h-56 overflow-hidden rounded-b-xl border-t">
+            <div className="max-h-56 overflow-y-auto">
               <table className="w-full border-collapse text-sm">
                 <thead className="sticky top-0 z-10">
                   <tr className="bg-muted/90 text-muted-foreground backdrop-blur">

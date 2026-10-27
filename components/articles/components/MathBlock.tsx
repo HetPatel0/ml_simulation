@@ -1,8 +1,4 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-// KaTeX CSS stays static (small, render-blocking by design to avoid FOUC);
-// the ~200KB JS parser loads lazily so non-math pages never pay for it.
+import katex from "katex";
 import "katex/dist/katex.min.css";
 import { cn } from "@/lib/utils";
 
@@ -12,43 +8,36 @@ interface MathBlockProps {
   className?: string;
 }
 
+/**
+ * Server-rendered KaTeX. The formula HTML ships with the article, so there
+ * is no parser chunk, no layout shift, and math works without JS.
+ */
 export function MathBlock({
   formula,
   display = "block",
   className,
 }: MathBlockProps) {
-  const containerRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    // Dynamic import code-splits KaTeX out of the article bundle.
-    import("katex").then(({ default: katex }) => {
-      if (cancelled || !containerRef.current) return;
-      try {
-        katex.render(formula, containerRef.current, {
-          displayMode: display === "block",
-          throwOnError: false,
-          errorColor: "#ef4444",
-          trust: true,
-        });
-      } catch (error) {
-        console.error("KaTeX rendering error:", error);
-        if (containerRef.current) {
-          containerRef.current.textContent = formula;
-        }
-      }
+  let html = "";
+  try {
+    html = katex.renderToString(formula, {
+      displayMode: display === "block",
+      throwOnError: false,
+      errorColor: "#ef4444",
+      trust: true,
     });
-    return () => {
-      cancelled = true;
-    };
-  }, [formula, display]);
+  } catch (error) {
+    console.error("KaTeX rendering error:", error);
+  }
 
   if (display === "inline") {
     return (
-      <span
-        ref={containerRef}
-        className={cn("inline-block align-middle mx-1", className)}
-      />
+      <span className={cn("mx-1 inline-block align-middle", className)}>
+        {html ? (
+          <span dangerouslySetInnerHTML={{ __html: html }} />
+        ) : (
+          formula
+        )}
+      </span>
     );
   }
 
@@ -56,10 +45,17 @@ export function MathBlock({
     <div
       className={cn(
         "my-6 overflow-x-auto rounded-xl border border-border/60 bg-muted/30 py-5 text-center",
-        className
+        className,
       )}
     >
-      <span ref={containerRef} className="text-lg" />
+      {html ? (
+        <span
+          className="text-lg"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      ) : (
+        <span className="text-lg">{formula}</span>
+      )}
     </div>
   );
 }

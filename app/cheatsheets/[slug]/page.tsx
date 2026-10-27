@@ -97,6 +97,39 @@ export default async function CheatsheetPage({ params }: Props) {
         <h2 className="mb-2 mt-10 text-2xl font-semibold">Parameters</h2>
         <CheatsheetParams sheet={sheet} />
 
+        <h2 className="mb-2 mt-10 text-2xl font-semibold">Model variants &amp; sub-types</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] border-collapse text-sm">
+            <thead>
+              <tr className="border-b text-left text-muted-foreground">
+                <th className="py-2 pr-4 font-medium">Variant</th>
+                <th className="py-2 pr-4 font-medium">API</th>
+                <th className="py-2 pr-4 font-medium">Best for</th>
+                <th className="py-2 font-medium">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sheet.variants.map((v) => (
+                <tr key={v.name} className="border-b align-top">
+                  <td className="py-2 pr-4 font-medium">{v.name}</td>
+                  <td className="py-2 pr-4 font-mono text-xs">{v.api}</td>
+                  <td className="py-2 pr-4">{v.bestFor}</td>
+                  <td className="py-2 text-muted-foreground">{v.note ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h2 className="mb-2 mt-10 text-2xl font-semibold">How it differs from other models</h2>
+        <ul className="list-disc space-y-2 pl-6">
+          {sheet.vsOthers.map((c) => (
+            <li key={c.versus}>
+              <strong>{c.versus}:</strong> {c.difference}
+            </li>
+          ))}
+        </ul>
+
         <h2 className="mb-2 mt-10 text-2xl font-semibold">Copy-paste snippet</h2>
         <CodeBlock code={sheet.snippet.code} language={sheet.snippet.language as "python"} title={sheet.snippet.title} />
 
@@ -104,6 +137,29 @@ export default async function CheatsheetPage({ params }: Props) {
         <ul className="list-disc space-y-2 pl-6">
           {sheet.tips.map((t) => (
             <li key={t}>{t}</li>
+          ))}
+        </ul>
+
+        <h2 className="mb-2 mt-10 text-2xl font-semibold">Common pitfalls</h2>
+        <ul className="list-disc space-y-2 pl-6">
+          {sheet.pitfalls.map((p) => (
+            <li key={p}>{p}</li>
+          ))}
+        </ul>
+
+        <h2 className="mb-2 mt-10 text-2xl font-semibold">Sources</h2>
+        <ul className="list-disc space-y-2 pl-6 text-sm">
+          {sheet.sources.map((s) => (
+            <li key={s.url}>
+              <a
+                className="underline underline-offset-4"
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {s.label}
+              </a>
+            </li>
           ))}
         </ul>
 

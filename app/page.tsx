@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { HomeClient } from "@/components/hero/home-client";
+import { HeroSection } from "@/components/hero/HeroSection";
+import { StatsSection } from "@/components/hero/StatsSection";
+import { ApproachSection } from "@/components/hero/ApproachSection";
+import { FeaturedSection } from "@/components/hero/FeaturedSection";
+import { NewsletterCTA } from "@/components/newsletter/newsletter-cta";
+import { CTASection } from "@/components/hero/CTASection";
+import { SeasonalSnowfall } from "@/components/fun/seasonal-snowfall";
 
 export const metadata: Metadata = {
   title: "ML Simulations - Interactive Machine Learning Education",
@@ -10,8 +16,14 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <HomeClient />
-    </main>
+    <div className="min-h-screen">
+      <SeasonalSnowfall />
+      <HeroSection />
+      <StatsSection />
+      <ApproachSection />
+      <FeaturedSection />
+      <NewsletterCTA />
+      <CTASection />
+    </div>
   );
 }

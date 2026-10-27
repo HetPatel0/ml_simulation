@@ -6,7 +6,7 @@ import { ARTICLE_LAST_UPDATED_ISO } from "@/lib/metadata";
 import { ArticleImage } from "./article-image";
 import { ArticleActions } from "./article-actions";
 import { Breadcrumb } from "./article-breadcrumb";
-import { slugify } from "./use-active-section";
+import { slugify } from "@/lib/slugify";
 
 const WORDS_PER_MINUTE = 200;
 
@@ -106,18 +106,13 @@ export function ArticlePost({
   className,
   breadcrumb,
 }: ArticlePostProps) {
-  // Deterministic across server/client (memo on stable children identity).
-  const body = React.useMemo(
-    () => assignHeadingIds(children, new Set<string>()),
-    [children],
-  );
+  // Deterministic at render time; no hook needed in the server component.
+  const body = assignHeadingIds(children, new Set<string>());
   // Reading time from prose (headings, paragraphs, callouts). Code passed
   // via `code` props isn't plain children text, so this stays a read estimate.
-  const minutes = React.useMemo(() => {
-    const text = extractText([title, description, children]);
-    const words = text.trim().split(/\s+/).filter(Boolean).length;
-    return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
-  }, [title, description, children]);
+  const text = extractText([title, description, children]);
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
   return (
     <article className={cn("mx-auto w-full max-w-none py-8 sm:py-12", className)}>
       {/* Header */}

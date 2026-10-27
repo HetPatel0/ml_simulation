@@ -2,8 +2,32 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* NOTE: no global `scroll-behavior: smooth` — Lenis owns smooth scrolling.
-   The CSS rule fights Lenis's rAF loop and forces extra compositing. */
+/* Native smooth scrolling for anchor / back-to-top jumps. Skipped when the
+   visitor asks for reduced motion (see the media query at the end). */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Lenis takes over wheel scrolling on desktop. Keep native page scroll for
+   anchors, and let nested scrollers (TOC, code, simulation logs) opt out. */
+html.lenis,
+html.lenis body {
+  height: auto;
+  scroll-behavior: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
 
 :root {
   color-scheme: light dark;
@@ -183,8 +207,7 @@
   }
   html {
     /* No scroll chaining past the viewport: kills pull-to-refresh /
-       rubber-band traps on touch devices. Lenis owns in-page smooth
-       scrolling; nested scrollers opt out via data-lenis-prevent. */
+       rubber-band traps on touch devices. */
     overscroll-behavior: none;
   }
   body {
@@ -427,9 +450,274 @@
   }
 }
 
+/* Home hero: transform-only entrance so the LCP headline is painted
+   immediately; trails + scroll cue are pure CSS. */
+@keyframes hero-rise {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes hero-underline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes trail-draw {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  12% {
+    opacity: var(--trail-opacity);
+  }
+  65% {
+    stroke-dashoffset: 0;
+    opacity: var(--trail-opacity);
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes scroll-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scroll-dot {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+.hero-rise {
+  animation: hero-rise 0.7s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+}
+.hero-underline {
+  transform-origin: left;
+  animation: hero-underline 0.5s cubic-bezier(0.22, 0.7, 0.2, 1) 0.35s both;
+}
+.trail {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trail-draw var(--trail-duration, 2.4s) linear
+    var(--trail-delay, 0s) infinite;
+}
+.scroll-indicator {
+  animation: scroll-fade 0.6s ease-out 1.2s both;
+}
+.scroll-indicator-dot {
+  animation: scroll-dot 2s ease-in-out infinite;
+}
+
+/* 404: CSS-only entrance, no animation runtime on any route. */
+@keyframes nf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nf-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes ghost-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes ghost-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes ghost-pop {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.nf-rise {
+  animation: nf-rise 0.6s ease-out both;
+}
+.nf-fade {
+  animation: nf-fade 0.5s ease-out both;
+}
+.ghost-float {
+  animation: ghost-float 3s ease-in-out infinite;
+}
+.ghost-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ghost-draw 1.5s ease-out forwards;
+}
+.ghost-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  animation: ghost-pop 0.3s ease-out forwards;
+}
+
+/* Below-fold reveals: progressive enhancement only. Browsers without
+   scroll-driven animations simply render the sections visible. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 18%;
+  }
+}
+
+/* Prism tokens for the server-highlighted article code blocks.
+   `useInlineStyles={false}` emits plain token classes; these token
+   colors follow the site palette in both themes. */
+@layer components {
+  .ml-code pre {
+    margin: 0;
+    padding: 1rem;
+    background: transparent !important;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .ml-code code {
+    font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+      monospace;
+    white-space: pre;
+  }
+  .ml-code .linenumber {
+    color: var(--muted-foreground);
+    opacity: 0.55;
+  }
+  .ml-code .token.comment,
+  .ml-code .token.prolog,
+  .ml-code .token.doctype,
+  .ml-code .token.cdata {
+    color: color-mix(in oklch, var(--muted-foreground) 72%, transparent);
+    font-style: italic;
+  }
+  .ml-code .token.punctuation {
+    color: color-mix(in oklch, var(--foreground) 70%, transparent);
+  }
+  .ml-code .token.property,
+  .ml-code .token.tag,
+  .ml-code .token.selector,
+  .ml-code .token.attr-name,
+  .ml-code .token.keyword,
+  .ml-code .token.atrule,
+  .ml-code .token.attr-value {
+    color: var(--primary);
+  }
+  .ml-code .token.boolean,
+  .ml-code .token.number,
+  .ml-code .token.constant,
+  .ml-code .token.symbol,
+  .ml-code .token.deleted {
+    color: oklch(0.55 0.16 55);
+  }
+  .ml-code .token.string,
+  .ml-code .token.char,
+  .ml-code .token.builtin,
+  .ml-code .token.inserted {
+    color: oklch(0.48 0.13 155);
+  }
+  .ml-code .token.function,
+  .ml-code .token.class-name {
+    color: oklch(0.52 0.16 265);
+  }
+  .ml-code .token.regex,
+  .ml-code .token.important,
+  .ml-code .token.variable {
+    color: oklch(0.56 0.17 35);
+  }
+  .dark .ml-code .token.boolean,
+  .dark .ml-code .token.number,
+  .dark .ml-code .token.constant,
+  .dark .ml-code .token.symbol,
+  .dark .ml-code .token.deleted {
+    color: oklch(0.82 0.14 70);
+  }
+  .dark .ml-code .token.string,
+  .dark .ml-code .token.char,
+  .dark .ml-code .token.builtin,
+  .dark .ml-code .token.inserted {
+    color: oklch(0.8 0.14 155);
+  }
+  .dark .ml-code .token.function,
+  .dark .ml-code .token.class-name {
+    color: oklch(0.8 0.12 265);
+  }
+  .dark .ml-code .token.regex,
+  .dark .ml-code .token.important,
+  .dark .ml-code .token.variable {
+    color: oklch(0.78 0.15 35);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .hero-rise,
+  .hero-underline,
+  .scroll-indicator,
+  .scroll-indicator-dot,
+  .reveal,
+  .trail,
+  .nf-rise,
+  .nf-fade,
+  .ghost-float,
+  .ghost-path,
+  .ghost-pop {
+    animation: none !important;
+  }
+  .trail {
+    stroke-dashoffset: 0;
+    opacity: var(--trail-opacity);
+  }
+  .ghost-path {
+    stroke-dashoffset: 0;
+  }
+  .ghost-pop {
+    transform: none;
   }
   *,
   *::before,

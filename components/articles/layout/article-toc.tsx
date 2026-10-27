@@ -33,7 +33,7 @@ function TocLinks({
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection(item.id);
-                // Keep URL hash in sync without jumping (Lenis-friendly).
+                // Keep URL hash in sync without a second jump.
                 window.history.replaceState(null, "", `#${item.id}`);
                 onNavigate?.();
               }}
