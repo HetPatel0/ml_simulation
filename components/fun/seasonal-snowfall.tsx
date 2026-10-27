@@ -12,9 +12,7 @@ export function SeasonalSnowfall() {
   const [active, setActive] = useState(false);
 
   useEffect(() => {
-    const preview =
-      new URLSearchParams(window.location.search).get("snow") === "1";
-    if (new Date().getMonth() !== 11 && !preview) return;
+    if (new Date().getMonth() !== 11) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     setActive(true);
   }, []);
