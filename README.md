@@ -206,17 +206,17 @@ ml_simulation/
 │   ├── cheatsheets.ts            # Cheatsheet registry (params, snippets, tips)
 │   ├── quizzes.ts                # Per-article quiz questions
 │   ├── dynamic-content.tsx        # Shared slug → lazy-chunk map helper
-│   ├── article-audio.ts          # Manifest: slug → /audio/articles/<slug>.mp3 (or null)
+│   ├── resource-audio.ts         # Manifest: phase → /audio/resources/<phase>.mp3
 │   ├── use-responsive-canvas.ts  # Canvas sizing hook
 │   └── hooks/
 │       └── use-search-shortcut.ts # ⌘K / Esc search focus hook
 │
 ├── scripts/
-│   └── generate-article-audio.mjs # Pre-generate article narration audio (Kokoro + ffmpeg)
+│   └── generate-resource-audio.mjs # Pre-generate one resource narration per phase
 │
 ├── public/
 │   ├── logo.png                  # Project logo
-│   ├── audio/articles/           # Pre-generated article narrations (<slug>.mp3)
+│   ├── audio/resources/          # Pre-generated phase narrations (<phase>.mp3)
 │   ├── images/                   # Simulation thumbnails
 │   │   ├── regression/
 │   │   ├── classification/
@@ -272,9 +272,7 @@ ml_simulation/
 | `pnpm build` | Create production build |
 | `pnpm start` | Start production server |
 | `pnpm lint` | Run ESLint |
-| `pnpm audio:list` | Sorted article inventory (words, minutes, audio status) |
-| `pnpm audio:gen <slug>` | Generate narration audio for one article |
-| `pnpm audio:all` | Generate narration audio for all articles missing it |
+| `pnpm audio:resources` | Generate the 12 phase-level resource narrations |
 
 ## Contributing
 
@@ -526,72 +524,14 @@ Contributions are welcome! Here's how you can help:
 
    Add entry to `articles` array in `app/learn/page.tsx`
 
-### Article Audio (Listen Button)
+### Resource Phase Audio
 
-The Listen player is a plain `<audio>` tag — it plays a **pre-generated**
-`.mp3` stored beside the site's static files, so visitors spend zero compute
-(no model download, no in-browser inference). Audio is generated once on the
-author's machine with Kokoro neural TTS and committed to the repo.
+Each resource phase has one pre-generated MP3 and one Listen control. The
+audio contains a concise phase introduction only, so it never narrates page
+chrome, code, practice prompts, or repeated lesson controls.
 
-**How to put audio in an article:**
-
-1. **Prerequisites** — production build tooling plus `ffmpeg` on PATH
-   (for `.mp3` compression; without it a larger `.wav` is kept instead),
-   internet access (the Kokoro model, ~300MB, auto-downloads on first run),
-   and the TTS package installed **only on the generating machine**:
-
-   ```bash
-   pnpm add -D kokoro-js   # or: bun add --dev kokoro-js
-   ```
-
-   `kokoro-js` is intentionally *not* a project dependency: its
-   `onnxruntime-node` postinstall downloads large native binaries, which
-   would slow down (or break, when offline) every contributor's
-   `pnpm install`. Install it when you need audio, remove it after if you
-   want to keep installs lean — generated `.mp3` files keep working without it.
-
-2. **Build the site** (the script reads article text from rendered pages):
-
-   ```bash
-   pnpm build
-   ```
-
-3. **Check the sorted inventory** (shortest article first):
-
-   ```bash
-   pnpm audio:list
-   ```
-
-4. **Generate audio** — one article or everything missing it:
-
-   ```bash
-   pnpm audio:gen linear-regression
-   pnpm audio:all
-   ```
-
-   Options: `--voice <id>` (default `af_heart`; e.g. `am_adam`, `bf_emma`),
-   `--port <n>` (default `4173`), `--keep-wav`.
-
-5. **What the script does per article:**
-
-   - Fetches `/learn/<slug>` (starts `next start` itself if needed) and
-     extracts prose-only text: title + `h2`/`h3`/`p`/`li`. Code blocks, math
-     formulas, and tables are skipped so the narration stays listenable.
-   - Synthesizes speech with Kokoro (`kokoro-js`, installed separately per
-     step 1 — never a project dependency),
-     concatenates the chunks, and writes
-     `public/audio/articles/<slug>.mp3` (~0.5 MB per minute at 64kbps mono).
-   - Updates the manifest `lib/article-audio.ts`:
-     `"your-article": "/audio/articles/your-article.mp3"`.
-
-6. **Player picks it up automatically** — `ArticleListen` reads the manifest
-   via the route slug. A `null` entry hides the Listen button, so articles
-   without audio just show Share until you generate theirs.
-
-**Adding audio for a brand-new article:** create + register the article as
-usual (steps above), rebuild (`pnpm build`), then run
-`pnpm audio:gen your-article` and commit the new `.mp3` alongside the
-manifest change.
+Generate the full set with `pnpm audio:resources`. The script uses Kokoro and
+`ffmpeg`, then writes files to `public/audio/resources/`.
 
 ### General Guidelines
 

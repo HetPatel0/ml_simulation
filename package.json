@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "audio:resources": "node scripts/generate-resource-audio.mjs",
     "audio:list": "node scripts/generate-article-audio.mjs --list",
     "audio:gen": "node scripts/generate-article-audio.mjs --slug",
     "audio:all": "node scripts/generate-article-audio.mjs --all"

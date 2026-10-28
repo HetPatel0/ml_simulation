@@ -55,7 +55,7 @@ export default function SitemapPage() {
         <section>
           <h2 className="text-xl font-semibold">Site</h2>
           <ul className="mt-3 space-y-2">
-            {[["Home", "/"], ["About", "/about"]].map(([label, href]) => (
+            {[["Home", "/"], ["Resources", "/resources"], ["Model Comparison", "/model-comparison"], ["About", "/about"]].map(([label, href]) => (
               <li key={href}><Link className="text-muted-foreground hover:text-foreground" href={href}>{label}</Link></li>
             ))}
           </ul>

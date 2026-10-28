@@ -5,8 +5,29 @@ type ExternalSourceLinkProps = {
   children: React.ReactNode;
 };
 
+function getPreviewSrc(href: string): string {
+  try {
+    const url = new URL(href);
+    const host = url.hostname.replace(/^www\./, "");
+    if (host === "youtube.com" || host === "youtu.be") {
+      const playlist = url.searchParams.get("list");
+      if (playlist) {
+        return `https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(playlist)}`;
+      }
+      const video = host === "youtu.be" ? url.pathname.slice(1) : url.searchParams.get("v");
+      if (video) {
+        return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(video)}`;
+      }
+    }
+  } catch {
+    // Use the original URL for non-YouTube links or malformed URLs.
+  }
+  return href;
+}
+
 /** External link with a compact hover/focus preview of its new-tab behavior. */
 export function ExternalSourceLink({ href, children }: ExternalSourceLinkProps) {
+  const previewSrc = getPreviewSrc(href);
   let destination = href;
   try {
     destination = new URL(href).hostname.replace(/^www\./, "");
@@ -34,7 +55,7 @@ export function ExternalSourceLink({ href, children }: ExternalSourceLinkProps) 
             <Globe2 size={24} aria-hidden="true" className="text-primary/70" />
           </span>
           <iframe
-            src={href}
+            src={previewSrc}
             title={`Preview of ${children}`}
             loading="lazy"
             referrerPolicy="no-referrer"

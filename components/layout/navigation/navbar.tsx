@@ -22,7 +22,8 @@ const MENU_ITEMS: MenuItem[] = [
   { label: "Learn", href: "/learn" },
   { label: "Simulations", href: "/simulations" },
   { label: "Cheatsheets", href: "/cheatsheets" },
-  { label: "About", href: "/about" },
+  { label: "Resources", href: "/resources" },
+  { label: "Model Comparison", href: "/model-comparison" },
 ];
 
 export function Navbar() {
@@ -36,7 +37,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-md">
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:grid md:grid-cols-[1fr_auto_1fr]">
         {/* Left: Logo */}
-        <div className="md:justify-self-start pl-3">
+        <div className="md:justify-self-start pl-12">
           <Logo />
         </div>
 

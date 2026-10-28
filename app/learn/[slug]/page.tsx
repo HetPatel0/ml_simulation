@@ -8,6 +8,9 @@ import { BreadcrumbJsonLd } from "@/components/articles/layout/article-breadcrum
 import { BackToTop } from "@/components/layout/overlays/back-to-top";
 import { QuizBlock } from "@/components/articles/components/QuizBlock";
 import { quizzes } from "@/lib/quizzes";
+import { articleSources } from "@/lib/article-sources";
+import { ArticleSources } from "@/components/articles/layout/article-sources";
+import { ArticleNavigation } from "@/components/articles/layout/article-navigation";
 
 
 const validSlugs = Object.keys(articleMetadata);
@@ -61,6 +64,9 @@ export default async function ArticlePage({ params }: Props) {
   const Article = articleComponents[slug as ArticleSlug];
   if (!Article) notFound();
   const questions = quizzes[slug] ?? [];
+  const articleIndex = validSlugs.indexOf(slug);
+  const previousSlug = articleIndex > 0 ? validSlugs[articleIndex - 1] : undefined;
+  const nextSlug = articleIndex < validSlugs.length - 1 ? validSlugs[articleIndex + 1] : undefined;
 
   const quizJsonLd = {
     "@context": "https://schema.org",
@@ -90,6 +96,11 @@ export default async function ArticlePage({ params }: Props) {
           {questions.length > 0 && (
             <QuizBlock slug={slug} questions={questions} />
           )}
+          <ArticleSources sources={articleSources[slug] ?? []} />
+          <ArticleNavigation
+            previous={previousSlug ? { slug: previousSlug, title: articleMetadata[previousSlug].title } : undefined}
+            next={nextSlug ? { slug: nextSlug, title: articleMetadata[nextSlug].title } : undefined}
+          />
         </ServerRetryBoundary>
       </ArticleShell>
       <BackToTop />

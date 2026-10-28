@@ -30,6 +30,11 @@ type ArticleShareProps = {
   title: string;
   className?: string;
   /**
+   * Path to share, including any query string. Defaults to the current
+   * pathname so pages that use query params can share the active view.
+   */
+  path?: string;
+  /**
    * Which edge of the button the popup anchors to. Use "right" when the
    * button sits at the right edge of the viewport (cheatsheet / sim
    * topbars) so the ~290px reaction bar opens inward instead of
@@ -43,14 +48,14 @@ type ArticleShareProps = {
  * the button, one column per target — icon on top, label underneath.
  * Order: Copy, X, LinkedIn, WhatsApp.
  */
-export function ArticleShare({ title, className, align = "left" }: ArticleShareProps) {
+export function ArticleShare({ title, className, path, align = "left" }: ArticleShareProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // SSR-safe page URL — canonical path only, never the TOC #topic hash.
+  // SSR-safe page URL; callers may include a hash to share a lesson anchor.
   const pageUrl = () =>
-    window.location.origin + window.location.pathname;
+    window.location.origin + (path ?? window.location.pathname);
 
   // Close on outside click / Escape.
   useEffect(() => {
@@ -149,7 +154,7 @@ export function ArticleShare({ title, className, align = "left" }: ArticleShareP
         aria-label={`Share: ${title}`}
         title="Share"
         className={cn(
-          "inline-flex h-9 cursor-pointer items-center gap-2 rounded-full border px-4 text-sm font-medium shadow-xs transition-colors",
+          "inline-flex h-9 cursor-pointer items-center gap-2 rounded-full border px-4 text-sm font-medium shadow-xs transition-colors no-underline",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
           open
             ? "border-primary/50 bg-primary/10 text-primary"
@@ -185,7 +190,7 @@ export function ArticleShare({ title, className, align = "left" }: ArticleShareP
             }}
             style={{ transitionDelay: open ? `${i * 40}ms` : "0ms" }}
             className={cn(
-              "flex w-[4.25rem] cursor-pointer flex-col items-center gap-1.5 rounded-xl px-1 py-2.5 transition-all duration-150",
+              "flex w-17 cursor-pointer flex-col items-center gap-1.5 rounded-xl px-1 py-2.5 transition-all duration-150",
               "hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               open ? "scale-100 opacity-100" : "scale-75 opacity-0",
             )}

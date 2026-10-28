@@ -6,6 +6,8 @@ const links = [
   { title: "Learn", href: "/learn" },
   { title: "Simulations", href: "/simulations" },
   { title: "Cheatsheets", href: "/cheatsheets" },
+  { title: "Resources", href: "/resources" },
+  { title: "Model Comparison", href: "/model-comparison" },
   { title: "About", href: "/about" },
   { title: "Sitemap", href: "/sitemap-page" },
 ];

@@ -8,6 +8,8 @@ const LAST_MODIFIED = {
   home: new Date("2026-09-20"),
   listings: new Date("2026-09-20"),
   about: new Date("2026-09-10"),
+  resources: new Date("2026-10-27"),
+  modelComparison: new Date("2026-10-27"),
   articles: new Date("2026-09-18"),
   simulations: new Date("2026-09-18"),
   cheatsheets: new Date("2026-10-01"),
@@ -24,6 +26,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteConfig.url}/learn`, lastModified: LAST_MODIFIED.listings, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteConfig.url}/cheatsheets`, lastModified: LAST_MODIFIED.cheatsheets, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteConfig.url}/about`, lastModified: LAST_MODIFIED.about, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${siteConfig.url}/resources`, lastModified: LAST_MODIFIED.resources, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${siteConfig.url}/model-comparison`, lastModified: LAST_MODIFIED.modelComparison, changeFrequency: "monthly", priority: 0.8 },
     { url: `${siteConfig.url}/sitemap-page`, lastModified: LAST_MODIFIED.listings, changeFrequency: "monthly", priority: 0.3 },
   ];
 

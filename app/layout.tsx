@@ -53,12 +53,14 @@ export const metadata: Metadata = {
     title: "ML Simulations - Interactive Machine Learning Education",
     description:
       "Watch machine learning algorithms come alive through interactive visualizations. Adjust parameters, see results instantly.",
+    images: [{ url: "/twitter-image.png", width: 1730, height: 909 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ML Simulations - Interactive Machine Learning Education",
     description:
       "Watch machine learning algorithms come alive through interactive visualizations.",
+    images: ["/twitter-image.png"],
   },
   robots: {
     index: true,

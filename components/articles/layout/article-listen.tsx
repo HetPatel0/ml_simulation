@@ -46,6 +46,8 @@ function formatTime(sec: number): string {
 type ArticleListenProps = {
   title: string;
   className?: string;
+  src?: string | null;
+  vttSrc?: string | null;
 };
 
 /**
@@ -57,11 +59,16 @@ type ArticleListenProps = {
  */
 const SPEEDS = [1, 1.25, 1.5, 1.75, 2];
 
-export function ArticleListen({ title, className }: ArticleListenProps) {
+export function ArticleListen({ title, className, src: srcProp, vttSrc: vttProp }: ArticleListenProps) {
   const params = useParams();
   const slug = typeof params?.slug === "string" ? params.slug : null;
-  const src = slug ? (articleAudio[slug] ?? null) : null;
-  const vttSrc = slug ? (articleSubtitles[slug] ?? null) : null;
+  const src = srcProp !== undefined ? srcProp : (slug ? (articleAudio[slug] ?? null) : null);
+  const vttSrc =
+    vttProp !== undefined
+      ? vttProp
+      : srcProp !== undefined
+        ? null
+        : (slug ? (articleSubtitles[slug] ?? null) : null);
 
   const [expanded, setExpanded] = useState(false);
   // Ref (not state): avoids set-state-in-effect, no extra render.
@@ -105,6 +112,13 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
   }, [expanded, src]);
 
   useEffect(() => () => audioRef.current?.pause(), []);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      if (e.target !== audioRef.current) audioRef.current?.pause();
+    };
+    document.addEventListener("play", handler, true);
+    return () => document.removeEventListener("play", handler, true);
+  }, []);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.playbackRate = SPEEDS[speedIndex];
@@ -285,6 +299,7 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
         {SPEEDS[speedIndex]}x
       </button>
       {/* CC popover — absolute overlay like Share, zero layout impact. */}
+      {vttSrc && (
       <div ref={ccRootRef} className="relative">
         <button
           type="button"
@@ -355,6 +370,7 @@ export function ArticleListen({ title, className }: ArticleListenProps) {
           )}
         </div>
       </div>
+      )}
       {failed && (
         <span className="px-2 text-xs text-destructive">Audio unavailable</span>
       )}

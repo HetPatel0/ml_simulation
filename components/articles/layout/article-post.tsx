@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 import { ARTICLE_LAST_UPDATED_ISO } from "@/lib/metadata";
 import { ArticleImage } from "./article-image";
 import { ArticleActions } from "./article-actions";
+import { ArticleListen } from "./article-listen";
 import { Breadcrumb } from "./article-breadcrumb";
 import { slugify } from "@/lib/slugify";
-import { ExternalSourceLink } from "./external-source-link";
 
 const WORDS_PER_MINUTE = 200;
 
@@ -94,7 +94,6 @@ type ArticlePostProps = {
   className?: string;
   /** Optional breadcrumb trail. When omitted, a Home / Learn / title trail renders. */
   breadcrumb?: { label: string; href?: string }[];
-  sources?: { label: string; url: string }[];
 };
 
 export function ArticlePost({
@@ -107,7 +106,6 @@ export function ArticlePost({
   children,
   className,
   breadcrumb,
-  sources,
 }: ArticlePostProps) {
   // Deterministic at render time; no hook needed in the server component.
   const body = assignHeadingIds(children, new Set<string>());
@@ -150,7 +148,10 @@ export function ArticlePost({
           <span>{minutes} min read</span>
         </p>
 
-        <ArticleActions title={title} />
+        <div className="flex items-center gap-2">
+          <ArticleListen title={title} />
+          <ArticleActions title={title} />
+        </div>
       </header>
 
       {/* Optional Image — click to expand, click outside / Escape to close */}
@@ -205,21 +206,6 @@ export function ArticlePost({
           {body}
         </div>
         </div>
-      )}
-
-      {sources && sources.length > 0 && (
-        <section className="mt-12 pb-2" aria-labelledby="article-sources">
-          <h2 id="article-sources" className="mb-2 text-xl font-semibold tracking-tight sm:text-2xl">
-            Sources
-          </h2>
-          <ul className="list-disc space-y-2 pl-6 text-sm">
-            {sources.map((source) => (
-              <li key={source.url}>
-                <ExternalSourceLink href={source.url}>{source.label}</ExternalSourceLink>
-              </li>
-            ))}
-          </ul>
-        </section>
       )}
 
       {updated && (

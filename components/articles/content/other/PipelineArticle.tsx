@@ -104,20 +104,6 @@ export default function PipelineArticle() {
         src: "/article/other/pipeline-hero.webp",
         alt: "Notebook leakage on the left, one deployable production artifact on the right",
       }}
-      sources={[
-        {
-          label: "sklearn Pipeline API",
-          url: "https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html",
-        },
-        {
-          label: "sklearn Compose guide (ColumnTransformer)",
-          url: "https://scikit-learn.org/stable/modules/compose.html",
-        },
-        {
-          label: "sklearn Model Persistence guide",
-          url: "https://scikit-learn.org/stable/model_persistence.html",
-        },
-      ]}
     >
       <h2>One Object, Exact Order</h2>
       <p>

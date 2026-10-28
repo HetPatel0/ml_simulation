@@ -6,12 +6,11 @@
  *
  *   import { articleMetadata, cheatsheets, quizzes } from "@/lib/content";
  *
- * Note: `lib/article-audio.ts` keeps its two-map shape (`articleAudio`,
- * `articleSubtitles`) because `scripts/generate-article-audio.mjs` parses
- * that file as text. Don't restructure it without updating the script.
  */
 export * from "./metadata";
 export * from "./cheatsheets";
 export * from "./quizzes";
-export * from "./article-audio";
+export * from "./resource-audio";
 export * from "./dynamic-content";
+export * from "./article-sources";
+export * from "./resources";

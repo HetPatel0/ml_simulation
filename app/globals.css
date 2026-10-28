@@ -25,9 +25,6 @@ html.lenis body {
 .lenis [data-lenis-prevent-touch] {
   overscroll-behavior: contain;
 }
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
-}
 
 :root {
   color-scheme: light dark;
